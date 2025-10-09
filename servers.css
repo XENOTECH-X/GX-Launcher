@@ -147,15 +147,16 @@ nav ul {
 
 /* ====== SERVER EMBED STYLE ====== */
 .server-embed {
-    width: 320px;
+    width: 320px; /* keep current width */
+    min-height: 250px; /* increase height */
     background-color: #292929;
-    border: 2px solid #6B0000;
+    border: 2px solid #8B0000;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
     padding: 15px;
     color: #fff;
     transition: transform 0.15s ease, box-shadow 0.15s ease;
-    margin: 0; /* removed margin, spacing handled by gap */
+    margin: 0;
 }
 
 .server-embed:hover {
