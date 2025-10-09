@@ -148,7 +148,7 @@ nav ul {
 /* ====== SERVER EMBED STYLE ====== */
 .server-embed {
     width: 320px; /* keep current width */
-    min-height: 250px; /* increase height */
+    min-height: 170px; /* increase height */
     background-color: #292929;
     border: 2px solid #8B0000;
     border-radius: 8px;
@@ -277,7 +277,7 @@ nav ul {
 }
 .server-embed img,
 .server-embed canvas {
-    width: 500px;        /* fixed width */
+    width: 700px;        /* fixed width */
     height: 150px;       /* fixed height */
     border-radius: 5px; /* optional rounded corners */
     margin-right: 10px; /* spacing from text */
