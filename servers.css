@@ -120,7 +120,7 @@ nav ul {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 50px; /* spacing between server embeds */
+    gap: 150px; /* spacing between server embeds */
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: #8B0000 #6B0000;
