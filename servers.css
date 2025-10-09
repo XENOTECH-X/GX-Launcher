@@ -148,7 +148,7 @@ nav ul {
 /* ====== SERVER EMBED STYLE ====== */
 .server-embed {
     width: 320px; /* keep current width */
-    min-height: 170px; /* increase height */
+    min-height: 150px; /* increase height */
     background-color: #292929;
     border: 2px solid #8B0000;
     border-radius: 8px;
@@ -190,13 +190,11 @@ nav ul {
     font-family: 'MinecraftRegular', sans-serif;
     padding: 5px 10px;
     font-size: 12px;
-    box-shadow: 5px 5px #4E4E50; /* increased shadow size */
     transition: background-color 0.2s, box-shadow 0.2s;
 }
 
 .server-embed button.minecraft-button:hover {
     background-color: #6B0000;
-    box-shadow: 3px 3px #2e2e2e; /* larger shadow on hover */
 }
 
 /* Embed content placeholder (where ServerEmbed loads) */
@@ -277,8 +275,7 @@ nav ul {
 }
 .server-embed img,
 .server-embed canvas {
-    width: 690px;        /* fixed width */
-    height: 110px;       /* fixed height */
+    height: 90px;       /* fixed height */
     border-radius: 5px; /* optional rounded corners */
     margin-right: 10px; /* spacing from text */
     object-fit: contain; /* keep aspect ratio, no stretching */
