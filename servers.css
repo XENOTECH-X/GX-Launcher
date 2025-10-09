@@ -165,7 +165,7 @@ nav ul {
 
 .server-embed span {
     display: block;
-    margin-bottom: 50px;
+    margin-bottom: 8px;
     font-size: 14px;
     color: #ccc;
 }
@@ -185,17 +185,17 @@ nav ul {
 .server-embed button.minecraft-button {
     background-color: #8B0000;
     color: #fff;
-    border: 2px solid #000;
+    border: 3px solid #000; /* increased from 2px to 3px */
     font-family: 'MinecraftRegular', sans-serif;
     padding: 5px 10px;
     font-size: 12px;
-    box-shadow: 3px 3px #4E4E50;
+    box-shadow: 5px 5px #4E4E50; /* increased shadow size */
     transition: background-color 0.2s, box-shadow 0.2s;
 }
 
 .server-embed button.minecraft-button:hover {
     background-color: #6B0000;
-    box-shadow: 2px 2px #2e2e2e;
+    box-shadow: 3px 3px #2e2e2e; /* larger shadow on hover */
 }
 
 /* Embed content placeholder (where ServerEmbed loads) */
