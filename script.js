@@ -28,8 +28,8 @@ function redirectToNews() {
 function redirectToClients() {
     window.location.href = 'clients.html';
 }
-function redirectToList() {
-    window.location.href = 'serverlist.html';
+function redirectToServers() {
+    window.location.href = 'servers.html';
 }
 function redirectToMain() {
     window.location.href = 'index.html';
