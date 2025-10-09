@@ -25,8 +25,8 @@ function redirectToNews() {
     window.location.href = 'news.html';
 }
 
-function redirectToSettings() {
-    window.location.href = 'settings.html';
+function redirectToClients() {
+    window.location.href = 'clients.html';
 }
 function redirectToList() {
     window.location.href = 'serverlist.html';
