@@ -145,9 +145,22 @@ nav ul {
 }
 
 /* ====== SERVER EMBED STYLE ====== */
+.server-embed {
+    width: 320px;
+    background-color: #292929;
+    border: 2px solid #6B0000;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    margin: 10px;
+    padding: 15px;
+    color: #fff;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
 
-
-
+.server-embed:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0 18px rgba(139, 0, 0, 0.6);
+}
 
 .server-embed span {
     display: block;
@@ -160,7 +173,7 @@ nav ul {
 .server-embed div:first-child {
     display: flex;
     justify-content: space-between;
-    align-items: stretch;
+    align-items: center;
     background-color: #1c1c1c;
     border-radius: 5px;
     padding: 8px 10px;
@@ -175,11 +188,13 @@ nav ul {
     font-family: 'MinecraftRegular', sans-serif;
     padding: 5px 10px;
     font-size: 12px;
+    box-shadow: 3px 3px #4E4E50;
     transition: background-color 0.2s, box-shadow 0.2s;
 }
 
 .server-embed button.minecraft-button:hover {
     background-color: #6B0000;
+    box-shadow: 2px 2px #2e2e2e;
 }
 
 /* Embed content placeholder (where ServerEmbed loads) */
@@ -227,6 +242,7 @@ nav ul {
 .custom-options::-webkit-scrollbar-thumb {
     background-color: #8B0000;
     border-radius: 10px;
+    border: 2px solid #4E4E50;
 }
 
 .custom-options {
