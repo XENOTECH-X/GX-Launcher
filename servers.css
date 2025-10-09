@@ -269,8 +269,10 @@ nav ul {
     color: #fff;
     font-size: 12px;
     transition: background-color 0.2s;
+    box-shadow: 6px 6px #000; /* bigger black “background” */
 }
 
 .minecraft-button:hover {
     background-color: #6B0000;
+    box-shadow: 4px 4px #000; /* bigger shadow on hover as well */
 }
