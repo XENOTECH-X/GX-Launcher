@@ -277,8 +277,8 @@ nav ul {
 }
 .server-embed img,
 .server-embed canvas {
-    width: 700px;        /* fixed width */
-    height: 150px;       /* fixed height */
+    width: 680px;        /* fixed width */
+    height: 130px;       /* fixed height */
     border-radius: 5px; /* optional rounded corners */
     margin-right: 10px; /* spacing from text */
     object-fit: contain; /* keep aspect ratio, no stretching */
