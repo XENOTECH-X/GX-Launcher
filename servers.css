@@ -297,7 +297,7 @@ nav ul {
 }
 
 .minecraft-button {
-    background-color: #00cc00;
+    background-color: #8B0000;
     border: none;
     padding: 5px 10px;
     border-radius: 3px;
@@ -308,7 +308,7 @@ nav ul {
 }
 
 .minecraft-button:hover {
-    background-color: #00ff00;
+    background-color: #6B0000;
 }
 
 /* Ensure server embeds have no unwanted margin or padding */
