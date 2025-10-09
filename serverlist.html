@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Launcher</title>
+    <title>GX-Launcher</title>
     <link rel="stylesheet" href="serverlist.css">
     <script src="embed.min.js" defer></script>
     <script src="script.js?v=2" defer></script>
@@ -13,18 +13,18 @@
 <body onload="detection()">
     <div class="launcher">
         <div class="title-bar">
-            <span>MineXLauncher 0.2.0</span>
+            <span>GX-Launcher Release 2.0</span>
         </div>
         <div class="content">
             <div class="sidebar">
                 <div class="profile">
-                    <span class="profile-name" id="profile-name">Default</span>
+                    <span class="profile-name" id="profile-name">Options</span>
                 </div>
                 <nav>
                     <ul>
                         <li class="nav-item" onclick="redirectToNews()">
                             <img src="./Resources/news-icon.png" alt="News Icon" class="nav-icon">
-                            <span class="nav-text">Updates</span>
+                            <span class="nav-text">Update Log</span>
                         </li>
                         <li class="nav-item" onclick="redirectToMain()">
                             <img src="./Resources/minecraft-icon.png" alt="Minecraft Icon" class="nav-icon">
@@ -34,9 +34,9 @@
                             <img src="./Resources/settings-icon.png" alt="Settings Icon" class="nav-icon">
                             <span class="nav-text">Settings</span>
                         </li>
-                        <li class="nav-item selected" onclick="redirectToList()">
-                            <img src="./Resources/serverlist-icon.png" alt="List Icon" class="nav-icon">
-                            <span class="nav-text">Server List</span>
+                        <li class="nav-item selected" onclick="redirectToServers()">
+                            <img src="./Resources/servers.png" alt="Servers Icon" class="nav-icon">
+                            <span class="nav-text">Servers</span>
                         </li>
                         <li class="nav-item" id="modMakerItem" style="display: none;" onclick="createAbout('https://eaglerforge-builder.vercel.app/')">
                             <img src="https://eaglerforge-builder.vercel.app/favicon.png" alt="List Icon" class="nav-icon"> <!-- Outsourcing Images -->
@@ -59,7 +59,7 @@
             </div>
         </div>
         <div class="bottom-bar">
-            <span class="username" id="profile-name">MinecraftXLauncher</span>
+            <span class="username" id="profile-name">Built By Jon Stearns</span>
         </div>
     </div>
 </body>
