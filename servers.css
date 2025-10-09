@@ -270,17 +270,15 @@ nav ul {
     color: #fff;
     font-size: 12px;
     transition: background-color 0.2s;
-    box-shadow: 6px 6px #000; /* bigger black “background” */
 }
 
 .minecraft-button:hover {
     background-color: #6B0000;
-    box-shadow: 4px 4px #000; /* bigger shadow on hover as well */
 }
 .server-embed img,
 .server-embed canvas {
-    width: 50px;        /* fixed width */
-    height: 50px;       /* fixed height */
+    width: 500px;        /* fixed width */
+    height: 150px;       /* fixed height */
     border-radius: 5px; /* optional rounded corners */
     margin-right: 10px; /* spacing from text */
     object-fit: contain; /* keep aspect ratio, no stretching */
