@@ -277,7 +277,7 @@ nav ul {
 .server-embed canvas,
 .server-embed iframe {
     display: block;
-    height: 70%;
+    height: 65%;
     width: 100%;
     margin: 0 auto; /* center horizontally */
     border-radius: 5px;
