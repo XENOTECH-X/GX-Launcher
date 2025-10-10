@@ -281,6 +281,6 @@ nav ul {
     display: block;
     margin: 0 auto; /* center horizontally */
     border-radius: 5px;
-    object-fit: contain; /* avoid stretching */
+    object-fit: fill; /* avoid stretching */
     background-color: #1a1a1a; /* keep your existing background */
 }
