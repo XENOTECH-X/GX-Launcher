@@ -148,7 +148,7 @@ nav ul {
 /* ====== SERVER EMBED STYLE ====== */
 .server-embed {
     width: 320px; /* keep current width */
-    min-height: 150px; /* increase height */
+    min-height: 250px; /* increase height */
     background-color: #292929;
     border: 2px solid #8B0000;
     border-radius: 8px;
@@ -276,8 +276,8 @@ nav ul {
 .server-embed img,
 .server-embed canvas,
 .server-embed iframe {
-    width: 85%;
-    height: 80%; /* maintain aspect ratio */
+    width: 100%;
+    height: auto; /* maintain aspect ratio */
     display: block;
     margin: 0 auto; /* center horizontally */
     border-radius: 5px;
