@@ -274,9 +274,13 @@ nav ul {
     background-color: #6B0000;
 }
 .server-embed img,
-.server-embed canvas {
-    height: 90px; 
-    border-radius: 5px; /* optional rounded corners */
-    margin-right: 10px; /* spacing from text */
-    object-fit: contain; /* keep aspect ratio, no stretching */
+.server-embed canvas,
+.server-embed iframe {
+    width: 85%;
+    height: auto; /* maintain aspect ratio */
+    display: block;
+    margin: 0 auto; /* center horizontally */
+    border-radius: 5px;
+    object-fit: contain; /* avoid stretching */
+    background-color: #1a1a1a; /* keep your existing background */
 }
