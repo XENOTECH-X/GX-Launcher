@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GX-Launcher</title>
+    <link rel="stylesheet" href="servers.css">
+    <script src="embed.min.js" defer></script>
+    <script src="script.js?v=2" defer></script>
+        <script src="nav-visibility.js"></script>
+
+</head>
+<body onload="detection()">
+    <div class="launcher">
+        <div class="title-bar">
+            <span>GX-Launcher Release 1.2</span>
+        </div>
+        <div class="content">
+            <div class="sidebar">
+                <div class="profile">
+                    <span class="profile-name" id="profile-name">Options</span>
+                </div>
+                <nav>
+                    <ul>
+                        <li class="nav-item" onclick="redirectToNews()">
+                            <img src="./Resources/news-icon.png" alt="News Icon" class="nav-icon">
+                            <span class="nav-text">Update Log</span>
+                        </li>
+                        <li class="nav-item" onclick="redirectToMain()">
+                            <img src="./Resources/main.png" alt="Minecraft Icon" class="nav-icon">
+                            <span class="nav-text">Game</span>
+                        </li>
+                        <li class="nav-item" onclick="redirectToClients()">
+                            <img src="./Resources/Untitled.png" alt="Clients Icon" class="nav-icon">
+                            <span class="nav-text">Clients</span>
+                        </li>
+                        <li class="nav-item selected" onclick="redirectToServers()">
+                            <img src="./Resources/servers.png" alt="Servers Icon" class="nav-icon">
+                            <span class="nav-text">Servers</span>
+                        </li>
+                      <li class="nav-item selected" onclick="redirectToServers()">
+                            <img src="./Resources/mods.png" alt="Mods Icon" class="nav-icon">
+                            <span class="nav-text">Mods</span>
+                        </li>
+                        <li class="nav-item" id="modMakerItem" style="display: none;" onclick="createAbout('https://eaglerforge-builder.vercel.app/')">
+                            <img src="https://eaglerforge-builder.vercel.app/favicon.png" alt="List Icon" class="nav-icon"> <!-- Outsourcing Images -->
+                            <span class="nav-text">Eaglerforge Mod Maker (Block)</span>
+                        </li>
+                        <li class="nav-item" id="apiItem" style="display: none;" onclick="createAbout('https://eaglerforge.github.io/apidocs/')">
+                            <img src="https://avatars.githubusercontent.com/u/157155680?s=48&v=4" alt="List Icon" class="nav-icon">
+                            <span class="nav-text">Eaglerforge API</span>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="main-panel">
+                <div class="top-bar">
+                    <span class="game-title">Game</span>
+                </div>
+                <div class="main-content" id="embed">
+                    <!-- Server embeds will be dynamically added here -->
+                </div>
+            </div>
+        </div>
+        <div class="bottom-bar">
+            <span class="username" id="profile-name">Built By Jon Stearns</span>
+        </div>
+    </div>
+</body>
+</html>
+
+<script>
+window.addEventListener("load", () => {
+    const servers = [
+"eaglerrinth.github.io"
+];
+
+    const embedContainer = document.getElementById("embed");
+    embedContainer.style.display = "flex";
+    embedContainer.style.flexWrap = "wrap";
+
+    servers.forEach(server => {
+        const serverDiv = document.createElement("div");
+        serverDiv.className = "server-embed";
+        embedContainer.appendChild(serverDiv);
+
+        const serverInfoDiv = document.createElement("div");
+        serverInfoDiv.style.display = "flex";
+        serverInfoDiv.style.flexDirection = "row";
+        serverInfoDiv.style.alignItems = "center";
+        serverInfoDiv.style.marginBottom = "10px";
+        serverDiv.appendChild(serverInfoDiv);
+
+        const ipSpan = document.createElement("span");
+        ipSpan.textContent = server + ' (Server Embed Below) ↓';
+        serverInfoDiv.appendChild(ipSpan);
+
+        const copyButton = document.createElement("button");
+        copyButton.textContent = "Copy IP";
+        copyButton.classList.add("minecraft-button");
+        copyButton.addEventListener("click", () => {
+            navigator.clipboard.writeText(server)
+                .then(() => {
+                    alert("IP address copied to clipboard: " + server);
+                })
+                .catch(err => {
+                    console.error("Failed to copy: ", err);
+                });
+        });
+        serverInfoDiv.appendChild(copyButton);
+
+        new ServerEmbed(serverDiv, "75%").ping(server);
+    });
+});
+
+</script>
+<script>  document.addEventListener("DOMContentLoaded", function() {
+            // Function to get a cookie value by name
+            function getCookie(name) {
+               let cookieArr = document.cookie.split(";");
+               for(let i = 0; i < cookieArr.length; i++) {
+                  let cookiePair = cookieArr[i].split("=");
+                  if(name === cookiePair[0].trim()) {
+                     return decodeURIComponent(cookiePair[1]);
+                  }
+               }
+               return null;
+            }
+
+            // Set the username placeholder from the cookie
+            let username = getCookie("username");
+            if (username != null) {
+            
+               document.getElementById("usernameInput").placeholder = username;
+               document.getElementById("profile-name").textContent = username;
+            }
+
+            // Set the mod maker checkbox state from the cookie
+             let modMakerKitEnabled = getCookie("modMakerKitEnabled");
+            if (modMakerKitEnabled === "true") {
+               document.getElementById("modMakerCheckbox").checked = true;
+               document.getElementById("modMakerItem").style.display = "flex";
+               document.getElementById("apiItem").style.display = "flex";
+            } else {
+               document.getElementById("modMakerItem").style.display = "none";
+               document.getElementById("apiItem").style.display = "none";
+            }
+         });</script>
