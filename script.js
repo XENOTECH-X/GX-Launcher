@@ -31,6 +31,9 @@ function redirectToClients() {
 function redirectToServers() {
     window.location.href = 'servers.html';
 }
+function redirectToMods() {
+    window.location.href = 'mods.html';
+}
 function redirectToMain() {
     window.location.href = 'index.html';
 }
