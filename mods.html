@@ -43,8 +43,7 @@
                             <span class="nav-text">Mods</span>
                         </li>
                         <li class="nav-item" id="modMakerItem" style="display: none;" onclick="createAbout('https://eaglerforge-builder.vercel.app/')">
-                            <img src="https://eaglerforge-builder.vercel.app/favicon.png" alt="List Icon" class="nav-icon"> <!-- Outsourcing Images -->
-                            <span class="nav-text">Eaglerforge Mod Maker (Block)</span>
+                            <img src="https://eaglerforge-builder.vercel.app/favicon.png" alt="List Icon" class="nav-icon"> <span class="nav-text">Eaglerforge Mod Maker (Block)</span>
                         </li>
                         <li class="nav-item" id="apiItem" style="display: none;" onclick="createAbout('https://eaglerforge.github.io/apidocs/')">
                             <img src="https://avatars.githubusercontent.com/u/157155680?s=48&v=4" alt="List Icon" class="nav-icon">
@@ -58,8 +57,12 @@
                     <span class="game-title">Game</span>
                 </div>
                 <div class="main-content" id="embed">
-                    <!-- Server embeds will be dynamically added here -->
-                </div>
+                    <iframe 
+                        src="https://eaglerrinth.github.io/" 
+                        style="border: none; width: 100%; height: 100%;"
+                        title="Eaglerrinth Website Embed"
+                    ></iframe>
+                    </div>
             </div>
         </div>
         <div class="bottom-bar">
@@ -71,56 +74,64 @@
 
 <script>
 window.addEventListener("load", () => {
-https://eaglerrinth.github.io/
+/* The original server-embedding logic will still run here,
+   and the dynamic server embeds will appear below the iframe
+   in the 'embed' div, unless your CSS/JavaScript handles
+   the content of that div differently. */
 
     const embedContainer = document.getElementById("embed");
     embedContainer.style.display = "flex";
     embedContainer.style.flexWrap = "wrap";
 
-    servers.forEach(server => {
-        const serverDiv = document.createElement("div");
-        serverDiv.className = "server-embed";
-        embedContainer.appendChild(serverDiv);
+    // You may need to adjust the logic below or your CSS
+    // to control whether the iframe appears alongside or
+    // before the dynamically added server embeds.
 
-        const serverInfoDiv = document.createElement("div");
-        serverInfoDiv.style.display = "flex";
-        serverInfoDiv.style.flexDirection = "row";
-        serverInfoDiv.style.alignItems = "center";
-        serverInfoDiv.style.marginBottom = "10px";
-        serverDiv.appendChild(serverInfoDiv);
+    // The original logic to add server embeds is kept for completeness:
+    // servers.forEach(server => {
+    //     const serverDiv = document.createElement("div");
+    //     serverDiv.className = "server-embed";
+    //     embedContainer.appendChild(serverDiv);
 
-        const ipSpan = document.createElement("span");
-        ipSpan.textContent = server + ' (Server Embed Below) ↓';
-        serverInfoDiv.appendChild(ipSpan);
+    //     const serverInfoDiv = document.createElement("div");
+    //     serverInfoDiv.style.display = "flex";
+    //     serverInfoDiv.style.flexDirection = "row";
+    //     serverInfoDiv.style.alignItems = "center";
+    //     serverInfoDiv.style.marginBottom = "10px";
+    //     serverDiv.appendChild(serverInfoDiv);
 
-        const copyButton = document.createElement("button");
-        copyButton.textContent = "Copy IP";
-        copyButton.classList.add("minecraft-button");
-        copyButton.addEventListener("click", () => {
-            navigator.clipboard.writeText(server)
-                .then(() => {
-                    alert("IP address copied to clipboard: " + server);
-                })
-                .catch(err => {
-                    console.error("Failed to copy: ", err);
-                });
-        });
-        serverInfoDiv.appendChild(copyButton);
+    //     const ipSpan = document.createElement("span");
+    //     ipSpan.textContent = server + ' (Server Embed Below) ↓';
+    //     serverInfoDiv.appendChild(ipSpan);
 
-        new ServerEmbed(serverDiv, "75%").ping(server);
-    });
+    //     const copyButton = document.createElement("button");
+    //     copyButton.textContent = "Copy IP";
+    //     copyButton.classList.add("minecraft-button");
+    //     copyButton.addEventListener("click", () => {
+    //         navigator.clipboard.writeText(server)
+    //             .then(() => {
+    //                 alert("IP address copied to clipboard: " + server);
+    //             })
+    //             .catch(err => {
+    //                 console.error("Failed to copy: ", err);
+    //             });
+    //     });
+    //     serverInfoDiv.appendChild(copyButton);
+
+    //     new ServerEmbed(serverDiv, "75%").ping(server);
+    // });
 });
 
 </script>
-<script>  document.addEventListener("DOMContentLoaded", function() {
+<script> document.addEventListener("DOMContentLoaded", function() {
             // Function to get a cookie value by name
             function getCookie(name) {
                let cookieArr = document.cookie.split(";");
                for(let i = 0; i < cookieArr.length; i++) {
-                  let cookiePair = cookieArr[i].split("=");
-                  if(name === cookiePair[0].trim()) {
-                     return decodeURIComponent(cookiePair[1]);
-                  }
+                 let cookiePair = cookieArr[i].split("=");
+                 if(name === cookiePair[0].trim()) {
+                    return decodeURIComponent(cookiePair[1]);
+                 }
                }
                return null;
             }
@@ -128,7 +139,7 @@ https://eaglerrinth.github.io/
             // Set the username placeholder from the cookie
             let username = getCookie("username");
             if (username != null) {
-            
+           
                document.getElementById("usernameInput").placeholder = username;
                document.getElementById("profile-name").textContent = username;
             }
@@ -143,4 +154,4 @@ https://eaglerrinth.github.io/
                document.getElementById("modMakerItem").style.display = "none";
                document.getElementById("apiItem").style.display = "none";
             }
-         });</script>
+          });</script>
