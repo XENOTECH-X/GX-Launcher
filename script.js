@@ -19,7 +19,9 @@ function playGame() {
     }
     window.location.href = selectedVersion + '/index.html';
 }
-
+}
+    window.location.href = selectedVersion + '/Astra.html';
+}
 
 function redirectToNews() {
     window.location.href = 'news.html';
