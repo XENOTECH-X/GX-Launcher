@@ -460,5 +460,29 @@ font-size: 14px;
             <span class="username" id="footer-name">Built By Jon Stearns</span>
         </div>
     </div>
+    <script>
+function selectVersion(version) {
+    const urls = {
+        "1.12.2-wasm": "Games/1.12.2-wasm/index.html",
+        "1.12.2": "Games/1.12.2/index.html",
+        "1.8.8-wasm": "Games/1.8.8-wasm/index.html",
+        "1.8.8": "Games/1.8.8/index.html",
+        "1.6.4": "Games/1.6.4/index.html",
+        "1.5.2": "Games/1.5.2/index.html",
+        "1.2.5": "Games/1.2.5/index.html",
+        "beta-1.7.3": "Games/beta-1.7.3/index.html",
+        "beta-1.3": "Games/beta-1.3/index.html",
+        "beta-1.1": "Games/beta-1.1/index.html",
+        "alpha-1.2.6": "Games/alpha-1.2.6/index.html",
+        "infdev-wasm": "Games/infdev-wasm/index.html",
+        "indev": "Games/indev/index.html",
+        "classic-0.3.0-wasm": "Games/classic-0.3.0-wasm/index.html"
+    };
+
+    // open selected version in a new about:blank tab
+    const win = window.open("about:blank", "_blank");
+    win.location.href = urls[version] || "about:blank";
+}
+</script>
 </body>
 </html>
