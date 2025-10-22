@@ -441,7 +441,6 @@ font-size: 14px;
 let selectedVersion = null;
 
 function selectVersion(version) {
-    // just store the chosen client
     selectedVersion = version;
     console.log("Selected:", version);
 }
@@ -452,6 +451,7 @@ function playGame() {
         return;
     }
 
+    // define all client URLs
     const urls = {
         "Tuff Client": "Tuff Client/index.html",
         "Pixel Client": "Pixel Client/index.html",
@@ -464,9 +464,22 @@ function playGame() {
         "Justin V3": "Justin V3/index.html"
     };
 
-    // open selected client when Start is pressed
+    // open a new about:blank tab
     const win = window.open("about:blank", "_blank");
-    win.location.href = urls[selectedVersion] || "about:blank";
+
+    // if popup blocked
+    if (!win) {
+        alert("Popup blocked! Please allow popups for this site.");
+        return;
+    }
+
+    // navigate the new tab to the selected client
+    const targetUrl = urls[selectedVersion];
+    if (targetUrl) {
+        win.location.href = targetUrl;
+    } else {
+        win.document.write("<h1>Invalid client selected</h1>");
+    }
 }
 </script>
 </body>
