@@ -470,14 +470,14 @@ document.getElementById('click-to-continue').addEventListener('click', function(
     overlay.style.display = 'none'; // hide overlay
 
     // Open a new about:blank tab
-    const win = window.open("about:blank", "_blank");
-    if (!win) {
+    const newTab = window.open("", "_blank");
+    if (!newTab) {
         alert("Popup blocked! Please allow popups for this site.");
         return;
     }
 
-    // Temporary loading message in the new tab
-    win.document.write(`
+    // Write a temporary message
+    newTab.document.write(`
         <html>
             <head><title>Loading...</title></head>
             <body style="background:black;color:white;display:flex;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;">
@@ -486,10 +486,10 @@ document.getElementById('click-to-continue').addEventListener('click', function(
         </html>
     `);
 
-    // Redirect the new tab to your launcher URL
+    // After a short delay, navigate to GX-Launcher
     setTimeout(() => {
-        win.location.href = "https://xenotech-x.github.io/GX-Launcher";
-    }, 500); // 0.5 second delay
+        newTab.location.href = "https://xenotech-x.github.io/GX-Launcher";
+    }, 500);
 });
 </script>
 </body>
