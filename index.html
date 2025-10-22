@@ -345,7 +345,7 @@ font-size: 14px;
 <body onload="detection()">
     <div class="launcher">
         <div class="title-bar">
-            <span>GX-Launcher Release 1.4.1</span>
+            <span>GX-Launcher Release 1.4</span>
         </div>
        
         <div class="content">
@@ -460,37 +460,5 @@ font-size: 14px;
             <span class="username" id="footer-name">Built By Jon Stearns</span>
         </div>
     </div>
-   <div id="click-to-continue" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#1e1e1e;display:flex;justify-content:center;align-items:center;flex-direction:column;cursor:pointer;z-index:9999;">
-    <h1 style="color:white;font-family:sans-serif;font-size:2em;">Click Anywhere to Continue</h1>
-</div>
-
-<script>
-document.getElementById('click-to-continue').addEventListener('click', function() {
-    const overlay = document.getElementById('click-to-continue');
-    overlay.style.display = 'none'; // hide overlay
-
-    // Open a new about:blank tab
-    const newTab = window.open("", "_blank");
-    if (!newTab) {
-        alert("Popup blocked! Please allow popups for this site.");
-        return;
-    }
-
-    // Write a temporary message
-    newTab.document.write(`
-        <html>
-            <head><title>Loading...</title></head>
-            <body style="background:black;color:white;display:flex;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;">
-                <h2>Reloading In About:Blank...</h2>
-            </body>
-        </html>
-    `);
-
-    // After a short delay, navigate to GX-Launcher
-    setTimeout(() => {
-        newTab.location.href = "https://xenotech-x.github.io/GX-Launcher";
-    }, 500);
-});
-</script>
 </body>
 </html>
