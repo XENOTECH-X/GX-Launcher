@@ -345,7 +345,7 @@ font-size: 14px;
 <body onload="detection()">
     <div class="launcher">
         <div class="title-bar">
-            <span>GX-Launcher Release 1.4</span>
+            <span>GX-Launcher Release 1.4.1</span>
         </div>
        
         <div class="content">
@@ -437,5 +437,37 @@ font-size: 14px;
             <span class="username" id="footer-name">Built By Jon Stearns</span>
         </div>
     </div>
+    <script>
+let selectedVersion = null;
+
+function selectVersion(version) {
+    // just store the chosen client
+    selectedVersion = version;
+    console.log("Selected:", version);
+}
+
+function playGame() {
+    if (!selectedVersion) {
+        alert("Please select a client first!");
+        return;
+    }
+
+    const urls = {
+        "Tuff Client": "Tuff Client/index.html",
+        "Pixel Client": "Pixel Client/index.html",
+        "EFI 1.12.2": "EFI 1.12.2/index.html",
+        "EFI 1.8.8": "EFI 1.8.8/index.html",
+        "Astra Client": "Astra Client/index.html",
+        "Resent Client": "Resent Client/index.html",
+        "Eaglerforge": "Eaglerforge/index.html",
+        "Wrust Client": "Wrust Client/index.html",
+        "Justin V3": "Justin V3/index.html"
+    };
+
+    // open selected client when Start is pressed
+    const win = window.open("about:blank", "_blank");
+    win.location.href = urls[selectedVersion] || "about:blank";
+}
+</script>
 </body>
 </html>
