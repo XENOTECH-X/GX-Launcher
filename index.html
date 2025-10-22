@@ -462,22 +462,32 @@ font-size: 14px;
     </div>
     <script>
 window.onload = function() {
-    // Check if we are already in the “reloaded” tab
+    // Only run once per session to avoid loops
     if (!sessionStorage.getItem("reloadedInBlank")) {
-        // Mark this tab as the reloaded one
         sessionStorage.setItem("reloadedInBlank", "true");
 
-        // Open a new about:blank tab with the same site
+        // Open a new about:blank tab
         const win = window.open("about:blank", "_blank");
+
         if (!win) {
             alert("Popup blocked! Please allow popups for this site.");
             return;
         }
 
-        win.location.href = window.location.href;
+        // Show a temporary message in the new tab
+        win.document.write(`
+            <html>
+                <head><title>Reloading...</title></head>
+                <body style="background:black; color:white; display:flex; justify-content:center; align-items:center; height:100vh; font-family:sans-serif;">
+                    <h2>Reloading In About:Blank...</h2>
+                </body>
+            </html>
+        `);
 
-        // Optional: close the original tab
-        // window.close();
+        // Redirect to the same page after a short delay
+        setTimeout(() => {
+            win.location.href = window.location.href;
+        }, 500); // 0.5 second delay
     }
 };
 </script>
