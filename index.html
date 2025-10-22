@@ -464,7 +464,6 @@ font-size: 14px;
 let selectedVersion = null;
 
 function selectVersion(version) {
-    // store the selected game version
     selectedVersion = version;
     console.log("Selected:", version);
 }
@@ -475,6 +474,7 @@ function playGame() {
         return;
     }
 
+    // define all version URLs
     const urls = {
         "1.12.2-wasm": "1.12.2-wasm/index.html",
         "1.12.2": "1.12.2/index.html",
@@ -492,9 +492,22 @@ function playGame() {
         "classic-0.3.0-wasm": "classic-0.3.0-wasm/index.html"
     };
 
-    // open selected version when Start is pressed
+    // open a new about:blank tab
     const win = window.open("about:blank", "_blank");
-    win.location.href = urls[selectedVersion] || "about:blank";
+
+    // if popup blocked
+    if (!win) {
+        alert("Popup blocked! Please allow popups for this site.");
+        return;
+    }
+
+    // navigate the blank tab to the selected version
+    const targetUrl = urls[selectedVersion];
+    if (targetUrl) {
+        win.location.href = targetUrl;
+    } else {
+        win.document.write("<h1>Invalid version selected</h1>");
+    }
 }
 </script>
 </body>
