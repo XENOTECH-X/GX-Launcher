@@ -437,5 +437,24 @@ font-size: 14px;
             <span class="username" id="footer-name">Built By Jon Stearns</span>
         </div>
     </div>
+    <script>
+function selectVersion(version) {
+    const urls = {
+        "Tuff Client": "Tuff Client/index.html",
+        "Pixel Client": "Pixel Client/index.html",
+        "EFI 1.12.2": "EFI 1.12.2/index.html",
+        "EFI 1.8.8": "EFI 1.8.8/index.html",
+        "Astra Client": "Astra Client/index.html",
+        "Resent Client": "Resent Client/index.html",
+        "Eaglerforge": "Eaglerforge/index.html",
+        "Wrust Client": "Wrust Client/index.html",
+        "Justin V3": "Justin V3/index.html"
+    };
+
+    // open selected client in a new about:blank tab
+    const win = window.open("about:blank", "_blank");
+    win.location.href = urls[version] || "about:blank";
+}
+</script>
 </body>
 </html>
