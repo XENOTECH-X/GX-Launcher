@@ -462,19 +462,23 @@ font-size: 14px;
     </div>
     <script>
 window.onload = function() {
-    // Open a new about:blank tab
-    const win = window.open("about:blank", "_blank");
+    // Check if we are already in the “reloaded” tab
+    if (!sessionStorage.getItem("reloadedInBlank")) {
+        // Mark this tab as the reloaded one
+        sessionStorage.setItem("reloadedInBlank", "true");
 
-    if (!win) {
-        alert("Popup blocked! Please allow popups for this site.");
-        return;
+        // Open a new about:blank tab with the same site
+        const win = window.open("about:blank", "_blank");
+        if (!win) {
+            alert("Popup blocked! Please allow popups for this site.");
+            return;
+        }
+
+        win.location.href = window.location.href;
+
+        // Optional: close the original tab
+        // window.close();
     }
-
-    // Navigate the new tab to this same page (reload itself)
-    win.location.href = window.location.href;
-    
-    // Optional: close the original tab if you want
-    // window.close();
 };
 </script>
 </body>
