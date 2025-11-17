@@ -358,7 +358,7 @@
 
         const serverEmbeds = [];
 
-        servers.forEach(server => {
+        servers.forEach((server, index) => {
             const serverDiv = document.createElement("div");
             serverDiv.className = "server-embed";
             embedContainer.appendChild(serverDiv);
@@ -390,15 +390,20 @@
 
             const embed = new ServerEmbed(serverDiv, "75%");
             
-            // Initial ping
-            embed.ping(server);
+            // Initial ping with stagger
+            setTimeout(() => {
+                embed.ping(server);
+            }, index * 500); // 500ms delay between each server
             
             // Set up interval to ping every 5 seconds (5000 milliseconds)
-            const intervalId = setInterval(() => {
-                embed.ping(server);
-            }, 5000);
-            
-            serverEmbeds.push({ embed, intervalId, server });
+            // Stagger the intervals so servers update one at a time
+            setTimeout(() => {
+                const intervalId = setInterval(() => {
+                    embed.ping(server);
+                }, 5000);
+                
+                serverEmbeds.push({ embed, intervalId, server });
+            }, index * 500);
         });
 
         // Clean up intervals when page is unloaded
