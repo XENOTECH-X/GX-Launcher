@@ -5,349 +5,305 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GX-Launcher</title>
-    <link rel="stylesheet" href="styles.css">
     <script src="script.js?v=2"></script>
     <script src="nav-visibility.js"></script>
 
-    <style>
+<style>
+/* global responsive resize */
+
 body {
-margin: 0;
-font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-background-color: #1e1e1e;
-color: #fff;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #1e1e1e;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
+/* main responsive window */
 .launcher {
-width: 1166px;
-height: 710px;
-margin: 50px auto;
-background-color: #333;
-border-radius: 8px;
-overflow: hidden;
-box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-display: flex;
-flex-direction: column;
+    width: 100%;
+    max-width: 1400px;
+    height: 90vh;
+    max-height: 800px;
+
+    background-color: #333;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
 }
 
+/* title bar */
 .title-bar {
-background-color: #2c2c2c;
-padding: 10px;
-text-align: center;
-color: #ddd;
-font-size: 22px;
-font-weight: 600;
-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    background-color: #2c2c2c;
+    padding: 10px;
+    text-align: center;
+    color: #ddd;
+    font-size: 22px;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+/* content layout */
 .content {
-display: flex;
-flex: 1;
-overflow: hidden;
+    display: flex;
+    flex: 1;
+    overflow: hidden;
 }
 
+/* sidebar */
 .sidebar {
-background-color: #242424;
-width: 180px;
-display: flex;
-flex-direction: column;
-flex-shrink: 0;
-border-right: 1px solid #333;
+    background-color: #242424;
+    width: 180px;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    border-right: 1px solid #333;
 }
 
+/* profile section */
 .profile {
-padding: 20px 10px;
-border-bottom: 1px solid #333;
-text-align: center;
+    padding: 20px 10px;
+    border-bottom: 1px solid #333;
+    text-align: center;
 }
 
 .profile-name {
-font-weight: bold;
-display: block;
-font-size: 16px;
+    font-weight: bold;
+    display: block;
+    font-size: 16px;
 }
 
 .profile-status {
-font-size: 12px;
-color: #00cc00;
-display: block;
-margin-top: 5px;
+    font-size: 12px;
+    color: #00cc00;
+    display: block;
+    margin-top: 5px;
 }
 
+/* nav */
 nav ul {
-list-style-type: none;
-padding: 0;
-margin: 0;
-flex-grow: 1;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1;
 }
 
 .nav-item {
-display: flex;
-align-items: center;
-padding: 15px 20px;
-cursor: pointer;
-transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    cursor: pointer;
+    transition: background-color 0.2s;
 }
 
 .nav-item:hover,
 .nav-item.selected {
-background-color: #444;
+    background-color: #444;
 }
 
 .nav-icon {
-width: 24px;
-height: 24px;
-margin-right: 15px;
+    width: 24px;
+    height: 24px;
+    margin-right: 15px;
 }
 
 .nav-text {
-font-size: 14px;
+    font-size: 14px;
 }
 
+/* panel */
 .main-panel {
-flex: 1;
-display: flex;
-flex-direction: column;
-background-color: #202020;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #202020;
 }
 
+/* top bar */
 .top-bar {
-background-color: #2c2c2c;
-padding: 15px 20px;
-display: flex;
-justify-content: space-between;
-align-items: center;
-color: #ddd;
-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-flex-shrink: 0;
+    background-color: #2c2c2c;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #ddd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    flex-shrink: 0;
 }
 
 .game-title {
-font-size: 14px;
-font-weight: bold;
+    font-size: 14px;
+    font-weight: bold;
 }
 
-.tabs {
-display: flex;
-}
-
-.tab {
-margin-left: 20px;
-cursor: pointer;
-color: #888;
-text-transform: uppercase;
-font-size: 14px;
-transition: color 0.2s;
-}
-
-.tab:hover,
-.tab.selected {
-color: #00cc00;
-}
-
+/* main area */
 .main-content {
-flex: 1;
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-background-color: #202020;
-padding: 20px;
-box-sizing: border-box;
-position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #202020;
+    padding: 20px;
+    box-sizing: border-box;
+    position: relative;
 }
 
 .minecraft-image {
-width: 100%;
-height: auto;
+    width: 100%;
+    height: auto;
 }
 
+/* installations bar */
 .installations {
-display: flex;
-align-items: center;
-justify-content: space-between;
-width: 100%;
-background-color: #292929;
-box-sizing: border-box;
-position: absolute;
-bottom: 0;
-left: 0;
-padding: 10px 20px;
-border-top: 1px solid #333;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background-color: #292929;
+    box-sizing: border-box;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 10px 20px;
+    border-top: 1px solid #333;
 }
 
+/* custom select */
 .custom-select-wrapper {
-position: relative;
-display: inline-block;
-width: 250px;
-z-index: 9999;
+    position: relative;
+    display: inline-block;
+    width: 250px;
+    z-index: 9999;
 }
 
 .custom-select {
-display: flex;
-align-items: center;
-justify-content: center;
-font-family: 'MinecraftRegular', sans-serif;
-font-size: 1em;
-padding: 7px;
-border: 2px solid #000;
-background-color: #8B0000;
-color: #FFF;
-cursor: pointer;
-user-select: none;
-z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'MinecraftRegular', sans-serif;
+    font-size: 1em;
+    padding: 7px;
+    border: 2px solid #000;
+    background-color: #8B0000;
+    color: #FFF;
+    cursor: pointer;
+    user-select: none;
+    z-index: 9999;
 }
 
 .custom-select:hover {
-background-color: #6B0000;
-}
-.custom-select.open {
-border-radius: 0px 0px 0 0;
+    background-color: #6B0000;
 }
 
 .custom-options {
-position: absolute;
-top: calc(100% + -238px);
-left: 0;
-right: 0;
-border: 2px solid #000;
-border-top: none;
-background-color: #2c2c2c;
-z-index: 9999;
-display: none;
-border-radius: 0 0 0px 0px;
-color: #FFF;
-max-height: 200px;
-overflow-y: auto;
+    position: absolute;
+    top: calc(100% + -238px);
+    left: 0;
+    right: 0;
+    border: 2px solid #000;
+    border-top: none;
+    background-color: #2c2c2c;
+    display: none;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 9999;
 }
 
 .custom-options.open {
-display: block;
+    display: block;
 }
 
 .custom-option {
-display: flex;
-align-items: center;
-padding: 10px;
-cursor: pointer;
-border-bottom: 1px solid #000;
-z-index: 9999;
-}
-
-.custom-option:last-child {
-border-bottom: none;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    border-bottom: 1px solid #000;
 }
 
 .custom-option:hover {
-background-color: #8B0000;
+    background-color: #8B0000;
 }
 
 .custom-option img {
-width: 32px;
-height: 32px;
-margin-right: 10px;
+    width: 32px;
+    height: 32px;
+    margin-right: 10px;
 }
 
+/* start button */
 .play-button {
-background-color: #8B0000;
-border: none;
-padding: 10px 40px;
-border-radius: 5px;
-border: 2px solid #000;
-cursor: pointer;
-color: #fff;
-font-size: 14px;
-font-weight: bold;
-text-transform: uppercase;
-transition: background-color 0.2s;
+    background-color: #8B0000;
+    border: 2px solid #000;
+    padding: 10px 40px;
+    border-radius: 5px;
+    cursor: pointer;
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
 }
 
 .play-button:hover {
-background-color: #6B0000;
+    background-color: #6B0000;
 }
 
+/* bottom bar */
 .bottom-bar {
-background-color: #2c2c2c;
-padding: 10px 20px;
-text-align: right;
-color: #ddd;
-border-top: 1px solid #333;
-box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.2);
+    background-color: #2c2c2c;
+    padding: 10px 20px;
+    text-align: right;
+    border-top: 1px solid #333;
 }
 
-.username {
-font-size: 14px;
-}
-        /* existing styles */
-        /* Additional styles for upload */
-        .upload-section {
-            margin-top: 10px;
-        }
-        .upload-button {
-            background-color: #048239;
-            border: none;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            color: #fff;
-            font-size: 14px;
-            font-weight: bold;
-            margin-top: 5px;
-        }
-        .upload-button:hover {
-            background-color: #00cc00;
-        }
-        /* ===== Custom Gray Scrollbar for Dropdown ===== */
-.custom-options::-webkit-scrollbar {
-    width: 10px;
-    background-color: #2c2c2c; /* dark background behind scrollbar */
+/* responsive */
+@media (max-width: 1250px) {
+    .sidebar { width: 150px; }
 }
 
-.custom-options::-webkit-scrollbar-thumb {
-    background-color: #555; /* gray scrollbar thumb */
-    border-radius: 5px;
-    border: 2px solid #2c2c2c; /* border to blend with background */
-}
-
-.custom-options::-webkit-scrollbar-thumb:hover {
-    background-color: #777; /* lighter gray when hovered */
-}
-
-.custom-options::-webkit-scrollbar-track {
-    background-color: #2c2c2c; /* same as dropdown background */
-}
-
-/* Firefox scrollbar colors */
-.custom-options {
-    scrollbar-width: thin;
-    scrollbar-color: #555 #2c2c2c; /* thumb color + track color */
-}
-    </style>
-    <script>
-    function toggleOptions() {
-        const options = document.querySelector('.custom-options');
-        options.classList.toggle('open');
+@media (max-width: 900px) {
+    .sidebar { width: 120px; }
+    .nav-text { font-size: 12px; }
+    body { padding: 0; }
+    .launcher {
+        max-width: 100%;
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
     }
-    </script>
-    <script>
-    function toggleOptions() {
-        const options = document.querySelector('.custom-options');
-        options.classList.toggle('open');
-    }
+}
+
+@media (max-width: 600px) {
+    .sidebar { width: 60px; }
+    .nav-text { display: none; }
+    .nav-item { justify-content: center; }
+    .nav-icon { margin-right: 0; }
+}
+</style>
+
+<script>
+function toggleOptions() {
+    document.querySelector(".custom-options").classList.toggle("open");
+}
 </script>
-    </script>
-    <script>
-    function toggleOptions() {
-        const options = document.querySelector('.custom-options');
-        options.classList.toggle('open');
-    }
-</script>
+
 </head>
+
 <body onload="detection()">
+
     <div class="launcher">
+
         <div class="title-bar">
             <span>GX-Launcher Release 1.5.2</span>
         </div>
-       
+
         <div class="content">
             <div class="sidebar">
                 <div class="profile">
@@ -356,87 +312,91 @@ font-size: 14px;
                 <nav>
                     <ul>
                         <li class="nav-item" onclick="redirectToNews()">
-                            <img src="./Resources/news-icon.png" alt="News Icon" class="nav-icon">
+                            <img src="./Resources/news-icon.png" class="nav-icon">
                             <span class="nav-text">Update Log</span>
                         </li>
-                          <li class="nav-item" onclick="redirectToMain()">
-                            <img src="./Resources/main.png" alt="Minecraft Icon" class="nav-icon">
+                        <li class="nav-item" onclick="redirectToMain()">
+                            <img src="./Resources/main.png" class="nav-icon">
                             <span class="nav-text">Game</span>
                         </li>
                         <li class="nav-item selected">
-                            <img src="./Resources/Untitled.png" alt="News Icon" class="nav-icon">
+                            <img src="./Resources/Untitled.png" class="nav-icon">
                             <span class="nav-text">Clients</span>
                         </li>
                         <li class="nav-item" onclick="redirectToServers()">
-                            <img src="./Resources/servers.png" alt="Servers Icon" class="nav-icon">
+                            <img src="./Resources/servers.png" class="nav-icon">
                             <span class="nav-text">Servers</span>
                         </li>
                     </ul>
                 </nav>
             </div>
+
             <div class="main-panel">
                 <div class="top-bar">
                     <span class="game-title">Eagler Clients</span>
-                    <span class="game-title">Baised On MineXLauncher 0.2.0</span>
+                    <span class="game-title">Based On MineXLauncher 0.2.0</span>
                 </div>
+
                 <div class="main-content">
-                    <img src="./Resources/clientphoto.png" alt="Minecraft Cover Image" class="minecraft-image">
+                    <img src="./Resources/clientphoto.png" class="minecraft-image">
+
                     <div class="installations">
                         <div class="custom-select-wrapper">
                             <div id="custom-select" class="custom-select" onclick="toggleOptions()">
                                 <span class="custom-select-trigger">Clients:</span>
                             </div>
+
                             <div class="custom-options">
-                                 
-                                 <div class="custom-option" onclick="selectVersion('Tuff Client')">
-                                    <img src="Tuff Client/favicon.png" alt="Tuff Client icon">
+                                <!-- your client entries preserved -->
+                                <div class="custom-option" onclick="selectVersion('Tuff Client')">
+                                    <img src="Tuff Client/favicon.png">
                                     <span>Tuff Client (1.12.2-u2)</span>
-                                </div> 
+                                </div>
                                 <div class="custom-option" onclick="selectVersion('Pixel Client')">
-                                    <img src="Pixel Client/favicon.png" alt="Pixel Client icon">
+                                    <img src="Pixel Client/favicon.png">
                                     <span>Pixel Client (1.12.2-u2)</span>
                                 </div>
                                 <div class="custom-option" onclick="selectVersion('EFI 1.12.2')">
-                                    <img src="EFI 1.12.2/favicon.png" alt="EFI 1.12.2 icon">
+                                    <img src="EFI 1.12.2/favicon.png">
                                     <span>EFI (1.12.2-u2)</span>
-                                </div> 
+                                </div>
                                 <div class="custom-option" onclick="selectVersion('EFI 1.8.8')">
-                                    <img src="EFI 1.8.8/favicon.png" alt="EFI 1.8.8 icon">
+                                    <img src="EFI 1.8.8/favicon.png">
                                     <span>EFI (1.8.8-u53)</span>
-                                </div> 
+                                </div>
                                 <div class="custom-option" onclick="selectVersion('Astra Client')">
-                                    <img src="Astra Client/favicon.png" alt="Astra Client icon">
+                                    <img src="Astra Client/favicon.png">
                                     <span>Astra Client (1.8.8-u53)</span>
-                                </div> 
+                                </div>
                                 <div class="custom-option" onclick="selectVersion('Resent Client')">
-                                    <img src="Resent Client/favicon.png" alt="Resent Client icon">
+                                    <img src="Resent Client/favicon.png">
                                     <span>Resent Client (1.8.8-u?)</span>
-                                </div> 
+                                </div>
                                 <div class="custom-option" onclick="selectVersion('Eaglerforge')">
-                                    <img src="Eaglerforge/favicon.png" alt="Eaglerforge icon">
+                                    <img src="Eaglerforge/favicon.png">
                                     <span>Eaglerforge (1.8.8-u31)</span>
                                 </div>
                                 <div class="custom-option" onclick="selectVersion('Wrust Client')">
-                                    <img src="Wrust Client/favicon.png" alt="Wrust Client icon">
+                                    <img src="Wrust Client/favicon.png">
                                     <span>Wrust Client (1.8.8-u35)</span>
                                 </div>
                                 <div class="custom-option" onclick="selectVersion('Justin V3')">
-                                    <img src="Justin V3/favicon.png" alt="Justin V3 icon">
+                                    <img src="Justin V3/favicon.png">
                                     <span>Justin V3 (1.8.8-u49)</span>
                                 </div>
                                 <div class="custom-option" onclick="selectVersion('Ayuncraft')">
-                                    <img src="Ayuncraft/favicon.png" alt="Ayuncraft icon">
+                                    <img src="Ayuncraft/favicon.png">
                                     <span>Ayuncraft (1.5.2-22w20b)</span>
                                 </div>
-                             
                             </div>
                         </div>
+
                         <button class="play-button" onclick="playGame()">Start</button>
                     </div>
-             
                 </div>
             </div>
         </div>
+
         <div class="bottom-bar">
             <span class="username" id="footer-name">Built By Jon Stearns</span>
         </div>
