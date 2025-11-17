@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GX-Launcher</title>
-
     <style>
         body {
             margin: 0;
@@ -63,6 +62,13 @@
             font-size: 16px;
         }
 
+        .profile-status {
+            font-size: 12px;
+            color: #8B0000;
+            display: block;
+            margin-top: 5px;
+        }
+
         nav ul {
             list-style-type: none;
             padding: 0;
@@ -111,6 +117,11 @@
             flex-shrink: 0;
         }
 
+        .game-title {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
         .main-content {
             flex: 1;
             padding: 25px;
@@ -134,6 +145,14 @@
             border: 2px solid #4E4E50;
         }
 
+        .main-content::-webkit-scrollbar-track {
+            background-color: #2c2c2c;
+        }
+
+        .main-content::-webkit-scrollbar-thumb:hover {
+            background-color: #555;
+        }
+
         .server-embed {
             width: 320px;
             min-height: 170px;
@@ -144,6 +163,7 @@
             padding: 15px;
             color: #fff;
             transition: transform 0.15s ease, box-shadow 0.15s ease;
+            margin: 0;
         }
 
         .server-embed:hover {
@@ -151,28 +171,56 @@
             box-shadow: 0 0 18px rgba(139, 0, 0, 0.6);
         }
 
-        .minecraft-button {
-            background-color: #8B0000;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            color: #fff;
-            font-size: 12px;
+        .server-embed span {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #ccc;
         }
 
-        .minecraft-button:hover {
+        .server-embed div:first-child {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #1c1c1c;
+            border-radius: 5px;
+            padding: 8px 10px;
+            margin-bottom: 10px;
+            border: 1px solid #8B0000;
+        }
+
+        .server-embed button.minecraft-button {
+            background-color: #8B0000;
+            color: #fff;
+            border: 3px solid #000;
+            font-family: 'MinecraftRegular', sans-serif;
+            padding: 5px 10px;
+            font-size: 12px;
+            transition: background-color 0.2s, box-shadow 0.2s;
+        }
+
+        .server-embed button.minecraft-button:hover {
             background-color: #6B0000;
         }
 
-        .server-embed img,
+        .server-embed iframe,
         .server-embed canvas,
-        .server-embed iframe {
-            display: block;
-            height: 65%;
+        .server-embed > div:last-child {
             width: 100%;
             border-radius: 5px;
-            object-fit: fill;
             background-color: #1a1a1a;
+        }
+
+        @media (max-width: 1250px) {
+            .server-embed {
+                width: 45%;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .server-embed {
+                width: 90%;
+            }
         }
 
         .bottom-bar {
@@ -181,142 +229,219 @@
             text-align: right;
             color: #ddd;
             border-top: 1px solid #333;
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .username {
+            font-size: 14px;
+        }
+
+        .custom-options::-webkit-scrollbar {
+            width: 12px;
+            background-color: #6B0000;
+        }
+
+        .custom-options::-webkit-scrollbar-thumb {
+            background-color: #8B0000;
+            border-radius: 10px;
+            border: 2px solid #4E4E50;
+        }
+
+        .custom-options {
+            scrollbar-width: thin;
+            scrollbar-color: #8B0000 #6B0000;
+        }
+
+        .custom-options::-webkit-scrollbar-track {
+            background-color: #6B0000;
+        }
+
+        .custom-options::-webkit-scrollbar-thumb:hover {
+            background-color: #8B0000;
+        }
+
+        .minecraft-button {
+            background-color: #8B0000;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            color: #fff;
+            font-size: 12px;
+            transition: background-color 0.2s;
+        }
+
+        .minecraft-button:hover {
+            background-color: #6B0000;
+        }
+        
+        .server-embed img,
+        .server-embed canvas,
+        .server-embed iframe {
+            display: block;
+            height: 65%;
+            width: 100%;
+            margin: 0 auto;
+            border-radius: 5px;
+            object-fit: fill;
+            background-color: #1a1a1a;
         }
     </style>
-
     <script src="embed.min.js" defer></script>
+    <script src="script.js?v=2" defer></script>
+    <script src="nav-visibility.js"></script>
 </head>
-
 <body onload="detection()">
     <div class="launcher">
         <div class="title-bar">
             <span>GX-Launcher Release 1.5.1</span>
         </div>
-
         <div class="content">
             <div class="sidebar">
                 <div class="profile">
                     <span class="profile-name" id="profile-name">Options</span>
                 </div>
-
                 <nav>
                     <ul>
                         <li class="nav-item" onclick="redirectToNews()">
-                            <img src="./Resources/news-icon.png" class="nav-icon">
+                            <img src="./Resources/news-icon.png" alt="News Icon" class="nav-icon">
                             <span class="nav-text">Update Log</span>
                         </li>
-
                         <li class="nav-item" onclick="redirectToMain()">
-                            <img src="./Resources/main.png" class="nav-icon">
+                            <img src="./Resources/main.png" alt="Minecraft Icon" class="nav-icon">
                             <span class="nav-text">Game</span>
                         </li>
-
                         <li class="nav-item" onclick="redirectToClients()">
-                            <img src="./Resources/Untitled.png" class="nav-icon">
+                            <img src="./Resources/Untitled.png" alt="Clients Icon" class="nav-icon">
                             <span class="nav-text">Clients</span>
                         </li>
-
                         <li class="nav-item selected" onclick="redirectToServers()">
-                            <img src="./Resources/servers.png" class="nav-icon">
+                            <img src="./Resources/servers.png" alt="Servers Icon" class="nav-icon">
                             <span class="nav-text">Servers</span>
                         </li>
                     </ul>
                 </nav>
             </div>
-
             <div class="main-panel">
                 <div class="top-bar">
                     <span class="game-title">Servers</span>
                 </div>
-
                 <div class="main-content" id="embed"></div>
             </div>
         </div>
-
         <div class="bottom-bar">
-            <span class="username">Built By Jon Stearns</span>
+            <span class="username" id="profile-name">Built By Jon Stearns</span>
         </div>
     </div>
 
-</body>
+    <script>
+    window.addEventListener("load", () => {
+        const servers = [
+            "mc.arch.lol",
+            "wss://zentic.cc",
+            "wss://mc.zyth.me",
+            "wss://asianf4rmer.minecraft.pe",
+            "wss://sus.shhnowisnottheti.me",
+            "wss://aeon-network.net/1.8",
+            "wss://adderall.ir",
+            "wss://mc.lamplifesteal.xyz",
+            "wss://vanillamc.org",
+            "wss://mc.voidsent.net",
+            "wss://mc.dssx.uk",
+            "wss://play.mytheriamc.net",
+            "wss://cmc.tf"
+        ];
 
-<script>
-/* ============================================================
-   VISIBILITY + THROTTLE PING SYSTEM (1/sec + only when visible)
-   ============================================================ */
+        const embedContainer = document.getElementById("embed");
+        embedContainer.style.display = "flex";
+        embedContainer.style.flexWrap = "wrap";
 
-window.addEventListener("DOMContentLoaded", () => {
+        // Store server embed instances and their update intervals
+        const serverEmbeds = [];
 
-    const servers = [
-        "mc.arch.lol",
-        "wss://zentic.cc",
-        "wss://mc.zyth.me",
-        "wss://asianf4rmer.minecraft.pe",
-        "wss://sus.shhnowisnottheti.me",
-        "wss://aeon-network.net/1.8",
-        "wss://adderall.ir",
-        "wss://mc.lamplifesteal.xyz",
-        "wss://vanillamc.org",
-        "wss://mc.voidsent.net",
-        "wss://mc.dssx.uk",
-        "wss://play.mytheriamc.net",
-        "wss://cmc.tf"
-    ];
+        servers.forEach(server => {
+            const serverDiv = document.createElement("div");
+            serverDiv.className = "server-embed";
+            embedContainer.appendChild(serverDiv);
 
-    const embedContainer = document.getElementById("embed");
-    const embedObjects = [];
+            const serverInfoDiv = document.createElement("div");
+            serverInfoDiv.style.display = "flex";
+            serverInfoDiv.style.flexDirection = "row";
+            serverInfoDiv.style.alignItems = "center";
+            serverInfoDiv.style.marginBottom = "10px";
+            serverDiv.appendChild(serverInfoDiv);
 
-    servers.forEach(server => {
+            const ipSpan = document.createElement("span");
+            ipSpan.textContent = server + ' (Server Embed Below) ↓';
+            serverInfoDiv.appendChild(ipSpan);
 
-        const wrapper = document.createElement("div");
-        wrapper.className = "server-embed";
+            const copyButton = document.createElement("button");
+            copyButton.textContent = "Copy IP";
+            copyButton.classList.add("minecraft-button");
+            copyButton.addEventListener("click", () => {
+                navigator.clipboard.writeText(server)
+                    .then(() => {
+                        alert("IP address copied to clipboard: " + server);
+                    })
+                    .catch(err => {
+                        console.error("Failed to copy: ", err);
+                    });
+            });
+            serverInfoDiv.appendChild(copyButton);
 
-        const info = document.createElement("div");
-        info.style.display = "flex";
-        info.style.justifyContent = "space-between";
-        info.style.marginBottom = "10px";
+            // Create ServerEmbed instance
+            const embed = new ServerEmbed(serverDiv, "75%");
+            
+            // Initial ping
+            embed.ping(server);
+            
+            // Set up interval to ping every 10 seconds (10000 milliseconds)
+            const intervalId = setInterval(() => {
+                embed.ping(server);
+            }, 10000);
+            
+            // Store the embed and interval ID for potential cleanup
+            serverEmbeds.push({ embed, intervalId, server });
+        });
 
-        const ip = document.createElement("span");
-        ip.textContent = `${server} (Server Embed Below) ↓`;
-
-        const btn = document.createElement("button");
-        btn.className = "minecraft-button";
-        btn.textContent = "Copy IP";
-        btn.onclick = () => navigator.clipboard.writeText(server);
-
-        info.appendChild(ip);
-        info.appendChild(btn);
-        wrapper.appendChild(info);
-        embedContainer.appendChild(wrapper);
-
-        const embed = new ServerEmbed(wrapper, "75%");
-
-        embedObjects.push({
-            embed,
-            server,
-            element: wrapper,
-            visible: false
+        // Optional: Clean up intervals when page is unloaded
+        window.addEventListener("beforeunload", () => {
+            serverEmbeds.forEach(({ intervalId }) => {
+                clearInterval(intervalId);
+            });
         });
     });
+    </script>
 
-    // Intersection observer detects when visible
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            const obj = embedObjects.find(o => o.element === entry.target);
-            if (obj) obj.visible = entry.isIntersecting;
-        });
-    }, { threshold: 0.15 });
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        function getCookie(name) {
+            let cookieArr = document.cookie.split(";");
+            for(let i = 0; i < cookieArr.length; i++) {
+                let cookiePair = cookieArr[i].split("=");
+                if(name === cookiePair[0].trim()) {
+                    return decodeURIComponent(cookiePair[1]);
+                }
+            }
+            return null;
+        }
 
-    embedObjects.forEach(obj => observer.observe(obj.element));
+        let username = getCookie("username");
+        if (username != null) {
+            document.getElementById("usernameInput").placeholder = username;
+            document.getElementById("profile-name").textContent = username;
+        }
 
-    // Ping loop (1 per second)
-    setInterval(() => {
-        if (document.hidden) return; // pause when tab hidden
-        embedObjects.forEach(obj => {
-            if (obj.visible) obj.embed.ping(obj.server);
-        });
-    }, 1000);
-});
-</script>
-
+        let modMakerKitEnabled = getCookie("modMakerKitEnabled");
+        if (modMakerKitEnabled === "true") {
+            document.getElementById("modMakerCheckbox").checked = true;
+            document.getElementById("modMakerItem").style.display = "flex";
+            document.getElementById("apiItem").style.display = "flex";
+        } else {
+            document.getElementById("modMakerItem").style.display = "none";
+            document.getElementById("apiItem").style.display = "none";
+        }
+    });
+    </script>
+</body>
 </html>
