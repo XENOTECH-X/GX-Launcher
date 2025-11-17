@@ -395,10 +395,10 @@
             // Initial ping
             embed.ping(server);
             
-            // Set up interval to ping every 10 seconds (10000 milliseconds)
+            // Set up interval to ping every 30 seconds (30000 milliseconds)
             const intervalId = setInterval(() => {
                 embed.ping(server);
-            }, 10000);
+            }, 30000);
             
             // Store the embed and interval ID for potential cleanup
             serverEmbeds.push({ embed, intervalId, server });
