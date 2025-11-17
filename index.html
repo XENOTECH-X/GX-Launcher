@@ -16,19 +16,12 @@ margin: 0;
 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 background-color: #1e1e1e;
 color: #fff;
-display: flex;
-justify-content: center;
-align-items: center;
-min-height: 100vh;
-padding: 20px;
-box-sizing: border-box;
 }
 
 .launcher {
-width: 100%;
-max-width: 1400px;
-height: 90vh;
-max-height: 800px;
+width: 1166px;
+height: 710px;
+margin: 50px auto;
 background-color: #333;
 border-radius: 8px;
 overflow: hidden;
@@ -167,8 +160,6 @@ position: relative;
 .minecraft-image {
 width: 100%;
 height: auto;
-max-width: 100%;
-object-fit: contain;
 }
 
 .installations {
@@ -331,103 +322,6 @@ font-size: 14px;
     scrollbar-width: thin;
     scrollbar-color: #555 #2c2c2c; /* thumb color + track color */
 }
-
-/* Responsive Design */
-@media (max-width: 1250px) {
-    .sidebar {
-        width: 150px;
-    }
-    
-    .launcher {
-        max-width: 95%;
-    }
-    
-    .custom-select-wrapper {
-        width: 200px;
-    }
-}
-
-@media (max-width: 900px) {
-    .sidebar {
-        width: 120px;
-    }
-    
-    .nav-text {
-        font-size: 12px;
-    }
-    
-    .nav-item {
-        padding: 12px 15px;
-    }
-    
-    .launcher {
-        max-width: 100%;
-        height: 100vh;
-        max-height: 100vh;
-        border-radius: 0;
-    }
-    
-    body {
-        padding: 0;
-    }
-    
-    .title-bar {
-        font-size: 18px;
-    }
-    
-    .installations {
-        flex-direction: column;
-        gap: 10px;
-        padding: 15px;
-    }
-    
-    .custom-select-wrapper {
-        width: 100%;
-    }
-    
-    .play-button {
-        width: 100%;
-    }
-}
-
-@media (max-width: 600px) {
-    .sidebar {
-        width: 60px;
-    }
-    
-    .nav-text {
-        display: none;
-    }
-    
-    .nav-item {
-        padding: 15px 10px;
-        justify-content: center;
-    }
-    
-    .nav-icon {
-        margin-right: 0;
-    }
-    
-    .profile-name {
-        font-size: 12px;
-    }
-    
-    .top-bar {
-        flex-direction: column;
-        gap: 5px;
-        padding: 10px;
-        text-align: center;
-    }
-    
-    .game-title {
-        font-size: 12px;
-    }
-    
-    .title-bar {
-        font-size: 16px;
-        padding: 8px;
-    }
-}
     </style>
     <script>
     function toggleOptions() {
@@ -435,6 +329,18 @@ font-size: 14px;
         options.classList.toggle('open');
     }
     </script>
+    <script>
+    function toggleOptions() {
+        const options = document.querySelector('.custom-options');
+        options.classList.toggle('open');
+    }
+</script>
+    <script>
+    function toggleOptions() {
+        const options = document.querySelector('.custom-options');
+        options.classList.toggle('open');
+    }
+</script>
 </head>
 <body onload="detection()">
     <div class="launcher">
