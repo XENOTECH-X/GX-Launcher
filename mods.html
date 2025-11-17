@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,19 +12,12 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #1e1e1e;
             color: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-            box-sizing: border-box;
         }
 
         .launcher {
-            width: 100%;
-            max-width: 1400px;
-            height: 90vh;
-            max-height: 800px;
+            width: 1166px;
+            height: 710px;
+            margin: 50px auto;
             background-color: #333;
             border-radius: 8px;
             overflow: hidden;
@@ -81,7 +75,6 @@
             padding: 0;
             margin: 0;
             flex-grow: 1;
-            overflow-y: auto;
         }
 
         .nav-item {
@@ -126,23 +119,116 @@
         }
 
         .game-title {
-            font-size: 14px;
+            font-size: 16px;
             font-weight: bold;
         }
 
         .main-content {
             flex: 1;
-            padding: 0;
+            padding: 25px;
             display: flex;
-            overflow: hidden;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px; /* spacing between server embeds */
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #8B0000 #6B0000;
         }
 
-        .main-content iframe {
-            border: none;
+        .main-content::-webkit-scrollbar {
+            width: 12px;
+            background-color: #6B0000;
+        }
+
+        .main-content::-webkit-scrollbar-thumb {
+            background-color: #8B0000;
+            border-radius: 10px;
+            border: 2px solid #4E4E50;
+        }
+
+        .main-content::-webkit-scrollbar-track {
+            background-color: #6B0000;
+        }
+
+        .main-content::-webkit-scrollbar-thumb:hover {
+            background-color: #8B0000;
+        }
+
+        /* ====== SERVER EMBED STYLE ====== */
+        .server-embed {
+            width: 320px; /* keep current width */
+            min-height: 170px; /* increase height */
+            background-color: #292929;
+            border: 2px solid #8B0000;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+            padding: 15px;
+            color: #fff;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            margin: 0;
+        }
+
+        .server-embed:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 0 18px rgba(139, 0, 0, 0.6);
+        }
+
+        .server-embed span {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #ccc;
+        }
+
+        /* IP + Copy button area */
+        .server-embed div:first-child {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #1c1c1c;
+            border-radius: 5px;
+            padding: 8px 10px;
+            margin-bottom: 10px;
+            border: 1px solid #8B0000;
+        }
+
+        .server-embed button.minecraft-button {
+            background-color: #8B0000;
+            color: #fff;
+            border: 3px solid #000; /* increased from 2px to 3px */
+            font-family: 'MinecraftRegular', sans-serif;
+            padding: 5px 10px;
+            font-size: 12px;
+            transition: background-color 0.2s, box-shadow 0.2s;
+        }
+
+        .server-embed button.minecraft-button:hover {
+            background-color: #6B0000;
+        }
+
+        /* Embed content placeholder (where ServerEmbed loads) */
+        .server-embed iframe,
+        .server-embed canvas,
+        .server-embed > div:last-child {
             width: 100%;
-            height: 100%;
+            border-radius: 5px;
+            background-color: #1a1a1a;
         }
 
+        /* Responsive spacing */
+        @media (max-width: 1250px) {
+            .server-embed {
+                width: 45%;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .server-embed {
+                width: 90%;
+            }
+        }
+
+        /* Bottom bar */
         .bottom-bar {
             background-color: #2c2c2c;
             padding: 10px 20px;
@@ -156,81 +242,56 @@
             font-size: 14px;
         }
 
-        /* Responsive Design */
-        @media (max-width: 1250px) {
-            .sidebar {
-                width: 150px;
-            }
-            
-            .launcher {
-                max-width: 95%;
-            }
+        /* Custom Scrollbar Styles for dropdowns */
+        .custom-options::-webkit-scrollbar {
+            width: 12px;
+            background-color: #6B0000;
         }
 
-        @media (max-width: 900px) {
-            .sidebar {
-                width: 120px;
-            }
-            
-            .nav-text {
-                font-size: 12px;
-            }
-            
-            .nav-item {
-                padding: 12px 15px;
-            }
-            
-            .launcher {
-                max-width: 100%;
-                height: 100vh;
-                max-height: 100vh;
-                border-radius: 0;
-            }
-            
-            body {
-                padding: 0;
-            }
-            
-            .title-bar {
-                font-size: 18px;
-            }
+        .custom-options::-webkit-scrollbar-thumb {
+            background-color: #8B0000;
+            border-radius: 10px;
+            border: 2px solid #4E4E50;
         }
 
-        @media (max-width: 600px) {
-            .sidebar {
-                width: 60px;
-            }
-            
-            .nav-text {
-                display: none;
-            }
-            
-            .nav-item {
-                padding: 15px 10px;
-                justify-content: center;
-            }
-            
-            .nav-icon {
-                margin-right: 0;
-            }
-            
-            .profile-name {
-                font-size: 12px;
-            }
-            
-            .top-bar {
-                padding: 10px;
-                text-align: center;
-            }
-            
-            .game-title {
-                font-size: 11px;
-            }
-            
-            .title-bar {
-                font-size: 16px;
-                padding: 8px;
-            }
+        .custom-options {
+            scrollbar-width: thin;
+            scrollbar-color: #8B0000 #6B0000;
+        }
+
+        .custom-options::-webkit-scrollbar-track {
+            background-color: #6B0000;
+        }
+
+        .custom-options::-webkit-scrollbar-thumb:hover {
+            background-color: #8B0000;
+        }
+
+        /* Buttons */
+        .minecraft-button {
+            background-color: #8B0000;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            color: #fff;
+            font-size: 12px;
+            transition: background-color 0.2s;
+        }
+
+        .minecraft-button:hover {
+            background-color: #6B0000;
+        }
+        .server-embed img,
+        .server-embed canvas,
+        .server-embed iframe {
+            display: block;
+            height: 65%;
+            width: 100%;
+            margin: 0 auto; /* center horizontally */
+            border-radius: 5px;
+            object-fit: fill; /* avoid stretching */
+            background-color: #1a1a1a; /* keep your existing background */
         }
     </style>
     <script src="embed.min.js" defer></script>
@@ -287,9 +348,10 @@
                 <div class="main-content" id="embed">
                     <iframe 
                         src="https://eaglerrinth.github.io/" 
+                        style="border: none; width: 100%; height: 100%;"
                         title="Eaglerrinth Website Embed"
                     ></iframe>
-                </div>
+                    </div>
             </div>
         </div>
         <div class="bottom-bar">
@@ -301,48 +363,84 @@
 
 <script>
 window.addEventListener("load", () => {
+/* The original server-embedding logic will still run here,
+   and the dynamic server embeds will appear below the iframe
+   in the 'embed' div, unless your CSS/JavaScript handles
+   the content of that div differently. */
+
     const embedContainer = document.getElementById("embed");
     embedContainer.style.display = "flex";
     embedContainer.style.flexWrap = "wrap";
+
+    // You may need to adjust the logic below or your CSS
+    // to control whether the iframe appears alongside or
+    // before the dynamically added server embeds.
+
+    // The original logic to add server embeds is kept for completeness:
+    // servers.forEach(server => {
+    //     const serverDiv = document.createElement("div");
+    //     serverDiv.className = "server-embed";
+    //     embedContainer.appendChild(serverDiv);
+
+    //     const serverInfoDiv = document.createElement("div");
+    //     serverInfoDiv.style.display = "flex";
+    //     serverInfoDiv.style.flexDirection = "row";
+    //     serverInfoDiv.style.alignItems = "center";
+    //     serverInfoDiv.style.marginBottom = "10px";
+    //     serverDiv.appendChild(serverInfoDiv);
+
+    //     const ipSpan = document.createElement("span");
+    //     ipSpan.textContent = server + ' (Server Embed Below) ↓';
+    //     serverInfoDiv.appendChild(ipSpan);
+
+    //     const copyButton = document.createElement("button");
+    //     copyButton.textContent = "Copy IP";
+    //     copyButton.classList.add("minecraft-button");
+    //     copyButton.addEventListener("click", () => {
+    //         navigator.clipboard.writeText(server)
+    //             .then(() => {
+    //                 alert("IP address copied to clipboard: " + server);
+    //             })
+    //             .catch(err => {
+    //                 console.error("Failed to copy: ", err);
+    //             });
+    //     });
+    //     serverInfoDiv.appendChild(copyButton);
+
+    //     new ServerEmbed(serverDiv, "75%").ping(server);
+    // });
 });
+
 </script>
+<script> document.addEventListener("DOMContentLoaded", function() {
+            // Function to get a cookie value by name
+            function getCookie(name) {
+               let cookieArr = document.cookie.split(";");
+               for(let i = 0; i < cookieArr.length; i++) {
+                  let cookiePair = cookieArr[i].split("=");
+                  if(name === cookiePair[0].trim()) {
+                     return decodeURIComponent(cookiePair[1]);
+                  }
+               }
+               return null;
+            }
 
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    // Function to get a cookie value by name
-    function getCookie(name) {
-       let cookieArr = document.cookie.split(";");
-       for(let i = 0; i < cookieArr.length; i++) {
-          let cookiePair = cookieArr[i].split("=");
-          if(name === cookiePair[0].trim()) {
-             return decodeURIComponent(cookiePair[1]);
-          }
-       }
-       return null;
-    }
+            // Set the username placeholder from the cookie
+            let username = getCookie("username");
+            if (username != null) {
+           
+               document.getElementById("usernameInput").placeholder = username;
+               document.getElementById("profile-name").textContent = username;
+            }
 
-    // Set the username placeholder from the cookie
-    let username = getCookie("username");
-    if (username != null) {
-       if (document.getElementById("usernameInput")) {
-           document.getElementById("usernameInput").placeholder = username;
-       }
-       const profileElements = document.querySelectorAll("#profile-name");
-       profileElements.forEach(el => el.textContent = username);
-    }
-
-    // Set the mod maker checkbox state from the cookie
-    let modMakerKitEnabled = getCookie("modMakerKitEnabled");
-    if (modMakerKitEnabled === "true") {
-       if (document.getElementById("modMakerCheckbox")) {
-           document.getElementById("modMakerCheckbox").checked = true;
-       }
-       document.getElementById("modMakerItem").style.display = "flex";
-       document.getElementById("apiItem").style.display = "flex";
-    } else {
-       document.getElementById("modMakerItem").style.display = "none";
-       document.getElementById("apiItem").style.display = "none";
-    }
-});
-</script>
-</document_content>
+            // Set the mod maker checkbox state from the cookie
+             let modMakerKitEnabled = getCookie("modMakerKitEnabled");
+            if (modMakerKitEnabled === "true") {
+               document.getElementById("modMakerCheckbox").checked = true;
+               document.getElementById("modMakerItem").style.display = "flex";
+               document.getElementById("apiItem").style.display = "flex";
+            } else {
+               document.getElementById("modMakerItem").style.display = "none";
+               document.getElementById("apiItem").style.display = "none";
+            }
+          });</script>
