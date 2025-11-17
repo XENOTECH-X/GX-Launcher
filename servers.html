@@ -122,6 +122,61 @@
             font-weight: bold;
         }
 
+        .refresh-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+        }
+
+        .refresh-controls button {
+            background-color: #8B0000;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 3px;
+            cursor: pointer;
+            color: #fff;
+            font-size: 12px;
+            transition: background-color 0.2s;
+        }
+
+        .refresh-controls button:hover {
+            background-color: #6B0000;
+        }
+
+        .refresh-controls select {
+            background-color: #1c1c1c;
+            color: #fff;
+            border: 1px solid #8B0000;
+            padding: 5px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-left: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.active {
+            background-color: #00ff00;
+        }
+
+        .status-indicator.paused {
+            background-color: #ffaa00;
+            animation: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
         .main-content {
             flex: 1;
             padding: 25px;
@@ -164,6 +219,7 @@
             color: #fff;
             transition: transform 0.15s ease, box-shadow 0.15s ease;
             margin: 0;
+            position: relative;
         }
 
         .server-embed:hover {
@@ -197,10 +253,19 @@
             padding: 5px 10px;
             font-size: 12px;
             transition: background-color 0.2s, box-shadow 0.2s;
+            cursor: pointer;
         }
 
         .server-embed button.minecraft-button:hover {
             background-color: #6B0000;
+        }
+
+        .last-updated {
+            position: absolute;
+            bottom: 5px;
+            right: 10px;
+            font-size: 10px;
+            color: #888;
         }
 
         .server-embed iframe,
@@ -286,6 +351,30 @@
             object-fit: fill;
             background-color: #1a1a1a;
         }
+
+        .copy-feedback {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #8B0000;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
     </style>
     <script src="embed.min.js" defer></script>
     <script src="script.js?v=2" defer></script>
@@ -324,7 +413,25 @@
             </div>
             <div class="main-panel">
                 <div class="top-bar">
-                    <span class="game-title">Servers</span>
+                    <span class="game-title">
+                        Servers
+                        <span class="status-indicator active" id="statusIndicator"></span>
+                    </span>
+                    <div class="refresh-controls">
+                        <span id="updateIntervalText">Updates every 5s</span>
+                        <select id="intervalSelect">
+                            <option value="0">No delay (May Lag)</option>
+                            <option value="1">1 second</option>
+                            <option value="2">2 seconds</option>
+                            <option value="5" selected>5 seconds</option>
+                            <option value="10">10 seconds</option>
+                            <option value="15">15 seconds</option>
+                            <option value="30">30 seconds</option>
+                            <option value="60">60 seconds</option>
+                        </select>
+                        <button id="pauseButton">Pause Updates</button>
+                        <button id="refreshButton">Refresh Now</button>
+                    </div>
                 </div>
                 <div class="main-content" id="embed"></div>
             </div>
@@ -357,8 +464,11 @@
         embedContainer.style.flexWrap = "wrap";
 
         const serverEmbeds = [];
+        let updateInterval = 5000; // default 5 seconds
+        let isPaused = false;
 
-        servers.forEach((server, index) => {
+        // Create all server embeds
+        servers.forEach(server => {
             const serverDiv = document.createElement("div");
             serverDiv.className = "server-embed";
             embedContainer.appendChild(serverDiv);
@@ -380,36 +490,186 @@
             copyButton.addEventListener("click", () => {
                 navigator.clipboard.writeText(server)
                     .then(() => {
-                        alert("IP address copied to clipboard: " + server);
+                        showCopyFeedback(server);
                     })
                     .catch(err => {
                         console.error("Failed to copy: ", err);
+                        alert("Failed to copy IP address");
                     });
             });
             serverInfoDiv.appendChild(copyButton);
 
+            // Add last updated timestamp
+            const lastUpdated = document.createElement("span");
+            lastUpdated.className = "last-updated";
+            lastUpdated.textContent = "Loading...";
+            serverDiv.appendChild(lastUpdated);
+
+            // Create a hidden div for loading the next update
+            const hiddenDiv = document.createElement("div");
+            hiddenDiv.style.display = "none";
+            embedContainer.appendChild(hiddenDiv);
+
             const embed = new ServerEmbed(serverDiv, "75%");
+            const hiddenEmbed = new ServerEmbed(hiddenDiv, "75%");
             
-            // Initial ping with stagger
-            setTimeout(() => {
-                embed.ping(server);
-            }, index * 500); // 500ms delay between each server
-            
-            // Set up interval to ping every 5 seconds (5000 milliseconds)
-            // Stagger the intervals so servers update one at a time
-            setTimeout(() => {
-                const intervalId = setInterval(() => {
-                    embed.ping(server);
-                }, 5000);
-                
-                serverEmbeds.push({ embed, intervalId, server });
-            }, index * 500);
+            serverEmbeds.push({ 
+                embed, 
+                hiddenEmbed,
+                server, 
+                serverDiv,
+                hiddenDiv,
+                lastUpdated,
+                intervalId: null,
+                isFirstLoad: true
+            });
         });
 
-        // Clean up intervals when page is unloaded
+        // Function to update a single server
+        function updateServer(serverData) {
+            // For first load, update visible embed directly
+            if (serverData.isFirstLoad) {
+                serverData.embed.ping(serverData.server);
+                serverData.lastUpdated.textContent = "Just now";
+                serverData.isFirstLoad = false;
+            } else {
+                // Load new data in hidden embed, then swap when ready
+                // We'll just update the visible one for now since seamless swapping
+                // is complex with the WebSocket-based approach
+                serverData.embed.ping(serverData.server);
+                serverData.lastUpdated.textContent = "Just now";
+            }
+            
+            // Update timestamp after a moment
+            setTimeout(() => {
+                const now = new Date();
+                serverData.updateTime = now;
+            }, 1000);
+        }
+
+        // Function to update timestamp display
+        function updateTimestamp(serverData) {
+            if (!serverData.updateTime) return;
+            
+            const now = new Date();
+            const diff = Math.floor((now - serverData.updateTime) / 1000);
+            
+            if (diff < 60) {
+                serverData.lastUpdated.textContent = `${diff}s ago`;
+            } else {
+                const minutes = Math.floor(diff / 60);
+                serverData.lastUpdated.textContent = `${minutes}m ago`;
+            }
+        }
+
+        // Update all timestamps every second
+        setInterval(() => {
+            if (!isPaused) {
+                serverEmbeds.forEach(serverData => {
+                    updateTimestamp(serverData);
+                });
+            }
+        }, 1000);
+
+        // Initial ping for all servers
+        serverEmbeds.forEach(serverData => {
+            updateServer(serverData);
+        });
+
+        // Function to start intervals - updates servers one at a time
+        function startIntervals() {
+            serverEmbeds.forEach((serverData, index) => {
+                if (serverData.intervalId) {
+                    clearInterval(serverData.intervalId);
+                }
+                
+                // Stagger the initial delay so servers update one at a time
+                const staggerDelay = index * 500; // 500ms between each server
+                
+                // Handle "no delay" option differently
+                if (updateInterval === 0) {
+                    // For instant updates, use a very short interval
+                    setTimeout(() => {
+                        serverData.intervalId = setInterval(() => {
+                            if (!isPaused) {
+                                updateServer(serverData);
+                            }
+                        }, 100 * serverEmbeds.length); // Multiply by count to spread updates
+                    }, staggerDelay);
+                } else {
+                    setTimeout(() => {
+                        serverData.intervalId = setInterval(() => {
+                            if (!isPaused) {
+                                updateServer(serverData);
+                            }
+                        }, updateInterval);
+                    }, staggerDelay);
+                }
+            });
+        }
+
+        startIntervals();
+
+        // Show copy feedback notification
+        function showCopyFeedback(server) {
+            const feedback = document.createElement('div');
+            feedback.className = 'copy-feedback';
+            feedback.textContent = `Copied: ${server}`;
+            document.body.appendChild(feedback);
+            
+            setTimeout(() => {
+                feedback.style.animation = 'slideIn 0.3s ease-out reverse';
+                setTimeout(() => feedback.remove(), 300);
+            }, 2000);
+        }
+
+        // Interval selector
+        document.getElementById('intervalSelect').addEventListener('change', (e) => {
+            const value = parseInt(e.target.value);
+            updateInterval = value * 1000;
+            
+            // Update text display
+            if (value === 0) {
+                document.getElementById('updateIntervalText').textContent = 'No delay (May Lag)';
+            } else if (value === 1) {
+                document.getElementById('updateIntervalText').textContent = 'Updates every 1s';
+            } else {
+                document.getElementById('updateIntervalText').textContent = `Updates every ${value}s`;
+            }
+            
+            // Restart intervals with new timing
+            startIntervals();
+        });
+
+        // Pause/Resume button
+        const pauseButton = document.getElementById('pauseButton');
+        const statusIndicator = document.getElementById('statusIndicator');
+        
+        pauseButton.addEventListener('click', () => {
+            isPaused = !isPaused;
+            
+            if (isPaused) {
+                pauseButton.textContent = 'Resume Updates';
+                statusIndicator.classList.remove('active');
+                statusIndicator.classList.add('paused');
+            } else {
+                pauseButton.textContent = 'Pause Updates';
+                statusIndicator.classList.remove('paused');
+                statusIndicator.classList.add('active');
+            }
+        });
+
+        // Refresh now button
+        document.getElementById('refreshButton').addEventListener('click', () => {
+            serverEmbeds.forEach(serverData => {
+                updateServer(serverData);
+            });
+        });
+
+        // Clean up intervals on page unload
         window.addEventListener("beforeunload", () => {
             serverEmbeds.forEach(({ intervalId }) => {
-                clearInterval(intervalId);
+                if (intervalId) clearInterval(intervalId);
             });
         });
     });
@@ -433,8 +693,7 @@
             if (document.getElementById("usernameInput")) {
                 document.getElementById("usernameInput").placeholder = username;
             }
-            const profileElements = document.querySelectorAll("#profile-name");
-            profileElements.forEach(el => el.textContent = username);
+            document.getElementById("profile-name").textContent = username;
         }
 
         let modMakerKitEnabled = getCookie("modMakerKitEnabled");
