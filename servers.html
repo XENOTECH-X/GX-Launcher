@@ -288,6 +288,9 @@
         }
     </style>
     <script src="embed.min.js" defer></script>
+    <script src="script.js?v=2" defer></script>
+    <script src="nav-visibility.js"></script>
+</head>
 <body onload="detection()">
     <div class="launcher">
         <div class="title-bar">
@@ -353,7 +356,6 @@
         embedContainer.style.display = "flex";
         embedContainer.style.flexWrap = "wrap";
 
-        // Store server embed instances and their update intervals
         const serverEmbeds = [];
 
         servers.forEach(server => {
@@ -386,22 +388,20 @@
             });
             serverInfoDiv.appendChild(copyButton);
 
-            // Create ServerEmbed instance
             const embed = new ServerEmbed(serverDiv, "75%");
             
             // Initial ping
             embed.ping(server);
             
-            // Set up interval to ping every 1 second (1000 milliseconds)
+            // Set up interval to ping every 5 seconds (5000 milliseconds)
             const intervalId = setInterval(() => {
                 embed.ping(server);
-            }, 1000);
+            }, 5000);
             
-            // Store the embed and interval ID for potential cleanup
             serverEmbeds.push({ embed, intervalId, server });
         });
 
-        // Optional: Clean up intervals when page is unloaded
+        // Clean up intervals when page is unloaded
         window.addEventListener("beforeunload", () => {
             serverEmbeds.forEach(({ intervalId }) => {
                 clearInterval(intervalId);
@@ -425,18 +425,31 @@
 
         let username = getCookie("username");
         if (username != null) {
-            document.getElementById("usernameInput").placeholder = username;
-            document.getElementById("profile-name").textContent = username;
+            if (document.getElementById("usernameInput")) {
+                document.getElementById("usernameInput").placeholder = username;
+            }
+            const profileElements = document.querySelectorAll("#profile-name");
+            profileElements.forEach(el => el.textContent = username);
         }
 
         let modMakerKitEnabled = getCookie("modMakerKitEnabled");
         if (modMakerKitEnabled === "true") {
-            document.getElementById("modMakerCheckbox").checked = true;
-            document.getElementById("modMakerItem").style.display = "flex";
-            document.getElementById("apiItem").style.display = "flex";
+            if (document.getElementById("modMakerCheckbox")) {
+                document.getElementById("modMakerCheckbox").checked = true;
+            }
+            if (document.getElementById("modMakerItem")) {
+                document.getElementById("modMakerItem").style.display = "flex";
+            }
+            if (document.getElementById("apiItem")) {
+                document.getElementById("apiItem").style.display = "flex";
+            }
         } else {
-            document.getElementById("modMakerItem").style.display = "none";
-            document.getElementById("apiItem").style.display = "none";
+            if (document.getElementById("modMakerItem")) {
+                document.getElementById("modMakerItem").style.display = "none";
+            }
+            if (document.getElementById("apiItem")) {
+                document.getElementById("apiItem").style.display = "none";
+            }
         }
     });
     </script>
