@@ -11,12 +11,19 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #1e1e1e;
             color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
         }
 
         .launcher {
-            width: 1166px;
-            height: 710px;
-            margin: 50px auto;
+            width: 100%;
+            max-width: 1400px;
+            height: 90vh;
+            max-height: 800px;
             background-color: #333;
             border-radius: 8px;
             overflow: hidden;
@@ -125,19 +132,20 @@
         .refresh-controls {
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 13px;
+            gap: 8px;
+            font-size: 12px;
         }
 
         .refresh-controls button {
             background-color: #8B0000;
             border: none;
-            padding: 6px 12px;
+            padding: 3px 8px;
             border-radius: 3px;
             cursor: pointer;
             color: #fff;
-            font-size: 12px;
+            font-size: 11px;
             transition: background-color 0.2s;
+            line-height: 1.2;
         }
 
         .refresh-controls button:hover {
@@ -148,10 +156,11 @@
             background-color: #1c1c1c;
             color: #fff;
             border: 1px solid #8B0000;
-            padding: 5px 8px;
+            padding: 3px 6px;
             border-radius: 3px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 11px;
+            line-height: 1.2;
         }
 
         .status-indicator {
@@ -280,11 +289,74 @@
             .server-embed {
                 width: 45%;
             }
+            
+            .sidebar {
+                width: 150px;
+            }
+            
+            .launcher {
+                max-width: 95%;
+            }
         }
 
         @media (max-width: 900px) {
             .server-embed {
                 width: 90%;
+            }
+            
+            .sidebar {
+                width: 120px;
+            }
+            
+            .nav-text {
+                font-size: 12px;
+            }
+            
+            .refresh-controls {
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+            
+            .launcher {
+                max-width: 100%;
+                height: 100vh;
+                max-height: 100vh;
+                border-radius: 0;
+            }
+            
+            body {
+                padding: 0;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .sidebar {
+                width: 60px;
+            }
+            
+            .nav-text {
+                display: none;
+            }
+            
+            .nav-item {
+                padding: 15px 10px;
+                justify-content: center;
+            }
+            
+            .top-bar {
+                flex-direction: column;
+                gap: 5px;
+                padding: 10px;
+            }
+            
+            .refresh-controls {
+                font-size: 10px;
+            }
+            
+            .refresh-controls button,
+            .refresh-controls select {
+                font-size: 10px;
+                padding: 2px 5px;
             }
         }
 
