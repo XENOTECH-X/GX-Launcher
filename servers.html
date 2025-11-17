@@ -288,9 +288,6 @@
         }
     </style>
     <script src="embed.min.js" defer></script>
-    <script src="script.js?v=2" defer></script>
-    <script src="nav-visibility.js"></script>
-</head>
 <body onload="detection()">
     <div class="launcher">
         <div class="title-bar">
@@ -395,10 +392,10 @@
             // Initial ping
             embed.ping(server);
             
-            // Set up interval to ping every 30 seconds (30000 milliseconds)
+            // Set up interval to ping every 1 second (1000 milliseconds)
             const intervalId = setInterval(() => {
                 embed.ping(server);
-            }, 30000);
+            }, 1000);
             
             // Store the embed and interval ID for potential cleanup
             serverEmbeds.push({ embed, intervalId, server });
