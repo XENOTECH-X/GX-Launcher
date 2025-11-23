@@ -36,6 +36,9 @@ function redirectToMods() {
 function redirectToMain() {
     window.location.href = 'index.html';
 }
+function redirectToOtherClients() {
+    window.location.href = 'otherclients.html';
+}
 document.addEventListener("DOMContentLoaded", function() {
             // Function to get a cookie value by name
             function getCookie(name) {

@@ -302,7 +302,7 @@
 <body onload="detection()">
     <div class="launcher">
         <div class="title-bar">
-            <span>GX-Launcher Release 1.6.1</span>
+            <span>GX-Launcher Release 1.7</span>
         </div>
         <div class="content">
             <div class="sidebar">
@@ -323,6 +323,10 @@
                             <img src="./Resources/Untitled.png" alt="Clients Icon" class="nav-icon">
                             <span class="nav-text">Clients</span>
                         </li>
+                        <li class="nav-item" onclick="redirectToOtherClients()">
+                            <img src="./Resources/beta.png" alt="Beta Clients Icon" class="nav-icon">
+                            <span class="nav-text">Beta Clients</span>
+                        </li>
                         <li class="nav-item" onclick="redirectToServers()">
                             <img src="./Resources/servers.png" alt="Servers Icon" class="nav-icon">
                             <span class="nav-text">Servers</span>
@@ -330,13 +334,6 @@
                       <li class="nav-item selected" onclick="redirectToMods()">
                             <img src="./Resources/mods.png" alt="Mods Icon" class="nav-icon">
                             <span class="nav-text">Mods</span>
-                        </li>
-                        <li class="nav-item" id="modMakerItem" style="display: none;" onclick="createAbout('https://eaglerforge-builder.vercel.app/')">
-                            <img src="https://eaglerforge-builder.vercel.app/favicon.png" alt="List Icon" class="nav-icon"> <span class="nav-text">Eaglerforge Mod Maker (Block)</span>
-                        </li>
-                        <li class="nav-item" id="apiItem" style="display: none;" onclick="createAbout('https://eaglerforge.github.io/apidocs/')">
-                            <img src="https://avatars.githubusercontent.com/u/157155680?s=48&v=4" alt="List Icon" class="nav-icon">
-                            <span class="nav-text">Eaglerforge API</span>
                         </li>
                     </ul>
                 </nav>
@@ -355,7 +352,7 @@
             </div>
         </div>
         <div class="bottom-bar">
-            <span class="username" id="profile-name">Built By Jon Stearns</span>
+            <span class="username" id="profile-name">Yoy Found A Secret! - Built By Jon Stearns</span>
         </div>
     </div>
 </body>

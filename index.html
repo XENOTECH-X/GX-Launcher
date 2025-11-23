@@ -345,7 +345,7 @@ font-size: 14px;
 <body onload="detection()">
     <div class="launcher">
         <div class="title-bar">
-            <span>GX-Launcher Release 1.6.1</span>
+            <span>GX-Launcher Release 1.7</span>
         </div>
        
         <div class="content">
@@ -366,6 +366,10 @@ font-size: 14px;
                         <li class="nav-item" onclick="redirectToClients()">
                             <img src="./Resources/Untitled.png" alt="Clients Icon" class="nav-icon">
                             <span class="nav-text">Clients</span>
+                        </li>
+                        <li class="nav-item" onclick="redirectToOtherClients()">
+                            <img src="./Resources/beta.png" alt="Beta Clients Icon" class="nav-icon">
+                            <span class="nav-text">Beta Clients</span>
                         </li>
                         <li class="nav-item" onclick="redirectToServers()">
                             <img src="./Resources/servers.png" alt="Servers Icon" class="nav-icon">
@@ -434,6 +438,14 @@ font-size: 14px;
                                 <div class="custom-option" onclick="selectVersion('beta-1.7.3')">
                                     <img src="Resources/icon.png" alt="Beta 1.7.3 Icon">
                                     <span>Beta 1.7.3</span>
+                                </div>
+                                <div class="custom-option" onclick="selectVersion('beta-1.6.4')">
+                                    <img src="Resources/icon.png" alt="Beta 1.6.4 Icon">
+                                    <span>Beta 1.6.4</span>
+                                </div>
+                                <div class="custom-option" onclick="selectVersion('beta-1.5')">
+                                    <img src="Resources/icon.png" alt="Beta 1.5 Icon">
+                                    <span>Beta 1.5</span>
                                 </div>
                                 <div class="custom-option" onclick="selectVersion('beta-1.4')">
                                     <img src="Resources/icon.png" alt="Beta 1.4 Icon">
