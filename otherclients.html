@@ -364,7 +364,7 @@ font-size: 14px;
                             <span class="nav-text">Game</span>
                         </li>
                         <li class="nav-item" onclick="redirectToClients()">
-                            <img src="./Resources/Untitled.png" alt="News Icon" class="nav-icon">
+                            <img src="./Resources/clients.png" alt="News Icon" class="nav-icon">
                             <span class="nav-text">Clients</span>
                         </li>
                         <li class="nav-item selected">
@@ -384,7 +384,7 @@ font-size: 14px;
                     <span class="game-title"></span>
                 </div>
                 <div class="main-content">
-                    <img src="./Resources/clientphoto.png" alt="Minecraft Cover Image" class="minecraft-image">
+                    <img src="./Resources/otherclients.png" alt="Minecraft Cover Image" class="minecraft-image">
                     <div class="installations">
                         <div class="custom-select-wrapper">
                             <div id="custom-select" class="custom-select" onclick="toggleOptions()">
@@ -405,7 +405,10 @@ font-size: 14px;
                                     <img src="1.9.4/favicon.png" alt="1.9.4 icon">
                                     <span>Eaglercraftλ 1.9.4</span>
                                 </div>
-                             
+                             <div class="custom-option" onclick="selectVersion('Ayuncraft')">
+                                    <img src="Ayuncraft/favicon.png" alt="Ayuncraft icon">
+                                    <span>Ayuncraft (1.5.2-22w20b)</span>
+                                </div>
                             </div>
                         </div>
                         <button class="play-button" onclick="playGame()">Start</button>
