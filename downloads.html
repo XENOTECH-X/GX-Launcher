@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GX-Launcher</title>
+  <link rel="icon" type="image/png" href="resources/main.png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+  <script src="downloads-data.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
+  <style>
+    /* Downloads-specific overrides */
+    .dl-top-bar {
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      padding: 0 18px;
+      height: 38px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+    .dl-title {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-self: start;
+    }
+    .dl-title span { color: var(--accent); }
+    .dl-count {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-dim);
+      flex-shrink: 0;
+      justify-self: end;
+    }
+    .dl-search-input {
+      justify-self: center;
+      width: 320px;
+      max-width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border2);
+      color: var(--text-bright, #fff);
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 5px 10px;
+      box-sizing: border-box;
+      outline: none;
+      letter-spacing: 0.03em;
+      transition: border-color 0.13s;
+    }
+    .dl-search-input:focus { border-color: var(--accent); }
+    .dl-search-input::placeholder { color: var(--text-dim); }
+
+    .dl-content {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border2) var(--bg3);
+    }
+    .dl-content::-webkit-scrollbar { width: 5px; }
+    .dl-content::-webkit-scrollbar-track { background: var(--bg3); }
+    .dl-content::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+    .dl-group-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      margin: 18px 0 8px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid var(--border);
+    }
+    .dl-group-label:first-child { margin-top: 0; }
+
+    .dl-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .dl-card {
+      width: calc(33.333% - 7px);
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent-dim);
+      padding: 10px 12px;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      transition: border-color 0.13s, box-shadow 0.13s;
+    }
+    .dl-card:hover {
+      border-color: var(--accent);
+      border-left-color: var(--accent);
+      box-shadow: 0 0 14px var(--accent-glow);
+    }
+    .dl-card-info { overflow: hidden; }
+    .dl-card-name {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: bold;
+      color: var(--text-bright, #fff);
+      letter-spacing: 0.04em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .dl-card-meta {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--text-dim);
+      margin-top: 3px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .dl-badge {
+      font-family: var(--mono);
+      font-size: 8px;
+      padding: 1px 5px;
+      border-radius: 2px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .dl-badge.single { background: rgba(0,200,80,0.12); color: #0c8; border: 1px solid rgba(0,200,80,0.28); }
+    .dl-badge.multi  { background: rgba(255,180,0,0.12); color: #fb0; border: 1px solid rgba(255,180,0,0.28); }
+
+    .dl-btn {
+      background: var(--accent-dim);
+      border: none;
+      color: #fff;
+      font-family: var(--mono);
+      font-size: 10px;
+      padding: 6px 12px;
+      cursor: pointer;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      flex-shrink: 0;
+      transition: background 0.13s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .dl-btn:hover { background: var(--accent); }
+    .dl-btn:disabled { opacity: 0.5; cursor: default; background: var(--accent-dim); }
+    .dl-btn svg { width: 11px; height: 11px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* Warning modal */
+    .dl-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.65);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+    }
+    .dl-modal-overlay.open { display: flex; }
+    .dl-modal {
+      background: var(--panel);
+      border: 1px solid var(--border2);
+      border-top: 3px solid var(--accent);
+      width: 360px;
+      max-width: 90vw;
+      padding: 18px;
+      box-shadow: 0 0 30px rgba(0,0,0,0.6), 0 0 40px var(--accent-glow);
+      animation: dlModalIn 0.15s ease;
+    }
+    @keyframes dlModalIn {
+      from { transform: translateY(8px); opacity: 0; }
+      to   { transform: translateY(0);   opacity: 1; }
+    }
+    .dl-modal-title {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .dl-modal-body {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text);
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+    .dl-modal-body b { color: var(--text-bright, #fff); }
+    .dl-modal-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+    .dl-modal-btn {
+      font-family: var(--mono);
+      font-size: 10px;
+      padding: 7px 16px;
+      cursor: pointer;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border: 1px solid var(--border2);
+      background: var(--bg3);
+      color: var(--text);
+      transition: border-color 0.13s, color 0.13s;
+    }
+    .dl-modal-btn:hover { border-color: var(--text-dim); }
+    .dl-modal-btn.yes {
+      background: var(--accent-dim);
+      border-color: var(--accent-dim);
+      color: #fff;
+    }
+    .dl-modal-btn.yes:hover {
+      background: var(--accent-hi, var(--accent));
+      border-color: var(--accent-hi, var(--accent));
+      box-shadow: 0 0 14px var(--accent-glow);
+    }
+
+    /* Toast (shared pattern with servers page) */
+    .copy-feedback {
+      position: fixed;
+      top: 18px;
+      right: 18px;
+      background: var(--panel);
+      border: 1px solid var(--accent);
+      color: var(--text-bright, #fff);
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 9px 18px;
+      z-index: 9999;
+      box-shadow: 0 0 18px var(--accent-glow);
+      animation: slideInRight 0.25s ease;
+    }
+    @keyframes slideInRight {
+      from { transform: translateX(120px); opacity: 0; }
+      to   { transform: translateX(0);    opacity: 1; }
+    }
+
+    @media (max-width: 900px) {
+      .dl-card { width: calc(50% - 5px); }
+    }
+    @media (max-width: 560px) {
+      .dl-card { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+<div class="launcher">
+
+  <div class="title-bar">
+    <div class="title-logo"><div class="title-dot"></div>GX-LAUNCHER <span class="ver">v2.2</span></div>
+  </div>
+
+  <div class="content">
+    <div class="sidebar">
+      <div class="profile">
+        <div class="profile-label">Player</div>
+        <span class="profile-name" id="profile-name">Player</span>
+        <div class="profile-status"><div class="status-dot"></div>ONLINE</div>
+      </div>
+      <nav>
+        <div class="nav-section-label">Navigation</div>
+        <div class="nav-item" onclick="redirectToNews()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><path d="M4 4h16v14a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"/><line x1="4" y1="9" x2="20" y2="9"/><line x1="9" y1="4" x2="9" y2="9"/></svg>
+          Update Log
+        </div>
+        <div class="nav-item" onclick="redirectToMain()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="13" rx="1"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+          Game
+        </div>
+        <div class="nav-item" onclick="redirectToClients()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
+          Clients
+        </div>
+        <div class="nav-item" onclick="redirectToOtherClients()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Beta Clients
+        </div>
+        <div class="nav-item" onclick="redirectToServers()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="5" rx="1"/><rect x="2" y="10" width="20" height="5" rx="1"/><rect x="2" y="17" width="20" height="5" rx="1"/></svg>
+          Servers
+        </div>
+        <div class="nav-item selected">
+          <svg class="nav-svg" viewBox="0 0 24 24"><line x1="12" y1="3" x2="12" y2="15"/><polyline points="7 10 12 15 17 10"/><line x1="4" y1="19" x2="20" y2="19"/></svg>
+          Downloads
+        </div>
+        <div class="nav-item" onclick="window.open('https://discord.gg/qQBamNZSwz', '_blank')">
+          <svg class="nav-svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.128 12.299 12.299 0 0 1-1.873.892.076.076 0 0 0-.04.106c.36.698.772 1.362 1.225 1.994a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.057c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.955 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+          </svg>
+          Discord
+        </div>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="nav-item" onclick="redirectToSettings()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          Launcher Settings
+        </div>
+      </div>
+    </div>
+
+    <div class="main-panel">
+      <div class="dl-top-bar">
+        <div class="dl-title">GX-LAUNCHER <span>// DOWNLOADS</span></div>
+        <input type="text" class="dl-search-input" id="dl-search" placeholder="Search downloads..." oninput="filterDownloads(this.value)">
+        <div class="dl-count" id="dl-count">-- ITEMS</div>
+      </div>
+
+      <div class="dl-content" id="dl-content">
+        <!-- populated by JS -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Warning modal for multi-file (no offline version) downloads -->
+<div class="dl-modal-overlay" id="dl-modal-overlay">
+  <div class="dl-modal">
+    <div class="dl-modal-title">
+      <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+      Warning
+    </div>
+    <div class="dl-modal-body">
+      This download does not have an offline version. Download anyway?
+    </div>
+    <div class="dl-modal-actions">
+      <button class="dl-modal-btn no" id="dl-modal-no">No</button>
+      <button class="dl-modal-btn yes" id="dl-modal-yes">Yes</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  let pendingItem = null;
+
+  function showToast(msg, isError) {
+    const t = document.createElement('div');
+    t.className = 'copy-feedback';
+    if (isError) t.style.borderColor = '#f55';
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3000);
+  }
+
+  function pathFor(folder, file) {
+    return DOWNLOADS_BASE + folder.split('/').map(encodeURIComponent).join('/') + '/' + file.split('/').map(encodeURIComponent).join('/');
+  }
+
+  function safeName(name) {
+    return name.replace(/[\\/:*?"<>|]/g, '_');
+  }
+
+  function triggerBlobDownload(blob, filename) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+  }
+
+  async function downloadSingle(item, btn) {
+    const original = btn.innerHTML;
+    btn.disabled = true;
+    btn.textContent = 'FETCHING...';
+    try {
+      const res = await fetch(pathFor(item.folder, 'index.html'));
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const blob = await res.blob();
+      triggerBlobDownload(blob, safeName(item.folder) + '.html');
+      showToast(item.label + ' downloaded');
+    } catch (e) {
+      showToast('Download failed: ' + e.message, true);
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = original;
+    }
+  }
+
+  async function downloadZip(item, btn) {
+    const original = btn.innerHTML;
+    btn.disabled = true;
+    try {
+      const zip = new JSZip();
+      let done = 0;
+      for (const file of item.files) {
+        btn.textContent = 'ZIPPING ' + done + '/' + item.files.length;
+        const res = await fetch(pathFor(item.folder, file));
+        if (!res.ok) throw new Error('HTTP ' + res.status + ' on ' + file);
+        const buf = await res.arrayBuffer();
+        zip.file(file, buf);
+        done++;
+      }
+      btn.textContent = 'COMPRESSING...';
+      const blob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } });
+      triggerBlobDownload(blob, safeName(item.folder) + '.zip');
+      showToast(item.label + ' downloaded (.zip)');
+    } catch (e) {
+      showToast('Download failed: ' + e.message, true);
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = original;
+    }
+  }
+
+  function openModal(item, btn) {
+    pendingItem = { item, btn };
+    document.getElementById('dl-modal-overlay').classList.add('open');
+  }
+  function closeModal() {
+    pendingItem = null;
+    document.getElementById('dl-modal-overlay').classList.remove('open');
+  }
+
+  document.getElementById('dl-modal-no').addEventListener('click', closeModal);
+  document.getElementById('dl-modal-yes').addEventListener('click', () => {
+    if (!pendingItem) return;
+    const { item, btn } = pendingItem;
+    closeModal();
+    downloadZip(item, btn);
+  });
+  document.getElementById('dl-modal-overlay').addEventListener('click', (e) => {
+    if (e.target.id === 'dl-modal-overlay') closeModal();
+  });
+
+  function handleClick(item, btn) {
+    if (item.multi) {
+      openModal(item, btn);
+    } else {
+      downloadSingle(item, btn);
+    }
+  }
+
+  const DL_ICON = '<svg viewBox="0 0 24 24"><line x1="12" y1="3" x2="12" y2="15"/><polyline points="7 10 12 15 17 10"/><line x1="4" y1="19" x2="20" y2="19"/></svg>';
+
+  function render() {
+    const wrap = document.getElementById('dl-content');
+    let total = 0;
+    DOWNLOAD_GROUPS.forEach(group => {
+      const label = document.createElement('div');
+      label.className = 'dl-group-label';
+      label.textContent = group.group;
+      wrap.appendChild(label);
+
+      const grid = document.createElement('div');
+      grid.className = 'dl-grid';
+
+      group.items.forEach(item => {
+        total++;
+        const card = document.createElement('div');
+        card.className = 'dl-card';
+        card.dataset.search = item.label.toLowerCase() + ' ' + item.folder.toLowerCase();
+
+        const info = document.createElement('div');
+        info.className = 'dl-card-info';
+        const name = document.createElement('div');
+        name.className = 'dl-card-name';
+        name.textContent = item.label;
+        const meta = document.createElement('div');
+        meta.className = 'dl-card-meta';
+        const badge = document.createElement('span');
+        badge.className = 'dl-badge ' + (item.multi ? 'multi' : 'single');
+        badge.textContent = item.multi ? 'ZIP' : 'HTML';
+        meta.appendChild(badge);
+        info.appendChild(name);
+        info.appendChild(meta);
+
+        const btn = document.createElement('button');
+        btn.className = 'dl-btn';
+        btn.innerHTML = DL_ICON + '<span>GET</span>';
+        btn.addEventListener('click', () => handleClick(item, btn));
+
+        card.appendChild(info);
+        card.appendChild(btn);
+        grid.appendChild(card);
+      });
+
+      wrap.appendChild(grid);
+    });
+    document.getElementById('dl-count').textContent = total + ' ITEMS';
+    window._dlTotal = total;
+  }
+
+  window.filterDownloads = function(query) {
+    query = query.trim().toLowerCase();
+    const wrap = document.getElementById('dl-content');
+    const labels = wrap.querySelectorAll('.dl-group-label');
+    let visible = 0;
+    labels.forEach(label => {
+      const grid = label.nextElementSibling;
+      if (!grid || !grid.classList.contains('dl-grid')) return;
+      let groupVisible = 0;
+      grid.querySelectorAll('.dl-card').forEach(card => {
+        const match = !query || card.dataset.search.includes(query);
+        card.style.display = match ? '' : 'none';
+        if (match) { groupVisible++; visible++; }
+      });
+      label.style.display = groupVisible ? '' : 'none';
+      grid.style.display = groupVisible ? '' : 'none';
+    });
+    const count = document.getElementById('dl-count');
+    count.textContent = query ? (visible + ' / ' + window._dlTotal + ' ITEMS') : (window._dlTotal + ' ITEMS');
+  };
+
+  document.addEventListener('DOMContentLoaded', render);
+})();
+</script>
+</body>
+</html>

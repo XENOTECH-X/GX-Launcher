@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GX-Launcher</title>
+  <link rel="icon" type="image/png" href="resources/main.png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+  <style>
+    /* ── WISP SECTION ── */
+    .wisp-toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    /* Toggle switch */
+    .toggle-wrap {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+    .toggle-wrap input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+      position: absolute;
+    }
+    .toggle-slider {
+      position: absolute;
+      inset: 0;
+      background: #2a2a2a;
+      border: 1px solid #444;
+      border-radius: 24px;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      left: 3px;
+      top: 3px;
+      background: #666;
+      border-radius: 50%;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .toggle-wrap input:checked + .toggle-slider {
+      background: var(--accent-dim, #7a0000);
+      border-color: var(--accent, #cc0000);
+    }
+    .toggle-wrap input:checked + .toggle-slider::before {
+      transform: translateX(20px);
+      background: var(--accent, #cc0000);
+      box-shadow: 0 0 6px var(--accent-glow, rgba(180,0,0,0.4));
+    }
+
+    .wisp-status-badge {
+      font-size: 10px;
+      font-family: 'Segoe UI', sans-serif;
+      letter-spacing: 0.12em;
+      padding: 2px 8px;
+      border-radius: 2px;
+      font-weight: 600;
+    }
+    .wisp-status-badge.on  { background: rgba(0,180,60,0.15); color: #00cc44; border: 1px solid #00cc4444; }
+    .wisp-status-badge.off { background: rgba(120,120,120,0.1); color: #666; border: 1px solid #33333388; }
+
+    .wisp-url-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+      transition: opacity 0.2s;
+    }
+    .wisp-url-row .settings-input {
+      flex: 1;
+      min-width: 220px;
+    }
+    .settings-btn-ghost {
+      background: transparent;
+      border: 1px solid #444;
+      color: #888;
+      font-family: 'Segoe UI', sans-serif;
+      font-size: 11px;
+      padding: 6px 14px;
+      cursor: pointer;
+      letter-spacing: 0.08em;
+      transition: border-color 0.15s, color 0.15s;
+      white-space: nowrap;
+    }
+    .settings-btn-ghost:hover {
+      border-color: var(--accent, #cc0000);
+      color: var(--accent, #cc0000);
+    }
+    .settings-btn-ghost.selected {
+      border-color: var(--accent, #cc0000);
+      color: var(--accent, #cc0000);
+      background: var(--accent-glow, rgba(180,0,0,0.18));
+    }
+
+    .wisp-compat-note {
+      font-size: 10px;
+      color: #555;
+      font-family: 'Segoe UI', sans-serif;
+      line-height: 1.6;
+      padding: 8px 12px;
+      border-left: 2px solid #2a2a2a;
+      margin-top: 4px;
+    }
+    .wisp-compat-note span {
+      color: var(--accent, #cc0000);
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="launcher">
+
+  <!-- TITLE BAR -->
+  <div class="title-bar">
+    <div class="title-logo">
+      <div class="title-dot"></div>
+      GX-LAUNCHER <span class="ver">V2.2</span>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="profile">
+        <div class="profile-label">Player</div>
+        <span class="profile-name" id="profile-name">Player</span>
+        <div class="profile-status"><div class="status-dot"></div>ONLINE</div>
+      </div>
+      <nav>
+        <div class="nav-section-label">Navigation</div>
+        <div class="nav-item" onclick="redirectToNews()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><path d="M4 4h16v14a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"/><line x1="4" y1="9" x2="20" y2="9"/><line x1="9" y1="4" x2="9" y2="9"/></svg>
+          Update Log
+        </div>
+        <div class="nav-item" onclick="redirectToMain()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="13" rx="1"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+          Game
+        </div>
+        <div class="nav-item" onclick="redirectToClients()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
+          Clients
+        </div>
+        <div class="nav-item" onclick="redirectToOtherClients()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Beta Clients
+        </div>
+        <div class="nav-item" onclick="redirectToServers()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="5" rx="1"/><rect x="2" y="10" width="20" height="5" rx="1"/><rect x="2" y="17" width="20" height="5" rx="1"/></svg>
+          Servers
+        </div>
+        <div class="nav-item" onclick="redirectToDownloads()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><line x1="12" y1="3" x2="12" y2="15"/><polyline points="7 10 12 15 17 10"/><line x1="4" y1="19" x2="20" y2="19"/></svg>
+          Downloads
+        </div>
+        <div class="nav-item" onclick="window.open('https://discord.gg/qQBamNZSwz', '_blank')">
+          <svg class="nav-svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.128 12.299 12.299 0 0 1-1.873.892.076.076 0 0 0-.04.106c.36.698.772 1.362 1.225 1.994a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.057c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.955 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+          </svg>
+          Discord
+        </div>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="nav-item selected">
+          <svg class="nav-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          Launcher Settings
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN PANEL -->
+    <div class="main-panel">
+      <div class="top-bar">
+        <div class="game-title">GX-LAUNCHER <span>// SETTINGS</span></div>
+        <div class="breadcrumb">HOME / SETTINGS</div>
+      </div>
+
+      <div class="settings-scroll">
+
+        <!-- PROFILE -->
+        <div class="settings-section">
+          <div class="settings-section-title">Profile</div>
+          <div class="settings-row">
+            <div>
+              <div class="settings-label">Username</div>
+              <div class="settings-desc">Displayed in the launcher sidebar across all pages</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <input class="settings-input" id="username-input" type="text" placeholder="Enter username" maxlength="24">
+              <button class="settings-btn" onclick="saveUsername()">Save</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TEXT SIZE -->
+        <div class="settings-section">
+          <div class="settings-section-title">Text Size</div>
+          <div class="settings-row">
+            <div>
+              <div class="settings-label">UI Scale</div>
+              <div class="settings-desc">Adjusts the size of all text and UI elements across the launcher.</div>
+            </div>
+            <div style="display:flex;gap:6px;align-items:center;">
+              <button class="settings-btn-ghost" data-scale="0.75" onclick="saveUiScale(0.75, this)">75%</button>
+              <button class="settings-btn-ghost" data-scale="1"    onclick="saveUiScale(1,    this)">100%</button>
+              <button class="settings-btn-ghost" data-scale="1.25" onclick="saveUiScale(1.25, this)">125%</button>
+              <button class="settings-btn-ghost" data-scale="1.5"  onclick="saveUiScale(1.5,  this)">150%</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- THEME -->
+        <div class="settings-section">
+          <div class="settings-section-title">Theme</div>
+          <div class="theme-grid">
+            <div class="theme-swatch" data-theme-name="default" onclick="applyThemeFromSwatch('default', this)">
+              <div class="swatch-dot" style="background:#cc0000;box-shadow:0 0 8px #cc000055;"></div>
+              Default
+            </div>
+            <div class="theme-swatch" data-theme-name="green" onclick="applyThemeFromSwatch('green', this)">
+              <div class="swatch-dot" style="background:#00cc44;box-shadow:0 0 8px #00cc4455;"></div>
+              Green
+            </div>
+            <div class="theme-swatch" data-theme-name="blood" onclick="applyThemeFromSwatch('blood', this)">
+              <div class="swatch-dot" style="background:#cc0000;box-shadow:0 0 10px #cc000077;border:2px solid #4a0000;"></div>
+              Blood
+            </div>
+            <div class="theme-swatch" data-theme-name="midnight" onclick="applyThemeFromSwatch('midnight', this)">
+              <div class="swatch-dot" style="background:#5566ff;box-shadow:0 0 8px #5566ff55;"></div>
+              Midnight
+            </div>
+            <div class="theme-swatch" data-theme-name="ash" onclick="applyThemeFromSwatch('ash', this)">
+              <div class="swatch-dot" style="background:#888;box-shadow:0 0 8px #88888855;"></div>
+              Ash
+            </div>
+            <div class="theme-swatch" data-theme-name="amber" onclick="applyThemeFromSwatch('amber', this)">
+              <div class="swatch-dot" style="background:#cc7700;box-shadow:0 0 8px #cc770055;"></div>
+              Amber
+            </div>
+          </div>
+        </div>
+
+        <!-- LAUNCH MODE -->
+        <div class="settings-section">
+          <div class="settings-section-title">Launch Mode</div>
+          <div class="mode-grid">
+            <div class="mode-card" data-mode="regular" onclick="selectLaunchMode('regular', this)">
+              <div class="mode-card-title">Regular</div>
+              <div class="mode-card-desc">Opens the game URL in a new tab. Works with all versions.</div>
+            </div>
+            <div class="mode-card" data-mode="about-blank" onclick="selectLaunchMode('about-blank', this)">
+              <div class="mode-card-title">About:Blank</div>
+              <div class="mode-card-desc">Opens about:blank then writes the game into a full-screen page. Bypasses some URL filters.</div>
+            </div>
+            <div class="mode-card" data-mode="data-uri" onclick="selectLaunchMode('data-uri', this)">
+              <div class="mode-card-title">Data URI</div>
+              <div class="mode-card-desc">Base64 encodes a game fetch code then copies it to your clipboard. Bookmarkable.</div>
+            </div>
+            <div class="mode-card" data-mode="blob" onclick="selectLaunchMode('blob', this)">
+              <div class="mode-card-title">Blob URL</div>
+              <div class="mode-card-desc">Fetches the game HTML and opens it as a blob: URL in a new tab.</div>
+            </div>
+            <div class="mode-card" data-mode="popup" onclick="selectLaunchMode('popup', this)">
+              <div class="mode-card-title">Popup Window</div>
+              <div class="mode-card-desc">Opens a 1280×720 borderless popup. Requires popups to be allowed in browser.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- WISP INJECTION -->
+        <div class="settings-section">
+          <div class="settings-section-title">WISP Injection</div>
+
+          <!-- Toggle row -->
+          <div class="settings-row">
+            <div>
+              <div class="settings-label">Enable WISP Injection</div>
+              <div class="settings-desc">Injects the Wispcraft patch into supported Eaglercraft clients before launch, allowing you to join real online-mode Minecraft servers from the browser.</div>
+            </div>
+            <div class="wisp-toggle-row">
+              <label class="toggle-wrap">
+                <input type="checkbox" id="wisp-toggle" onchange="toggleWisp(this.checked)">
+                <span class="toggle-slider"></span>
+              </label>
+              <span class="wisp-status-badge off" id="wisp-status-text">DISABLED</span>
+            </div>
+          </div>
+
+          <!-- WISP URL row -->
+          <div class="settings-row" id="wisp-url-row" style="opacity:0.45;">
+            <div>
+              <div class="settings-label">WISP Server URL</div>
+              <div class="settings-desc">WebSocket URL of the WISP proxy server. Default: wss://anura.pro/</div>
+            </div>
+            <div class="wisp-url-row">
+              <input class="settings-input" id="wisp-url-input" type="text" placeholder="wss://anura.pro/" spellcheck="false" autocomplete="off">
+              <button class="settings-btn" onclick="saveWispUrl()">Save</button>
+              <button class="settings-btn-ghost" onclick="resetWispUrl()">Reset</button>
+            </div>
+          </div>
+
+          <!-- Compatibility note -->
+          <div class="wisp-compat-note">
+            <span>Compatible clients:</span> EaglercraftX and other clients based on EaglercraftX that use the standard <code>eaglercraftXOpts</code> / WebSocket API. Not compatible with Data URI launch mode.
+          </div>
+        </div>
+
+      </div><!-- /settings-scroll -->
+
+      <div class="bottom-bar">
+        <div class="status-line" id="status-line">SETTINGS</div>
+        <div class="credit">Built by Jon Stearns</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+</body>
+</html>

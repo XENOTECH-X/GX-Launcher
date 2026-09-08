@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GX-Launcher</title>
+  <link rel="icon" type="image/png" href="resources/main.png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+
+<div class="launcher">
+
+  <!-- TITLE BAR -->
+  <div class="title-bar">
+    <div class="title-logo">
+      <div class="title-dot"></div>
+      GX-LAUNCHER <span class="ver">v2.2</span>
+    </div>
+    <div class="title-controls">
+      <div class="wdot min"></div>
+      <div class="wdot max"></div>
+      <div class="wdot close"></div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="profile">
+        <div class="profile-label">Player</div>
+        <span class="profile-name" id="profile-name">Player</span>
+        <div class="profile-status"><div class="status-dot"></div>ONLINE</div>
+      </div>
+      <nav>
+        <div class="nav-section-label">Navigation</div>
+        <div class="nav-item" onclick="redirectToNews()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><path d="M4 4h16v14a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"/><line x1="4" y1="9" x2="20" y2="9"/><line x1="9" y1="4" x2="9" y2="9"/></svg>
+          Update Log
+        </div>
+        <div class="nav-item selected">
+          <svg class="nav-svg" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="13" rx="1"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+          Game
+        </div>
+        <div class="nav-item" onclick="redirectToClients()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
+          Clients
+        </div>
+        <div class="nav-item" onclick="redirectToOtherClients()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Beta Clients
+        </div>
+        <div class="nav-item" onclick="redirectToServers()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="5" rx="1"/><rect x="2" y="10" width="20" height="5" rx="1"/><rect x="2" y="17" width="20" height="5" rx="1"/></svg>
+          Servers
+        </div>
+        <div class="nav-item" onclick="redirectToDownloads()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><line x1="12" y1="3" x2="12" y2="15"/><polyline points="7 10 12 15 17 10"/><line x1="4" y1="19" x2="20" y2="19"/></svg>
+          Downloads
+        </div>
+        <div class="nav-item" onclick="window.open('https://discord.gg/qQBamNZSwz', '_blank')">
+          <svg class="nav-svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.128 12.299 12.299 0 0 1-1.873.892.076.076 0 0 0-.04.106c.36.698.772 1.362 1.225 1.994a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.057c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.955 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+          </svg>
+          Discord
+        </div>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="nav-item" onclick="redirectToSettings()">
+                  <svg class="nav-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          Launcher Settings
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN PANEL -->
+    <div class="main-panel">
+      <div class="top-bar">
+        <div class="game-title">GX-LAUNCHER <span>// GAME</span></div>
+        <div class="breadcrumb">HOME / GAME</div>
+      </div>
+
+      <div class="main-content">
+        <!-- Background art -->
+        <img src="./resources/fixed2.png" alt="" class="hero-image" onerror="this.style.display='none'">
+        <div class="hero-overlay"></div>
+      </div>
+
+      <!-- LAUNCH BAR -->
+      <div class="launch-bar">
+
+        <!-- Version dropdown -->
+        <div class="version-wrapper">
+          <div class="version-select" id="version-select" onclick="toggleVersionDropdown()">
+            <span id="version-label">Select Version</span>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="version-dropdown" id="version-dropdown">
+            <div class="version-search-wrap">
+              <input type="text" class="version-search-input" id="version-search" placeholder="Search versions..." oninput="filterVersionDropdown(this)" onclick="event.stopPropagation()">
+            </div>
+
+            <div class="version-group-label">Release</div>
+            <div class="version-option" onclick="selectVersion('26.2-wasm','26.2 WASM (u0)',true)">
+              <img src="resources/main.png">
+              <span>26.2 (u0)</span><span class="version-badge wasm">WASM</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('26.1.2-wasm','26.1.2 WASM (u1)',true)">
+              <img src="resources/main.png">
+              <span>26.1.2 (u1)</span><span class="version-badge wasm">WASM</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('1.21.11-wasm','1.21.11 WASM (u1)',true)">
+              <img src="resources/main.png">
+              <span>1.21.11 (u1)</span><span class="version-badge wasm">WASM</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('1.20.6-wasm','1.20.6 WASM (u0)',true)">
+              <img src="resources/main.png">
+              <span>1.20.6 (u0)</span><span class="version-badge wasm">WASM</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('1.17.1-wasm','1.17.1 WASM (u1)',true)">
+              <img src="resources/main.png">
+              <span>1.17.1 (u1)</span><span class="version-badge wasm">WASM</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('1.16.5-wasm','1.16.5 WASM (u3)',true)">
+              <img src="resources/main.png">
+              <span>1.16.5 (u3)</span><span class="version-badge wasm">WASM</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('1.16.5','1.16.5 (u3)',false)">
+              <img src="resources/main.png">
+              <span>1.16.5 (u3)</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('1.14.4-wasm','1.14.4 WASM (u1)',true)">
+              <img src="resources/main.png">
+              <span>1.14.4 (u1)</span><span class="version-badge wasm">WASM</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('1.14.4','1.14.4 (u1)',false)">
+              <img src="resources/main.png">
+              <span>1.14.4 (u1)</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('1.13.2-wasm','1.13.2 WASM (u1)',true)">
+              <img src="resources/main.png">
+              <span>1.13.2 (u1)</span><span class="version-badge wasm">WASM</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('1.13.2','1.13.2 (u1)',false)">
+              <img src="resources/main.png">
+              <span>1.13.2 (u1)</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('1.12.2-wasm','1.12.2 WASM (u3)',true)">
+              <img src="resources/main.png">
+              <span>1.12.2 (u3)</span><span class="version-badge wasm">WASM</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('1.12.2','1.12.2 (u3)',false)">
+              <img src="resources/main.png">
+              <span>1.12.2 (u3)</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('1.8.8-wasm','1.8.8 WASM (u54)',true)">
+              <img src="resources/main.png">
+              <span>1.8.8 (u54-unoffical)</span><span class="version-badge wasm">WASM</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('1.8.8','1.8.8 (u54)',false)">
+              <img src="resources/main.png">
+              <span>1.8.8 (u54-unoffical)</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('1.7.10','1.7.10 (u0)',false)">
+              <img src="resources/main.png">
+              <span>1.7.10 (u0)</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('1.6.4','1.6.4',false)">
+              <img src="resources/main.png">
+              <span>1.6.4</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('1.5.2','1.5.2 (sp2.01)',false)">
+              <img src="resources/main.png">
+              <span>1.5.2 (sp2.01)</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('1.4.7-wasm','1.4.7 WASM',true)">
+              <img src="resources/main.png">
+              <span>1.4.7</span><span class="version-badge wasm">WASM</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('1.4.7','1.4.7',false)">
+              <img src="resources/main.png">
+              <span>1.4.7</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('1.3.2-wasm','1.3.2 WASM',true)">
+              <img src="resources/main.png">
+              <span>1.3.2</span><span class="version-badge wasm">WASM</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('1.2.5-wasm','1.2.5 WASM',true)">
+              <img src="resources/main.png">
+              <span>1.2.5</span><span class="version-badge wasm">WASM</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('1.2.5','1.2.5',false)">
+              <img src="resources/main.png">
+              <span>1.2.5</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('1.2.3-wasm','1.2.3 WASM',true)">
+              <img src="resources/main.png">
+              <span>1.2.3</span><span class="version-badge wasm">WASM</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('1.2.3','1.2.3',false)">
+              <img src="resources/main.png">
+              <span>1.2.3</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('1.1','1.1',false)">
+              <img src="resources/main.png">
+              <span>1.1</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('1.0','1.0',false)">
+              <img src="resources/main.png">
+              <span>1.0</span>
+            </div>
+
+            <div class="version-group-label">Beta</div>
+            <div class="version-option" onclick="selectVersion('beta-1.9-wasm','Beta 1.9 WASM',true)">
+              <img src="resources/main.png">
+              <span>Beta 1.9 Pre 5</span><span class="version-badge wasm">WASM</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('beta-1.9','Beta 1.9',false)">
+              <img src="resources/main.png">
+              <span>Beta 1.9 Pre 5</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('beta-1.8.1-wasm','Beta 1.8.1 WASM',true)">
+              <img src="resources/main.png">
+              <span>Beta 1.8.1</span><span class="version-badge wasm">WASM</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('beta-1.8.1','Beta 1.8.1',false)">
+              <img src="resources/main.png">
+              <span>Beta 1.8.1</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('beta-1.7.3','Beta 1.7.3',false)">
+              <img src="resources/main.png">
+              <span>Beta 1.7.3</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('beta-1.6.4','Beta 1.6.4',false)">
+              <img src="resources/main.png">
+              <span>Beta 1.6.4</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('beta-1.5','Beta 1.5',false)">
+              <img src="resources/main.png">
+              <span>Beta 1.5</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('beta-1.4','Beta 1.4',false)">
+              <img src="resources/main.png">
+              <span>Beta 1.4</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('beta-1.3-wasm','Beta 1.3 WASM',true)">
+              <img src="resources/main.png">
+              <span>Beta 1.3</span><span class="version-badge wasm">WASM</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('beta-1.3','Beta 1.3',false)">
+              <img src="resources/main.png">
+              <span>Beta 1.3</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('beta-1.2','Beta 1.2',false)">
+              <img src="resources/main.png">
+              <span>Beta 1.2</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('beta-1.1','Beta 1.1',false)">
+              <img src="resources/main.png">
+              <span>Beta 1.1</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('beta-1.0.2','Beta 1.0.2 WASM',true)">
+              <img src="resources/main.png">
+              <span>Beta 1.0.2</span><span class="version-badge wasm">WASM</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('beta-1.0','Beta 1.0',false)">
+              <img src="resources/main.png">
+              <span>Beta 1.0</span>
+            </div>
+
+            <div class="version-group-label">Alpha - Pre-Classic</div>
+            <div class="version-option" onclick="selectVersion('alpha-1.2.6','Alpha 1.2.6',false)">
+              <img src="resources/main.png">
+              <span>Alpha 1.2.6</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('alpha-1.1.2_01','Alpha 1.1.2_01',false)">
+              <img src="resources/main.png">
+              <span>Alpha 1.1.2_01</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('alpha-1.0.16_02-wasm','Alpha 1.0.16_02 WASM',true)">
+              <img src="resources/main.png">
+              <span>Alpha 1.0.16_02</span><span class="version-badge wasm">WASM</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('alpha-1.0.6_03','Alpha 1.0.6_03',false)">
+              <img src="resources/main.png">
+              <span>Alpha 1.0.6_03</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('alpha-1.0.4','Alpha 1.0.4',false)">
+              <img src="resources/main.png">
+              <span>Alpha 1.0.4</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('alpha-1.0.4','Alpha 1.0.4',false)">
+              <img src="resources/main.png">
+              <span>Alpha 1.0.4</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('alpha-1.0.1_01','Alpha 1.0.1_01',false)">
+              <img src="resources/main.png">
+              <span>Alpha 1.0.1_01</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('infdev-wasm','Infdev WASM',true)">
+              <img src="resources/main.png">
+              <span>Infdev</span><span class="version-badge wasm">WASM</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('indev-20100223-wasm','Indev 20100223',true)">
+              <img src="resources/main.png">
+              <span>Indev 20100223</span><span class="version-badge wasm">WASM</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('indev-20100219-wasm','Indev 20100219',true)">
+              <img src="resources/main.png">
+              <span>Indev 20100219</span><span class="version-badge wasm">WASM</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('indev','Indev',false)">
+              <img src="resources/main.png">
+              <span>Indev</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('4K','4K',false)">
+              <img src="resources/main.png">
+              <span>4K</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('classic-0.3.0-wasm','Classic 0.3.0 WASM',true)">
+              <img src="resources/main.png">
+              <span>Classic 0.3.0</span><span class="version-badge wasm">WASM</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('classic-0.0.25a-05-wasm','Classic 0.0.25a_05 WASM',true)">
+  <img src="resources/main.png">
+  <span>Classic 0.0.25a_05</span><span class="version-badge wasm">WASM</span>
+</div>
+<div class="version-option" onclick="selectVersion('classic-0.0.24a-03-wasm','Classic 0.0.24a_03 WASM',true)">
+  <img src="resources/main.png">
+  <span>Classic 0.0.24a_03</span><span class="version-badge wasm">WASM</span>
+</div>
+<div class="version-option" onclick="selectVersion('classic-0.0.23a-01-wasm','Classic 0.0.23a_01 WASM',true)">
+  <img src="resources/main.png">
+  <span>Classic 0.0.23a_01</span><span class="version-badge wasm">WASM</span>
+</div>
+<div class="version-option" onclick="selectVersion('classic-0.0.22a-05-wasm','Classic 0.0.22a_05 WASM',true)">
+  <img src="resources/main.png">
+  <span>Classic 0.0.22a_05</span><span class="version-badge wasm">WASM</span>
+</div>
+<div class="version-option" onclick="selectVersion('classic-0.0.21a-wasm','Classic 0.0.21a WASM',true)">
+  <img src="resources/main.png">
+  <span>Classic 0.0.21a</span><span class="version-badge wasm">WASM</span>
+</div>
+<div class="version-option" onclick="selectVersion('classic-0.0.20a-02-wasm','Classic 0.0.20a_02 WASM',true)">
+  <img src="resources/main.png">
+  <span>Classic 0.0.20a_02</span><span class="version-badge wasm">WASM</span>
+</div>
+<div class="version-option" onclick="selectVersion('classic-0.0.19a-06-wasm','Classic 0.0.19a_06 WASM',true)">
+  <img src="resources/main.png">
+  <span>Classic 0.0.19a_06</span><span class="version-badge wasm">WASM</span>
+</div>
+<div class="version-option" onclick="selectVersion('classic-0.0.18a-02-wasm','Classic 0.0.18a_02 WASM',true)">
+  <img src="resources/main.png">
+  <span>Classic 0.0.18a_02</span><span class="version-badge wasm">WASM</span>
+</div>
+<div class="version-option" onclick="selectVersion('classic-0.0.17a-wasm','Classic 0.0.17a WASM',true)">
+  <img src="resources/main.png">
+  <span>Classic 0.0.17a</span><span class="version-badge wasm">WASM</span>
+</div>
+<div class="version-option" onclick="selectVersion('classic-0.0.16a-02-wasm','Classic 0.0.16a_02 WASM',true)">
+  <img src="resources/main.png">
+  <span>Classic 0.0.16a_02</span><span class="version-badge wasm">WASM</span>
+</div>
+<div class="version-option" onclick="selectVersion('classic-0.0.15a-wasm','Classic 0.0.15a WASM',true)">
+  <img src="resources/main.png">
+  <span>Classic 0.0.15a</span><span class="version-badge wasm">WASM</span>
+</div>
+<div class="version-option" onclick="selectVersion('classic-0.0.14a-08-wasm','Classic 0.0.14a_08 WASM',true)">
+  <img src="resources/main.png">
+  <span>Classic 0.0.14a_08</span><span class="version-badge wasm">WASM</span>
+</div>
+<div class="version-option" onclick="selectVersion('classic-0.0.13a-03-wasm','Classic 0.0.13a_03 WASM',true)">
+  <img src="resources/main.png">
+  <span>Classic 0.0.13a_03</span><span class="version-badge wasm">WASM</span>
+</div>
+<div class="version-option" onclick="selectVersion('classic-0.0.12a-03-wasm','Classic 0.0.12a_03 WASM',true)">
+  <img src="resources/main.png">
+  <span>Classic 0.0.12a_03</span><span class="version-badge wasm">WASM</span>
+</div>
+            <div class="version-option" onclick="selectVersion('classic-0.0.11a-wasm','Classic 0.0.11a WASM',true)">
+              <img src="resources/main.png">
+              <span>Classic 0.0.11a</span><span class="version-badge wasm">WASM</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('pre-classic-rd-161348-wasm','Pre-Classic RD-161348 WASM',true)">
+<img src="resources/main.png">
+  <span>Pre-Classic RD-161348</span><span class="version-badge wasm">WASM</span>
+</div>
+<div class="version-option" onclick="selectVersion('pre-classic-rd-160052-wasm','Pre-Classic RD-160052 WASM',true)">
+  <img src="resources/main.png">
+  <span>Pre-Classic RD-160052</span><span class="version-badge wasm">WASM</span>
+</div>
+<div class="version-option" onclick="selectVersion('pre-classic-rd-132328-wasm','Pre-Classic RD-132328 WASM',true)">
+  <img src="resources/main.png">
+  <span>Pre-Classic RD-132328</span><span class="version-badge wasm">WASM</span>
+</div>
+<div class="version-option" onclick="selectVersion('pre-classic-rd-132211-wasm','Pre-Classic RD-132211 WASM',true)">
+  <img src="resources/main.png">
+  <span>Pre-Classic RD-132211</span><span class="version-badge wasm">WASM</span>
+</div>
+<div class="version-option" onclick="selectVersion('pre-classic-rd-131655-wasm','Pre-Classic RD-131655 WASM',true)">
+  <img src="resources/main.png">
+  <span>Pre-Classic RD-131655</span><span class="version-badge wasm">WASM</span>
+</div>
+
+          </div>
+        </div>
+
+        <!-- Mode badge (click to go to settings) -->
+        <div class="launch-mode-badge" onclick="redirectToSettings()" title="Change in Settings">
+          MODE: <span id="mode-badge-text">REGULAR</span>
+        </div>
+
+        <button class="play-button" id="play-btn" onclick="playGame()" disabled>LAUNCH</button>
+      </div>
+
+      <div class="bottom-bar">
+        <div class="status-line" id="status-line">READY</div>
+        <div class="credit">Built by Jon Stearns</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Loading overlay -->
+<div class="loading-overlay" id="loading-overlay">
+  <div class="loading-text" id="loading-text">FETCHING...</div>
+  <div class="loading-bar-wrap"><div class="loading-bar" id="loading-bar"></div></div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+</body>
+</html>

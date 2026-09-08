@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GX-Launcher</title>
+  <link rel="icon" type="image/png" href="resources/main.png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+<div class="launcher">
+
+  <div class="title-bar">
+    <div class="title-logo"><div class="title-dot"></div>GX-LAUNCHER <span class="ver">v2.2</span></div>
+    
+  </div>
+
+  <div class="content">
+    <div class="sidebar">
+      <div class="profile">
+        <div class="profile-label">Player</div>
+        <span class="profile-name" id="profile-name">Player</span>
+        <div class="profile-status"><div class="status-dot"></div>ONLINE</div>
+      </div>
+      <nav>
+        <div class="nav-section-label">Navigation</div>
+        <div class="nav-item" onclick="redirectToNews()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><path d="M4 4h16v14a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"/><line x1="4" y1="9" x2="20" y2="9"/><line x1="9" y1="4" x2="9" y2="9"/></svg>
+          Update Log
+        </div>
+        <div class="nav-item" onclick="redirectToMain()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="13" rx="1"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+          Game
+        </div>
+        <div class="nav-item" onclick="redirectToClients()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
+          Clients
+        </div>
+        <div class="nav-item selected">
+          <svg class="nav-svg" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Beta Clients
+        </div>
+        <div class="nav-item" onclick="redirectToServers()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="5" rx="1"/><rect x="2" y="10" width="20" height="5" rx="1"/><rect x="2" y="17" width="20" height="5" rx="1"/></svg>
+          Servers
+        </div>
+        <div class="nav-item" onclick="redirectToDownloads()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><line x1="12" y1="3" x2="12" y2="15"/><polyline points="7 10 12 15 17 10"/><line x1="4" y1="19" x2="20" y2="19"/></svg>
+          Downloads
+        </div>
+        <div class="nav-item" onclick="window.open('https://discord.gg/qQBamNZSwz', '_blank')">
+          <svg class="nav-svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.128 12.299 12.299 0 0 1-1.873.892.076.076 0 0 0-.04.106c.36.698.772 1.362 1.225 1.994a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.057c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.955 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+          </svg>
+          Discord
+        </div>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="nav-item" onclick="redirectToSettings()">
+                  <svg class="nav-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          Launcher Settings
+        </div>
+      </div>
+    </div>
+
+    <div class="main-panel">
+      <div class="top-bar">
+        <div class="game-title">GX-LAUNCHER <span>// BETA CLIENTS</span></div>
+        <div class="breadcrumb">HOME / BETA CLIENTS</div>
+      </div>
+
+      <div class="main-content">
+        <img src="./resources/otherclients.png" alt="" class="hero-image" onerror="this.style.display='none'">
+        <div class="hero-overlay"></div>
+      </div>
+
+      <div class="launch-bar">
+        <div class="version-wrapper">
+          <div class="version-select" id="version-select" onclick="toggleVersionDropdown()">
+            <span id="version-label">Select Client</span>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="version-dropdown" id="version-dropdown">
+            <div class="version-search-wrap">
+              <input type="text" class="version-search-input" id="version-search" placeholder="Search versions..." oninput="filterVersionDropdown(this)" onclick="event.stopPropagation()">
+            </div>
+            <div class="version-group-label">Beta Clients</div>
+            <div class="version-option" onclick="selectVersion('Tuff Client Beta','Tuff Client Beta 1.12.2',true)">
+              <img src="./game/Tuff Client Beta/favicon.png" onerror="this.style.display='none'">
+              <span>Tuff Client Beta 1.12.2</span><span class="version-badge wasm">WASM</span>
+            </div>
+            <div class="version-option" onclick="selectVersion('Modern Client','Modern Client (1.12.2-u2) WASM',true)">
+              <img src="./game/Modern Client/favicon.png" onerror="this.style.display='none'">
+              <span>Modern Client (1.12.2-u2)</span><span class="version-badge wasm">WASM</span>
+            </div>
+            </div>
+        </div>
+        <button class="play-button" id="play-btn" onclick="playGame()" disabled>LAUNCH</button>
+      </div>
+
+      <div class="bottom-bar">
+        <div class="status-line" id="status-line">READY</div>
+        <div class="credit">Built by Jon Stearns</div>
+      </div>
+    </div>
+    </div>
+</div>
+
+<div class="loading-overlay" id="loading-overlay">
+  <div class="loading-text" id="loading-text">FETCHING...</div>
+  <div class="loading-bar-wrap"><div class="loading-bar" id="loading-bar"></div></div>
+</div>
+<div class="toast" id="toast"></div>
+</body>
+</html>

@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GX-Launcher</title>
+  <link rel="icon" type="image/png" href="resources/main.png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+  <style>
+    /* Servers-specific overrides */
+    .servers-top-bar {
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      padding: 0 18px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .servers-title {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .servers-title span { color: var(--accent); }
+    .status-indicator {
+      display: inline-block;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      animation: gx-pulse 2s infinite;
+    }
+    .status-indicator.active  { background: var(--accent); box-shadow: 0 0 5px var(--accent); }
+    .status-indicator.paused  { background: #ffaa00; box-shadow: 0 0 5px #ffaa00; animation: none; }
+
+    .refresh-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-dim);
+    }
+    .refresh-controls select {
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border2);
+      padding: 4px 7px;
+      font-family: var(--mono);
+      font-size: 10px;
+      cursor: pointer;
+      outline: none;
+    }
+    .refresh-controls select:focus { border-color: var(--accent); }
+    .refresh-btn {
+      background: var(--accent-dim);
+      border: none;
+      color: #fff;
+      font-family: var(--mono);
+      font-size: 10px;
+      padding: 4px 10px;
+      cursor: pointer;
+      letter-spacing: 0.08em;
+      transition: background 0.13s;
+    }
+    .refresh-btn:hover { background: var(--accent); }
+
+    /* Server grid */
+    .servers-content {
+      flex: 1;
+      padding: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-content: flex-start;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border2) var(--bg3);
+    }
+    .servers-content::-webkit-scrollbar { width: 5px; }
+    .servers-content::-webkit-scrollbar-track { background: var(--bg3); }
+    .servers-content::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+    /* ── Server card ── */
+    .server-card {
+      width: calc(50% - 5px);
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent-dim);
+      padding: 10px 12px;
+      position: relative;
+      transition: border-color 0.13s, box-shadow 0.13s;
+      box-sizing: border-box;
+    }
+    .server-card:hover {
+      border-color: var(--accent);
+      border-left-color: var(--accent);
+      box-shadow: 0 0 14px var(--accent-glow);
+    }
+    .server-card.online  { border-left-color: var(--accent); }
+    .server-card.offline { border-left-color: #555; opacity: 0.7; }
+
+    /* Header row: favicon + IP + status dot + copy */
+    .server-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 7px;
+    }
+    .server-favicon {
+      width: 32px;
+      height: 32px;
+      image-rendering: pixelated;
+      flex-shrink: 0;
+      border: 1px solid var(--border2);
+    }
+    .server-favicon-placeholder {
+      width: 32px;
+      height: 32px;
+      flex-shrink: 0;
+      border: 1px solid var(--border2);
+      background: var(--bg3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+    .server-id-block {
+      flex: 1;
+      overflow: hidden;
+    }
+    .server-name {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: bold;
+      color: var(--text-bright, #fff);
+      letter-spacing: 0.06em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .server-ip {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-bright, #fff);
+      letter-spacing: 0.06em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .server-version {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--text-dim);
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .server-online-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .server-online-dot.up   { background: var(--accent); box-shadow: 0 0 5px var(--accent); }
+    .server-online-dot.down { background: #555; }
+
+    .copy-btn {
+      background: none;
+      border: 1px solid var(--border2);
+      color: var(--text-dim);
+      font-family: var(--mono);
+      font-size: 9px;
+      padding: 3px 8px;
+      cursor: pointer;
+      letter-spacing: 0.08em;
+      transition: border-color 0.13s, color 0.13s;
+      flex-shrink: 0;
+      text-transform: uppercase;
+    }
+    .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* MOTD */
+    .server-motd {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-dim);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 7px;
+      min-height: 14px;
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+    }
+
+    /* Stats row */
+    .server-stats {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .stat-block {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .stat-label {
+      font-family: var(--mono);
+      font-size: 8px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .stat-value {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--accent);
+      font-weight: bold;
+      line-height: 1;
+    }
+    .stat-value.offline-val { color: #555; font-size: 11px; }
+
+    /* Player bar */
+    .player-bar-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .player-bar-bg {
+      height: 4px;
+      background: var(--bg3, #222);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .player-bar-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: width 0.4s ease;
+    }
+    .player-bar-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--text-dim);
+    }
+
+    /* Ping badge */
+    .ping-badge {
+      font-family: var(--mono);
+      font-size: 9px;
+      padding: 2px 6px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+    .ping-badge.good { background: rgba(0,200,80,0.15); color: #0c8; border: 1px solid rgba(0,200,80,0.3); }
+    .ping-badge.ok   { background: rgba(255,180,0,0.15); color: #fb0; border: 1px solid rgba(255,180,0,0.3); }
+    .ping-badge.bad  { background: rgba(255,60,60,0.15); color: #f55; border: 1px solid rgba(255,60,60,0.3); }
+
+    /* Timestamp */
+    .last-updated {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--text-dim);
+      margin-top: 7px;
+      text-align: right;
+    }
+
+    /* Skeleton shimmer while loading */
+    .skeleton {
+      background: linear-gradient(90deg, var(--border) 25%, var(--border2) 50%, var(--border) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 2px;
+      height: 10px;
+    }
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* Copy feedback toast */
+    .copy-feedback {
+      position: fixed;
+      top: 18px;
+      right: 18px;
+      background: var(--panel);
+      border: 1px solid var(--accent);
+      color: var(--text-bright, #fff);
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 9px 18px;
+      z-index: 9999;
+      box-shadow: 0 0 18px var(--accent-glow);
+      animation: slideInRight 0.25s ease;
+    }
+    @keyframes slideInRight {
+      from { transform: translateX(120px); opacity: 0; }
+      to   { transform: translateX(0);    opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+<div class="launcher">
+
+  <div class="title-bar">
+    <div class="title-logo"><div class="title-dot"></div>GX-LAUNCHER <span class="ver">v2.2</span></div>
+  </div>
+
+  <div class="content">
+    <div class="sidebar">
+      <div class="profile">
+        <div class="profile-label">Player</div>
+        <span class="profile-name" id="profile-name">Player</span>
+        <div class="profile-status"><div class="status-dot"></div>ONLINE</div>
+      </div>
+      <nav>
+        <div class="nav-section-label">Navigation</div>
+        <div class="nav-item" onclick="redirectToNews()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><path d="M4 4h16v14a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"/><line x1="4" y1="9" x2="20" y2="9"/><line x1="9" y1="4" x2="9" y2="9"/></svg>
+          Update Log
+        </div>
+        <div class="nav-item" onclick="redirectToMain()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="13" rx="1"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+          Game
+        </div>
+        <div class="nav-item" onclick="redirectToClients()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
+          Clients
+        </div>
+        <div class="nav-item" onclick="redirectToOtherClients()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Beta Clients
+        </div>
+        <div class="nav-item selected">
+          <svg class="nav-svg" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="5" rx="1"/><rect x="2" y="10" width="20" height="5" rx="1"/><rect x="2" y="17" width="20" height="5" rx="1"/></svg>
+          Servers
+        </div>
+        <div class="nav-item" onclick="redirectToDownloads()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><line x1="12" y1="3" x2="12" y2="15"/><polyline points="7 10 12 15 17 10"/><line x1="4" y1="19" x2="20" y2="19"/></svg>
+          Downloads
+        </div>
+        <div class="nav-item" onclick="window.open('https://discord.gg/qQBamNZSwz', '_blank')">
+          <svg class="nav-svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.128 12.299 12.299 0 0 1-1.873.892.076.076 0 0 0-.04.106c.36.698.772 1.362 1.225 1.994a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.057c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.955 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+          </svg>
+          Discord
+        </div>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="nav-item" onclick="redirectToSettings()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          Launcher Settings
+        </div>
+      </div>
+    </div>
+
+    <div class="main-panel">
+      <div class="servers-top-bar">
+        <div class="servers-title">
+          GX-LAUNCHER <span>// SERVERS</span>
+          <span class="status-indicator active" id="statusIndicator"></span>
+        </div>
+        <div class="refresh-controls">
+          <span id="updateIntervalText">Updates every 30s</span>
+          <select id="intervalSelect">
+            <option value="15">15 seconds</option>
+            <option value="30" selected>30 seconds</option>
+            <option value="60">60 seconds</option>
+            <option value="120">2 minutes</option>
+            <option value="300">5 minutes</option>
+          </select>
+          <button class="refresh-btn" id="pauseButton">Pause</button>
+          <button class="refresh-btn" id="refreshButton">Refresh All</button>
+        </div>
+      </div>
+
+      <div class="servers-content" id="serverGrid"></div>
+
+      <div class="bottom-bar">
+        <div class="status-line" id="status-line">SERVERS</div>
+        <div class="credit">Built by Jon Stearns</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  // ── Config ─────────────────────────────────────────────────────────────────
+  const SERVERS = [
+    'wss://mc.arch.lol',
+    'wss://zentic.cc',
+    'wss://mc.zyth.me',
+    'wss://play.webmc.fun',
+    'wss://asianf4rmer.minecraft.pe',
+    'wss://sus.shhnowisnottheti.me',
+    'wss://aeon-network.net',
+    'wss://adderall.ir',
+    'wss://mc.lamplifesteal.xyz',
+    'wss://vanillamc.org',
+    'wss://mc.voidsent.net',
+    'wss://mc.dssx.uk',
+    'wss://xena.wtf',
+    'wss://tuff.ws'
+  ];
+
+  // ── State ──────────────────────────────────────────────────────────────────
+  let updateIntervalMs = 30000;
+  let isPaused = false;
+  let globalTimer = null;
+
+  // Per-server: { host, card, els:{}, lastData, lastFetch }
+  const serverStates = [];
+
+  // ── Build cards ────────────────────────────────────────────────────────────
+  const grid = document.getElementById('serverGrid');
+
+  SERVERS.forEach(host => {
+    const card = document.createElement('div');
+    card.className = 'server-card';
+    card.innerHTML = buildCardSkeleton(host);
+    grid.appendChild(card);
+
+    const els = {
+      favicon:    card.querySelector('.server-favicon-wrap'),
+      name:       card.querySelector('.server-name'),
+      ip:         card.querySelector('.server-ip'),
+      version:    card.querySelector('.server-version'),
+      dot:        card.querySelector('.server-online-dot'),
+      motd:       card.querySelector('.server-motd'),
+      players:    card.querySelector('.stat-value.players'),
+      maxPlayers: card.querySelector('.stat-value.max-players'),
+      barFill:    card.querySelector('.player-bar-fill'),
+      barLabel:   card.querySelector('.player-bar-label'),
+      ping:       card.querySelector('.ping-badge'),
+      timestamp:  card.querySelector('.last-updated'),
+      copyBtn:    card.querySelector('.copy-btn'),
+    };
+
+    els.copyBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(host)
+        .then(() => showCopyFeedback(host))
+        .catch(() => alert('Failed to copy IP'));
+    });
+
+    const state = { host, card, els, lastData: null, lastFetch: null };
+    serverStates.push(state);
+
+    // Stagger initial fetches so we don't hammer the API all at once
+    fetchServer(state);
+  });
+
+  // ── Fetch & render ─────────────────────────────────────────────────────────
+  async function fetchServer(state) {
+    if (isPaused) return;
+    const t0 = Date.now();
+    try {
+      const ws     = new WebSocket(state.host);
+
+      let json;
+      let icon;
+
+      ws.onopen    = () => {
+        ws.send('Accept: MOTD')
+      };
+
+      ws.onmessage = async (ev) => {
+        let render = true;
+
+        const ping = Date.now() - t0;
+
+        if (typeof ev.data === 'string') {
+          data = JSON.parse(ev.data);
+          state.lastData  = data;
+          state.lastFetch = new Date();
+          if (data?.data?.icon) render = false;
+        } else {
+          const buffer    = await ev.data.arrayBuffer();
+          const rgba      = new Uint8ClampedArray(buffer);
+          const canvas    = document.createElement('canvas');
+          canvas.width    = 64;
+          canvas.height   = 64;
+          const ctx       = canvas.getContext('2d');
+          const imageData = new ImageData(rgba, 64, 64);
+          ctx.putImageData(imageData, 0, 0);
+          const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+          icon       = URL.createObjectURL(blob);
+        }
+
+        if (render) {
+          renderServer(state, { ...data, icon, online: true }, ping);
+          ws.close();
+        }
+      };
+
+      ws.onerror   = () => {
+        renderOffline(state);
+      };
+    } catch (e) {
+      console.error(e);
+      renderOffline(state);
+    }
+  }
+
+  function renderServer(state, data, pingMs) {
+    const { els, card } = state;
+    const online = data.online === true;
+
+    card.className = 'server-card ' + (online ? 'online' : 'offline');
+
+    // Strip skeleton shimmer from version + motd (only needed first render)
+    els.version.classList.remove('skeleton');
+    els.version.style.removeProperty('width');
+    els.version.style.removeProperty('margin-top');
+    els.motd.classList.remove('skeleton');
+    els.motd.style.removeProperty('height');
+    els.motd.style.removeProperty('width');
+    els.motd.style.removeProperty('margin-bottom');
+
+    // Favicon
+    if (online && data.icon) {
+      els.favicon.innerHTML = `<img class="server-favicon" src="${data.icon}" alt="">`;
+    } else {
+      els.favicon.innerHTML = `<div class="server-favicon-placeholder">⬛</div>`;
+    }
+
+    if (online) {
+      if (data.name !== 'EaglercraftXServer') {
+        els.name.textContent = data.name;
+      } else {
+        els.name.textContent = state.host.split('://').pop();
+      }
+    }
+
+    // IP stays as-is
+    els.ip.textContent = state.host;
+
+    // Version
+    if (online && data.version) {
+      els.version.textContent = data.version;
+    } else {
+      els.version.textContent = online ? '' : 'Offline';
+    }
+
+    // Online dot
+    els.dot.className = 'server-online-dot ' + (online ? 'up' : 'down');
+
+    // MOTD — strip §color codes
+    if (online && data?.data?.motd) {
+      if (data.data.motd[0].includes('\n')) data.data.motd = data.data.motd[0].split('\n');
+      for (const [i, line] of data.data.motd.entries()) {
+        if (i <= 1) {
+          const el = els.motd.querySelector('.server-motd-line-' + i);
+          el.textContent = line.replace(/§./g, '').trim();
+        }
+      }
+    } else {
+      els.motd.innerHTML = '';
+      els.motd.textContent = online ? '' : 'Could not connect to server.';
+    }
+
+    // Players
+    if (online) {
+      const cur = data?.data?.online ?? 0;
+      const max = data?.data?.max   ?? 0;
+      const pct = max > 0 ? Math.min((cur / max) * 100, 100) : 0;
+      els.players.textContent    = cur;
+      els.maxPlayers.textContent = max;
+      els.barFill.style.width    = pct + '%';
+      els.barLabel.textContent   = `${cur} / ${max} players`;
+      els.players.className      = 'stat-value players';
+    } else {
+      els.players.textContent    = '—';
+      els.maxPlayers.textContent = '—';
+      els.barFill.style.width    = '0%';
+      els.barLabel.textContent   = 'No data';
+      els.players.className      = 'stat-value players offline-val';
+    }
+
+    // Ping badge
+    if (online) {
+      const cls = pingMs < 100 ? 'good' : pingMs < 250 ? 'ok' : 'bad';
+      els.ping.textContent  = pingMs + 'ms';
+      els.ping.className    = 'ping-badge ' + cls;
+    } else {
+      els.ping.textContent = 'OFFLINE';
+      els.ping.className   = 'ping-badge bad';
+    }
+
+    els.timestamp.textContent = 'Updated ' + fmtTime(state.lastFetch);
+  }
+
+  function renderOffline(state) {
+    renderServer(state, { online: false }, 0);
+  }
+
+  // ── Interval management ────────────────────────────────────────────────────
+  function startGlobalInterval() {
+    if (globalTimer) clearInterval(globalTimer);
+    globalTimer = setInterval(() => {
+      if (!isPaused) {
+        serverStates.forEach((s, i) =>
+          setTimeout(() => fetchServer(s), i * 200)
+        );
+      }
+    }, updateIntervalMs);
+  }
+  startGlobalInterval();
+
+  // Timestamp updater
+  setInterval(() => {
+    if (isPaused) return;
+    serverStates.forEach(s => {
+      if (!s.lastFetch) return;
+      s.els.timestamp.textContent = 'Updated ' + fmtTime(s.lastFetch);
+    });
+  }, 5000);
+
+  // ── Controls ───────────────────────────────────────────────────────────────
+  document.getElementById('intervalSelect').addEventListener('change', e => {
+    const v = parseInt(e.target.value);
+    updateIntervalMs = v * 1000;
+    document.getElementById('updateIntervalText').textContent = `Updates every ${v}s`;
+    startGlobalInterval();
+  });
+
+  const pauseBtn  = document.getElementById('pauseButton');
+  const indicator = document.getElementById('statusIndicator');
+  pauseBtn.addEventListener('click', () => {
+    isPaused = !isPaused;
+    pauseBtn.textContent = isPaused ? 'Resume' : 'Pause';
+    indicator.className  = 'status-indicator ' + (isPaused ? 'paused' : 'active');
+  });
+
+  document.getElementById('refreshButton').addEventListener('click', () => {
+    serverStates.forEach((s, i) =>
+      setTimeout(() => fetchServer(s), i * 200)
+    );
+  });
+
+  // ── Helpers ────────────────────────────────────────────────────────────────
+  function buildCardSkeleton(host) {
+    return `
+      <div class="server-header">
+        <div class="server-favicon-wrap">
+          <div class="server-favicon-placeholder">⬛</div>
+        </div>
+        <div class="server-id-block">
+          <div class="server-name"></div>
+          <div class="server-ip">${host}</div>
+          <div class="server-version skeleton" style="width:80px;margin-top:4px;"></div>
+        </div>
+        <span class="server-online-dot down"></span>
+        <button class="copy-btn">Copy IP</button>
+      </div>
+      <div class="server-motd skeleton" style="height:10px;width:90%;margin-bottom:7px;">
+        <span class="server-motd-line-0"></span>
+        <span class="server-motd-line-1"></span>
+      </div>
+      <div class="server-stats">
+        <div class="stat-block">
+          <div class="stat-label">Online</div>
+          <div class="stat-value players offline-val">—</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-label">Max</div>
+          <div class="stat-value max-players offline-val">—</div>
+        </div>
+        <div class="player-bar-wrap">
+          <div class="player-bar-bg"><div class="player-bar-fill" style="width:0%"></div></div>
+          <div class="player-bar-label">Loading...</div>
+        </div>
+        <span class="ping-badge bad">—ms</span>
+      </div>
+      <div class="last-updated">Loading...</div>`;
+  }
+
+  function fmtTime(date) {
+    if (!date) return '—';
+    const diff = Math.floor((Date.now() - date) / 1000);
+    if (diff < 5)  return 'just now';
+    if (diff < 60) return `${diff}s ago`;
+    return `${Math.floor(diff / 60)}m ago`;
+  }
+
+  function showCopyFeedback(host) {
+    const el = document.createElement('div');
+    el.className   = 'copy-feedback';
+    el.textContent = 'Copied: ' + host;
+    document.body.appendChild(el);
+    setTimeout(() => {
+      el.style.opacity    = '0';
+      el.style.transition = 'opacity 0.3s';
+      setTimeout(() => el.remove(), 300);
+    }, 2000);
+  }
+})();
+</script>
+</body>
+</html>
