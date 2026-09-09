@@ -303,7 +303,10 @@ function getEffectiveLaunchMethod() {
 async function playGame() {
     if (!_selectedVersion) { showToast('Select a version first.', true); return; }
 
-    const method = getEffectiveLaunchMethod();
+    // HARD OVERRIDE: on Cloudflare Workers (*.workers.dev), always use blob.
+    const onCloudflare = location.hostname.endsWith('.workers.dev');
+    const method = onCloudflare ? 'blob' : (getCookie('launchMethod') || 'regular');
+
     setStatus('CHECKING SOURCE...');
     const absUrl = await resolveGameUrl(_selectedVersion);
     const popupFeatures = 'width=1280,height=720,toolbar=0,menubar=0,location=0,status=0';
