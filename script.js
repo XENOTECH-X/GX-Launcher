@@ -1,5 +1,5 @@
 /* ============================================================
-   GX-LAUNCHER 1.10 — SHARED SCRIPT
+   GX-LAUNCHER 2.2 SCRIPT
    ============================================================ */
 
 // ===== STORAGE HELPERS =====
@@ -252,13 +252,60 @@ function injectServersIntoHtml(html) {
     }
 }
 
+// ===== ASSET SOURCE (round-robin across GitHub mirrors) =====
+// Each entry is a raw.githack base for a repo/fork hosting an identical copy of game/.
+// Tried in order; if one fails (rate limit, down, etc.) the next is used automatically.
+const GX_SOURCES = [
+    'https://raw.githack.com/XENOTECH-X/GX-Launcher/main',
+    'https://raw.githack.com/GX-Launcher/GX-Launcher.github.io/main'
+    // add more fork URLs here as you create them, e.g.:
+    // 'https://raw.githack.com/SOME-OTHER-ACCOUNT/GX-Launcher/main',
+];
+
+function gxBuildUrl(base, folder) {
+    return base + '/game/' + folder.split('/').map(encodeURIComponent).join('/') + '/index.html';
+}
+
+// Tries each source in order (HEAD request) and returns the first that responds OK.
+// Falls back to the last source untested if all HEAD checks fail (better to try
+// launching with something than to give up entirely).
+async function resolveGameUrl(folder) {
+    for (const base of GX_SOURCES) {
+        const url = gxBuildUrl(base, folder);
+        try {
+            const res = await fetch(url, { method: 'HEAD' });
+            if (res.ok) return url;
+        } catch (e) { /* try next source */ }
+    }
+    // Everything failed HEAD checks — return the first source anyway so the
+    // user gets a real error instead of nothing happening.
+    return gxBuildUrl(GX_SOURCES[0], folder);
+}
+
+// ===== ENVIRONMENT DETECTION =====
+// Cloudflare Workers deployments are served from *.workers.dev (or a custom
+// domain you configure). On Cloudflare, 'regular' and 'popup' launch modes
+// don't work reliably, so force 'blob' there. Everything else (GitHub Pages,
+// local file, custom domains not on the list) behaves normally.
+function isRunningOnCloudflare() {
+    return /\.workers\.dev$/i.test(location.hostname);
+}
+
+function getEffectiveLaunchMethod() {
+    const saved = getCookie('launchMethod') || 'regular';
+    if (isRunningOnCloudflare() && (saved === 'regular' || saved === 'popup')) {
+        return 'blob';
+    }
+    return saved;
+}
+
 // ===== LAUNCH LOGIC =====
-function playGame() {
+async function playGame() {
     if (!_selectedVersion) { showToast('Select a version first.', true); return; }
 
-    const method = getCookie('launchMethod') || 'regular';
-    const relUrl = 'game/' + _selectedVersion + '/index.html';
-    const absUrl = new URL(relUrl, location.href).href;
+    const method = getEffectiveLaunchMethod();
+    setStatus('CHECKING SOURCE...');
+    const absUrl = await resolveGameUrl(_selectedVersion);
     const popupFeatures = 'width=1280,height=720,toolbar=0,menubar=0,location=0,status=0';
     const wispOn = isWispEnabled();
 
@@ -670,6 +717,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const badge = document.getElementById('mode-badge-text');
     const modeLabels = { regular:'REGULAR', 'about-blank':'ABOUT:BLANK', 'data-uri':'DATA URI', blob:'BLOB URL', popup:'POPUP' };
     if (badge) badge.textContent = modeLabels[savedMode] || savedMode.toUpperCase();
+
+    // On Cloudflare, Regular and Popup modes don't work reliably — disable
+    // their cards on the settings page so users can't select something that
+    // silently gets overridden at launch time.
+    if (isRunningOnCloudflare()) {
+        document.querySelectorAll('.mode-card[data-mode="regular"], .mode-card[data-mode="popup"]').forEach(c => {
+            c.classList.add('disabled');
+            c.style.opacity = '0.4';
+            c.style.pointerEvents = 'none';
+            c.title = 'Not available when running on Cloudflare — use Blob URL or About:Blank instead.';
+        });
+    }
 
     // Restore WISP settings on settings page
     const wispEnabled = isWispEnabled();
