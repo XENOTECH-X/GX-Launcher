@@ -1,5 +1,5 @@
 /* ============================================================
-   GX-LAUNCHER 2.2 SCRIPT fix
+   GX-LAUNCHER 2.2 SCRIPT
    ============================================================ */
 
 // ===== STORAGE HELPERS =====
@@ -129,6 +129,21 @@ document.addEventListener('keydown', e => {
     }
 });
 
+// ===== ENVIRONMENT DETECTION =====
+// Cloudflare Workers deployments are served from *.workers.dev. On Cloudflare,
+// 'regular' and 'popup' launch modes don't work reliably, so the badge and the
+// actual launch logic both force 'blob' there. Everything else (GitHub Pages,
+// custom domains, local file) behaves normally using the saved setting.
+function isRunningOnCloudflare() {
+    return location.hostname.endsWith('.workers.dev')
+        || location.hostname.endsWith('.bitbucket.io');
+}
+
+function getEffectiveLaunchMethod() {
+    if (isRunningOnCloudflare()) return 'blob';
+    return getCookie('launchMethod') || 'regular';
+}
+
 function selectVersion(path, label, isWasm) {
     _selectedVersion = path;
     const lbl = document.getElementById('version-label');
@@ -139,7 +154,7 @@ function selectVersion(path, label, isWasm) {
     if (btn) btn.disabled = false;
     document.querySelectorAll('.version-option').forEach(o => o.classList.remove('active-ver'));
     if (event && event.currentTarget) event.currentTarget.classList.add('active-ver');
-    const method = getCookie('launchMethod') || 'regular';
+    const method = getEffectiveLaunchMethod();
     const modeLabels = { regular:'REGULAR', 'about-blank':'ABOUT:BLANK', 'data-uri':'DATA URI', blob:'BLOB URL', popup:'POPUP' };
     const badge = document.getElementById('mode-badge-text');
     if (badge) badge.textContent = modeLabels[method] || method.toUpperCase();
@@ -266,10 +281,17 @@ function gxBuildUrl(base, folder) {
     return base + '/game/' + folder.split('/').map(encodeURIComponent).join('/') + '/index.html';
 }
 
-// Tries each source in order (HEAD request) and returns the first that responds OK.
-// Falls back to the last source untested if all HEAD checks fail (better to try
-// launching with something than to give up entirely).
+// Tries the local same-origin path first (works when game/ actually exists
+// alongside this page, e.g. on GitHub Pages). Falls back to GX_SOURCES
+// mirrors only if that fails (e.g. on Cloudflare/Bitbucket where the big
+// game files were intentionally excluded from the deploy).
 async function resolveGameUrl(folder) {
+    const localUrl = new URL('game/' + folder.split('/').map(encodeURIComponent).join('/') + '/index.html', location.href).href;
+    try {
+        const res = await fetch(localUrl, { method: 'HEAD' });
+        if (res.ok) return localUrl;
+    } catch (e) { /* fall through to mirrors */ }
+
     for (const base of GX_SOURCES) {
         const url = gxBuildUrl(base, folder);
         try {
@@ -277,26 +299,9 @@ async function resolveGameUrl(folder) {
             if (res.ok) return url;
         } catch (e) { /* try next source */ }
     }
-    // Everything failed HEAD checks — return the first source anyway so the
-    // user gets a real error instead of nothing happening.
+    // Everything failed — return the first mirror anyway so the user gets
+    // a real error instead of nothing happening.
     return gxBuildUrl(GX_SOURCES[0], folder);
-}
-
-// ===== ENVIRONMENT DETECTION =====
-// Cloudflare Workers deployments are served from *.workers.dev (or a custom
-// domain you configure). On Cloudflare, 'regular' and 'popup' launch modes
-// don't work reliably, so force 'blob' there. Everything else (GitHub Pages,
-// local file, custom domains not on the list) behaves normally.
-function isRunningOnCloudflare() {
-    return /\.workers\.dev$/i.test(location.hostname);
-}
-
-function getEffectiveLaunchMethod() {
-    const saved = getCookie('launchMethod') || 'regular';
-    if (isRunningOnCloudflare() && (saved === 'regular' || saved === 'popup')) {
-        return 'blob';
-    }
-    return saved;
 }
 
 // ===== LAUNCH LOGIC =====
@@ -304,8 +309,9 @@ async function playGame() {
     if (!_selectedVersion) { showToast('Select a version first.', true); return; }
 
     // HARD OVERRIDE: on Cloudflare Workers (*.workers.dev), always use blob.
-    const onCloudflare = location.hostname.endsWith('.workers.dev');
-    const method = onCloudflare ? 'blob' : (getCookie('launchMethod') || 'regular');
+    // No cookie, no settings page involvement — this check happens first,
+    // every time, regardless of anything else.
+    const method = getEffectiveLaunchMethod();
 
     setStatus('CHECKING SOURCE...');
     const absUrl = await resolveGameUrl(_selectedVersion);
@@ -719,7 +725,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     const badge = document.getElementById('mode-badge-text');
     const modeLabels = { regular:'REGULAR', 'about-blank':'ABOUT:BLANK', 'data-uri':'DATA URI', blob:'BLOB URL', popup:'POPUP' };
-    if (badge) badge.textContent = modeLabels[savedMode] || savedMode.toUpperCase();
+    const effectiveMode = getEffectiveLaunchMethod();
+    if (badge) badge.textContent = modeLabels[effectiveMode] || effectiveMode.toUpperCase();
 
     // On Cloudflare, Regular and Popup modes don't work reliably — disable
     // their cards on the settings page so users can't select something that
