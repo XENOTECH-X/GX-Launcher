@@ -703,6 +703,14 @@ const DOWNLOAD_GROUPS = [
         ]
       },
       {
+        "folder": "Reflex Client",
+        "label": "Reflex Client (1.8.8 u53)",
+        "multi": false,
+        "files": [
+          "index.html"
+        ]
+      },
+      {
         "folder": "Kozmo Client",
         "label": "Kozmo Client (1.12.2 u2)",
         "multi": false,
