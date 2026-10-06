@@ -799,6 +799,21 @@ const DOWNLOAD_GROUPS = [
         ]
       },
       {
+        "folder": "EB Client",
+        "label": "EB Client OG (1.8.8 u53)",
+        "multi": false,
+        "files": [
+          "index.html"
+        ]
+      },{
+        "folder": "Eaglet",
+        "label": "Eaglet (1.8.8 u53)",
+        "multi": false,
+        "files": [
+          "index.html"
+        ]
+      },
+      {
         "folder": "Eaglerforge",
         "label": "Eaglerforge (1.8.8-u31)",
         "multi": true,
