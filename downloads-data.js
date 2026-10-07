@@ -5,6 +5,14 @@ const DOWNLOAD_GROUPS = [
     "group": "Release",
     "items": [
       {
+        "folder": "26.3-wasm",
+        "label": "26.3 WASM (u0)",
+        "multi": false,
+        "files": [
+          "index.html"
+        ]
+      },
+      {
         "folder": "26.2-wasm",
         "label": "26.2 WASM (u0)",
         "multi": false,
@@ -166,6 +174,14 @@ const DOWNLOAD_GROUPS = [
         ]
       },
       {
+        "folder": "1.5.2-wasm",
+        "label": "1.5.2 WASM",
+        "multi": false,
+        "files": [
+          "index.html"
+        ]
+      },
+      {
         "folder": "1.5.2",
         "label": "1.5.2 (sp2.01)",
         "multi": true,
@@ -245,6 +261,14 @@ const DOWNLOAD_GROUPS = [
           "index.html"
         ]
       },
+      {
+        "folder": "1.0-wasm",
+        "label": "1.0 WASM",
+        "multi": false,
+        "files": [
+          "index.html"
+        ]
+      }
       {
         "folder": "1.0",
         "label": "1.0",
@@ -385,6 +409,14 @@ const DOWNLOAD_GROUPS = [
   {
     "group": "Alpha / Pre-Classic",
     "items": [
+      {
+        "folder": "alpha-1.2.6-wasm",
+        "label": "Alpha 1.2.6 WASM",
+        "multi": false,
+        "files": [
+          "index.html"
+        ]
+      },
       {
         "folder": "alpha-1.2.6",
         "label": "Alpha 1.2.6",
@@ -799,21 +831,6 @@ const DOWNLOAD_GROUPS = [
         ]
       },
       {
-        "folder": "EB Client",
-        "label": "EB Client OG (1.8.8 u53)",
-        "multi": false,
-        "files": [
-          "index.html"
-        ]
-      },{
-        "folder": "Eaglet",
-        "label": "Eaglet (1.8.8 u53)",
-        "multi": false,
-        "files": [
-          "index.html"
-        ]
-      },
-      {
         "folder": "Eaglerforge",
         "label": "Eaglerforge (1.8.8-u31)",
         "multi": true,
@@ -847,6 +864,14 @@ const DOWNLOAD_GROUPS = [
       {
         "folder": "Forge 1.6.4",
         "label": "Forge 1.6.4",
+        "multi": false,
+        "files": [
+          "index.html"
+        ]
+      },
+      {
+        "folder": "Eaglet",
+        "label": "Eaglet (1.8.8-u53) WASM",
         "multi": false,
         "files": [
           "index.html"
