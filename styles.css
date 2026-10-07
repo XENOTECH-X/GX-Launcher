@@ -16,10 +16,11 @@
   --bg3:         #181818;
   --panel:       #141414;
   --border:      #2a2a2a;
-  --border2:     #3a0000;
+  --border2:     #404040;
   --text:        #cccccc;
   --text-dim:    #555555;
   --text-bright: #eeeeee;
+  --hover:       rgba(255,255,255,0.035);
   --mono:        'Share Tech Mono', monospace;
   --sans:        'Rajdhani', 'Segoe UI', sans-serif;
 }
@@ -30,7 +31,7 @@
   --accent-hi:   #00ff55;
   --accent-dim:  #006622;
   --accent-glow: rgba(0, 180, 60, 0.15);
-  --border2:     #003318;
+  --border2:     #404040;
 }
 [data-theme="blood"] {
   --accent:      #cc0000;
@@ -71,6 +72,53 @@
   --bg2:         #100d00;
   --bg3:         #181200;
   --panel:       #130f00;
+}
+
+[data-theme="blue"] {
+  --accent:      #3d8bff;
+  --accent-hi:   #6aa8ff;
+  --accent-dim:  #1c4a99;
+  --accent-glow: rgba(60, 130, 255, 0.16);
+  --border2:     #404040;
+}
+[data-theme="amber-grey"] {
+  --accent:      #e07b00;
+  --accent-hi:   #ffa326;
+  --accent-dim:  #8a4a00;
+  --accent-glow: rgba(224, 123, 0, 0.16);
+  --border2:     #404040;
+}
+[data-theme="matrix"] {
+  --accent:      #00cc44;
+  --accent-hi:   #00ff55;
+  --accent-dim:  #006622;
+  --accent-glow: rgba(0, 180, 60, 0.15);
+  --bg:          #010a04;
+  --bg2:         #04110a;
+  --bg3:         #07180e;
+  --panel:       #05130a;
+  --border:      #12331f;
+  --border2:     #003318;
+  --text:        #9fd9b0;
+  --text-dim:    #2f6b44;
+  --text-bright: #d6ffe3;
+}
+
+[data-theme="light"] {
+  --accent:      #cc0000;
+  --accent-hi:   #e01010;
+  --accent-dim:  #e8a0a0;
+  --accent-glow: rgba(200, 0, 0, 0.12);
+  --bg:          #f1f1f1;
+  --bg2:         #e7e7e7;
+  --bg3:         #dddddd;
+  --panel:       #fafafa;
+  --border:      #cfcfcf;
+  --border2:     #b5b5b5;
+  --text:        #333333;
+  --text-dim:    #7a7a7a;
+  --text-bright: #111111;
+  --hover:       rgba(0,0,0,0.05);
 }
 
 /* ===== RESET ===== */
@@ -256,7 +304,7 @@ nav::-webkit-scrollbar-thumb { background: var(--border2); }
   user-select: none;
 }
 .nav-item:hover {
-  background: rgba(255,255,255,0.035);
+  background: var(--hover);
   color: var(--text);
 }
 .nav-item.selected {
@@ -631,7 +679,7 @@ nav::-webkit-scrollbar-thumb { background: var(--border2); }
 /* Theme swatches */
 .theme-grid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 6px;
   margin-top: 10px;
 }

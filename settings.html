@@ -31,8 +31,8 @@
     .toggle-slider {
       position: absolute;
       inset: 0;
-      background: #2a2a2a;
-      border: 1px solid #444;
+      background: var(--bg3);
+      border: 1px solid var(--border2);
       border-radius: 24px;
       cursor: pointer;
       transition: background 0.2s, border-color 0.2s;
@@ -44,7 +44,7 @@
       height: 16px;
       left: 3px;
       top: 3px;
-      background: #666;
+      background: var(--text-dim);
       border-radius: 50%;
       transition: transform 0.2s, background 0.2s;
     }
@@ -125,7 +125,7 @@
   <div class="title-bar">
     <div class="title-logo">
       <div class="title-dot"></div>
-      GX-LAUNCHER <span class="ver">V2.3</span>
+      GX-LAUNCHER <span class="ver">2.3</span>
     </div>
   </div>
 
@@ -232,21 +232,37 @@
               <div class="swatch-dot" style="background:#00cc44;box-shadow:0 0 8px #00cc4455;"></div>
               Green
             </div>
+            <div class="theme-swatch" data-theme-name="blue" onclick="applyThemeFromSwatch('blue', this)">
+              <div class="swatch-dot" style="background:#3d8bff;box-shadow:0 0 8px #3d8bff55;"></div>
+              Blue
+            </div>
+            <div class="theme-swatch" data-theme-name="amber-grey" onclick="applyThemeFromSwatch('amber-grey', this)">
+              <div class="swatch-dot" style="background:#e07b00;box-shadow:0 0 8px #e07b0055;"></div>
+              Orange
+            </div>
             <div class="theme-swatch" data-theme-name="blood" onclick="applyThemeFromSwatch('blood', this)">
-              <div class="swatch-dot" style="background:#cc0000;box-shadow:0 0 10px #cc000077;border:2px solid #4a0000;"></div>
-              Blood
+              <div class="swatch-dot" style="background:#cc0000;box-shadow:0 0 8px #cc000055;border:2px solid #4a0000;"></div>
+              All Red
+            </div>
+            <div class="theme-swatch" data-theme-name="matrix" onclick="applyThemeFromSwatch('matrix', this)">
+              <div class="swatch-dot" style="background:#00cc44;box-shadow:0 0 8px #00cc4455;border:2px solid #003318;"></div>
+              All Green
             </div>
             <div class="theme-swatch" data-theme-name="midnight" onclick="applyThemeFromSwatch('midnight', this)">
-              <div class="swatch-dot" style="background:#5566ff;box-shadow:0 0 8px #5566ff55;"></div>
-              Midnight
-            </div>
-            <div class="theme-swatch" data-theme-name="ash" onclick="applyThemeFromSwatch('ash', this)">
-              <div class="swatch-dot" style="background:#888;box-shadow:0 0 8px #88888855;"></div>
-              Ash
+              <div class="swatch-dot" style="background:#5566ff;box-shadow:0 0 8px #5566ff55;border:2px solid #1a2050;"></div>
+              All Blue
             </div>
             <div class="theme-swatch" data-theme-name="amber" onclick="applyThemeFromSwatch('amber', this)">
-              <div class="swatch-dot" style="background:#cc7700;box-shadow:0 0 8px #cc770055;"></div>
-              Amber
+              <div class="swatch-dot" style="background:#cc7700;box-shadow:0 0 8px #cc770055;border:2px solid #3a2200;"></div>
+              All Orange
+            </div>
+            <div class="theme-swatch" data-theme-name="ash" onclick="applyThemeFromSwatch('ash', this)">
+              <div class="swatch-dot" style="background:#888888;box-shadow:0 0 8px #88888855;"></div>
+              Ash
+            </div>
+            <div class="theme-swatch" data-theme-name="light" onclick="applyThemeFromSwatch('light', this)">
+              <div class="swatch-dot" style="background:#f1f1f1;box-shadow:0 0 8px #f1f1f155;border:2px solid #b5b5b5;"></div>
+              Light
             </div>
           </div>
         </div>

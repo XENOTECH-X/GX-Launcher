@@ -1,5 +1,5 @@
 /* ============================================================
-   GX-LAUNCHER 2.3 SCRIPT
+   GX-LAUNCHER 2.2 SCRIPT
    ============================================================ */
 
 // ===== STORAGE HELPERS =====
@@ -50,16 +50,21 @@ function setLoadingBar(pct) {
 // ===== THEME SYSTEM =====
 const GX_THEMES = {
     'default':  {},
-    'green':    { '--accent':'#00cc44','--accent-hi':'#00ff55','--accent-dim':'#006622','--accent-glow':'rgba(0,180,60,0.15)','--border2':'#003318' },
+    'green':    { '--accent':'#00cc44','--accent-hi':'#00ff55','--accent-dim':'#006622','--accent-glow':'rgba(0,180,60,0.15)' },
     'blood':    { '--accent':'#cc0000','--accent-hi':'#ff4444','--accent-dim':'#800000','--accent-glow':'rgba(200,0,0,0.22)','--border2':'#4a0000','--bg':'#080000','--bg2':'#0d0000','--bg3':'#120000','--panel':'#0f0000' },
     'midnight': { '--accent':'#5566ff','--accent-hi':'#7788ff','--accent-dim':'#2233bb','--accent-glow':'rgba(80,100,255,0.18)','--border2':'#1a2050','--bg':'#070710','--bg2':'#0c0c1a','--bg3':'#111125','--panel':'#0e0e1e' },
     'ash':      { '--accent':'#999999','--accent-hi':'#cccccc','--accent-dim':'#555555','--accent-glow':'rgba(150,150,150,0.15)','--border2':'#404040' },
     'amber':    { '--accent':'#cc7700','--accent-hi':'#ffaa00','--accent-dim':'#7a4400','--accent-glow':'rgba(200,120,0,0.18)','--border2':'#3a2200','--bg':'#090600','--bg2':'#100d00','--bg3':'#181200','--panel':'#130f00' },
+    'blue':       { '--accent':'#3d8bff','--accent-hi':'#6aa8ff','--accent-dim':'#1c4a99','--accent-glow':'rgba(60,130,255,0.16)' },
+    'amber-grey': { '--accent':'#e07b00','--accent-hi':'#ffa326','--accent-dim':'#8a4a00','--accent-glow':'rgba(224,123,0,0.16)' },
+    'matrix':     { '--accent':'#00cc44','--accent-hi':'#00ff55','--accent-dim':'#006622','--accent-glow':'rgba(0,180,60,0.15)','--bg':'#010a04','--bg2':'#04110a','--bg3':'#07180e','--panel':'#05130a','--border':'#12331f','--border2':'#003318','--text':'#9fd9b0','--text-dim':'#2f6b44','--text-bright':'#d6ffe3' },
+    'light':      { '--accent':'#cc0000','--accent-hi':'#e01010','--accent-dim':'#e8a0a0','--accent-glow':'rgba(200,0,0,0.12)','--bg':'#f1f1f1','--bg2':'#e7e7e7','--bg3':'#dddddd','--panel':'#fafafa','--border':'#cfcfcf','--border2':'#b5b5b5','--text':'#333333','--text-dim':'#7a7a7a','--text-bright':'#111111','--hover':'rgba(0,0,0,0.05)' },
 };
 const GX_DEFAULTS = {
     '--accent':'#cc0000','--accent-hi':'#ff2222','--accent-dim':'#7a0000',
     '--accent-glow':'rgba(180,0,0,0.18)','--bg':'#0a0a0a','--bg2':'#111111',
-    '--bg3':'#181818','--panel':'#141414','--border2':'#3a0000'
+    '--bg3':'#181818','--panel':'#141414','--border2':'#404040',
+    '--border':'#2a2a2a','--text':'#cccccc','--text-dim':'#555555','--text-bright':'#eeeeee','--hover':'rgba(255,255,255,0.035)'
 };
 
 function applyTheme(name) {
