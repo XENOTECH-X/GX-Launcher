@@ -268,7 +268,7 @@ const DOWNLOAD_GROUPS = [
         "files": [
           "index.html"
         ]
-      }
+      },
       {
         "folder": "1.0",
         "label": "1.0",
