@@ -1,0 +1,50 @@
+* {
+  overscroll-behavior: none !important;
+  box-sizing: border-box !important;
+  outline: none !important;
+  border: none !important;
+}
+
+*:not(._eaglercraftX_crash_element) {
+  overflow: hidden !important;
+}
+
+body:not(.game) #game_frame {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+body {
+  justify-content: center !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  display: flex !important;
+  z-index: 0 !important;
+}
+
+body, #game_frame, ._eaglercraftX_canvas_element {
+  position: fixed !important;
+  height: 100vh !important;
+  width: 100vw !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  left: 0 !important;
+  top: 0 !important;
+}
+
+#loader {
+  font-family: Mojangles !important;
+  text-shadow: 3px 3px #4C4C4C;
+  color: #fff !important;
+  z-index: 1 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+#game_frame, ._eaglercraftX_canvas_element {
+  z-index: 5 !important;
+}
+
+._eaglercraftX_crash_tools_element {
+  display: none !important;
+}

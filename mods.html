@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GX-Launcher - Mods</title>
+  <link rel="icon" type="image/png" href="resources/main.png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+  <style>
+.mods-top-bar{background:var(--panel);border-bottom:1px solid var(--border);padding:0 18px;height:38px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-shrink:0}
+.mods-title{font-family:var(--mono);font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.18em;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.mods-title span{color:var(--accent)}
+.mods-controls{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10px;color:var(--text-dim)}
+.mods-controls input{background:var(--bg);color:var(--text);border:1px solid var(--border2);padding:4px 8px;font-family:var(--mono);font-size:10px;outline:none;width:170px}
+.mods-controls input:focus{border-color:var(--accent)}
+.refresh-btn{background:var(--accent-dim);border:none;color:#fff;font-family:var(--mono);font-size:10px;padding:4px 10px;cursor:pointer;letter-spacing:.08em;transition:background .13s}
+.refresh-btn:hover{background:var(--accent)}
+.refresh-btn.ghost{background:transparent;border:1px solid var(--border2);color:var(--text-dim)}
+.refresh-btn.ghost:hover{border-color:var(--accent);color:var(--accent)}
+.mods-content{flex:1;padding:16px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--scroll) var(--bg3)}
+.mods-content::-webkit-scrollbar{width:5px}.mods-content::-webkit-scrollbar-track{background:var(--bg3)}.mods-content::-webkit-scrollbar-thumb{background:var(--scroll);border-radius:3px}
+.mod-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;align-content:start;margin-bottom:26px}
+@media(min-width:1201px){.mod-grid .mod-card:nth-last-child(2):nth-child(4n+1){grid-column:2}}
+.mod-grid:empty::before{content:"Nothing listed yet. Add a block in mods.html.";grid-column:1/-1;font-family:var(--mono);font-size:11px;color:var(--text-dim);padding:14px;border:1px dashed var(--border)}
+.sec-title{font-family:var(--mono);font-size:9px;color:var(--accent);text-transform:uppercase;letter-spacing:.28em;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.sec-title::after{content:"";flex:1;height:1px;background:var(--border)}
+@media(max-width:1200px){.mod-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:900px){.mod-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.mod-grid{grid-template-columns:1fr}}
+.mod-card{background:var(--panel);border:1px solid var(--border);border-left:3px solid var(--accent-dim);padding:10px 12px;position:relative;transition:border-color .13s,box-shadow .13s;box-sizing:border-box;display:flex;flex-direction:column;min-width:0}
+.mod-card:hover{border-color:var(--accent);border-left-color:var(--accent);box-shadow:0 0 14px var(--accent-glow)}
+.mod-card.on{border-left-color:var(--accent)}
+.mod-card.off{border-left-color:#555;opacity:.7}
+.mod-header{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.mod-id{flex:1;min-width:0}
+.mn{font-family:var(--mono);font-size:12px;font-weight:bold;color:var(--text-bright,#fff);letter-spacing:.06em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
+.by{font-family:var(--mono);font-size:9px;color:var(--text-dim);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.by::before{content:"by "}
+.md{font-family:var(--mono);font-size:10px;color:var(--text-dim);line-height:1.5;flex:1;margin-bottom:8px;word-break:break-word;display:block}
+.mod-foot{display:flex;gap:6px;justify-content:flex-end}
+.copy-btn{background:none;border:1px solid var(--border2);color:var(--text-dim);font-family:var(--mono);font-size:9px;padding:3px 8px;cursor:pointer;letter-spacing:.08em;transition:border-color .13s,color .13s;text-transform:uppercase}
+.copy-btn:hover{border-color:var(--accent);color:var(--accent)}
+.copy-btn.rm:hover{border-color:#ff1744;color:#ff5555}
+.sw{position:relative;width:38px;height:20px;flex-shrink:0}
+.sw input{opacity:0;position:absolute;inset:0;margin:0;cursor:pointer;z-index:2;width:100%;height:100%}
+.sw i{position:absolute;inset:0;background:var(--bg3);border:1px solid var(--border2);border-radius:20px;transition:.2s}
+.sw i::before{content:"";position:absolute;left:2px;top:2px;width:14px;height:14px;border-radius:50%;background:var(--text-dim);transition:.2s}
+.sw input:checked+i{background:var(--accent-dim);border-color:var(--accent)}
+.sw input:checked+i::before{transform:translateX(18px);background:var(--accent-hi)}
+</style>
+</head>
+<body>
+
+<div class="launcher">
+
+  <!-- TITLE BAR -->
+  <div class="title-bar">
+    <div class="title-logo">
+      <div class="title-dot"></div>
+      GX-LAUNCHER <span class="ver">2.4</span>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="profile">
+        <div class="profile-label">Player</div>
+        <span class="profile-name" id="profile-name">Player</span>
+        <div class="profile-status"><div class="status-dot"></div>ONLINE</div>
+      </div>
+      <nav>
+        <div class="nav-section-label">Navigation</div>
+        <div class="nav-item" onclick="redirectToNews()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><path d="M4 4h16v14a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"/><line x1="4" y1="9" x2="20" y2="9"/><line x1="9" y1="4" x2="9" y2="9"/></svg>
+          Update Log
+        </div>
+        <div class="nav-item" onclick="redirectToMain()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="13" rx="1"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+          Game
+        </div>
+        <div class="nav-item" onclick="redirectToClients()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
+          Clients
+        </div>
+        <div class="nav-item" onclick="redirectToOtherClients()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Beta Clients
+        </div>
+        <div class="nav-item" onclick="redirectToServers()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="5" rx="1"/><rect x="2" y="10" width="20" height="5" rx="1"/><rect x="2" y="17" width="20" height="5" rx="1"/></svg>
+          Servers
+        </div>
+        <div class="nav-item" onclick="redirectToDownloads()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><line x1="12" y1="3" x2="12" y2="15"/><polyline points="7 10 12 15 17 10"/><line x1="4" y1="19" x2="20" y2="19"/></svg>
+          Downloads
+        </div>
+        <div class="nav-item selected">
+          <svg class="nav-svg" viewBox="0 0 24 24"><path d="M12 2l9 5v10l-9 5-9-5V7z"/><polyline points="3 7 12 12 21 7"/><line x1="12" y1="12" x2="12" y2="22"/></svg>
+          Mods
+        </div>
+        <div class="nav-item" onclick="redirectToSkins()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M4 21v-2a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v2"/></svg>
+          Skins
+        </div>
+        <div class="nav-item" onclick="window.open('https://discord.gg/qQBamNZSwz', '_blank')">
+          <svg class="nav-svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.128 12.299 12.299 0 0 1-1.873.892.076.076 0 0 0-.04.106c.36.698.772 1.362 1.225 1.994a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.057c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.955 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+          </svg>
+          Discord
+        </div>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="nav-item" onclick="redirectToSettings()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          Launcher Settings
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN PANEL -->
+    <div class="main-panel">
+      <div class="mods-top-bar">
+        <div class="mods-title">GX-LAUNCHER <span>// MODS</span></div>
+        <div class="mods-controls">
+          <input type="text" id="mod-search" placeholder="Search...">
+          <button class="refresh-btn" id="installAll">Install All</button>
+          <button class="refresh-btn ghost" id="imp">Import</button>
+          <input type="file" id="impf" accept=".json,application/json" hidden style="display:none">
+          <button class="refresh-btn ghost" id="reset">Remove All</button>
+        </div>
+      </div>
+
+      <div class="mods-content">
+
+        <!-- ================= ADD MODS HERE =================
+             One block per mod. data-folder = folder name: code is fetched from the
+             repo (mods/<folder>/mod.js on GitHub). Optional: data-file="Folder/other.js".
+             Only name / by / description are shown. -->
+        <div class="mod-grid" id="mod-grid">
+          <div class="mod-card" data-folder="Autoclicker">
+            <span class="mn">Autoclicker</span>
+            <span class="by">radmanplays</span>
+            <span class="md">this mod clicks for you</span>
+          </div>
+          <div class="mod-card" data-folder="AutoFish">
+            <span class="mn">AutoFish</span>
+            <span class="by">ZXMushroom63</span>
+            <span class="md">fishes for you. just throw a fishing rod in water to use this mod</span>
+          </div>
+          <div class="mod-card" data-folder="AutoRespawn">
+            <span class="mn">AutoRespawn</span>
+            <span class="by">Oeil-de-Lynx</span>
+            <span class="md">respawns you automatically when you die</span>
+          </div>
+          <div class="mod-card" data-folder="Blink">
+            <span class="mn">Blink</span>
+            <span class="by">ZXMushroom63</span>
+            <span class="md">use by typing the .blinkon and .blinkoff commands and sending it</span>
+          </div>
+          <div class="mod-card" data-folder="Blur">
+            <span class="mn">Blur</span>
+            <span class="by">Murturtle</span>
+            <span class="md">drops the framerate to 5 fps while the tab is unfocused and restores it when you come back</span>
+          </div>
+          <div class="mod-card" data-folder="ChatCommands">
+            <span class="mn">ChatCommands</span>
+            <span class="by">Neverflagastralis</span>
+            <span class="md">adds dot commands like .help, .pos, .time, .spawn, .lastpos, .goto and .setpos, plus a song player (.play, .pause, .volume, .loop)</span>
+          </div>
+          <div class="mod-card" data-folder="ChatShortcuts">
+            <span class="mn">Chat Shortcuts</span>
+            <span class="by">ZXMushroom63</span>
+            <span class="md">shortcuts: {health}, {pos}, {name}, {me}, {x}, {y}, {z}, {level}, {walked}, {chunk}</span>
+          </div>
+          <div class="mod-card" data-folder="Duck">
+            <span class="mn">Duck</span>
+            <span class="by">ZXMushroom63</span>
+            <span class="md">adds ducks to the game</span>
+          </div>
+          <div class="mod-card" data-folder="FasterMinecarts">
+            <span class="mn">FasterMinecarts</span>
+            <span class="by">ZXMushroom63</span>
+            <span class="md">faster minecarts! use /minecart_speed {factor} to change the speed. carts are very prone to being flung off rails</span>
+          </div>
+          <div class="mod-card" data-folder="FreshEaglerUI">
+            <span class="mn">FreshEaglerUI</span>
+            <span class="by">Murturtle</span>
+            <span class="md">reshuffles the main menu buttons and slides inventory screens in with an animation</span>
+          </div>
+          <div class="mod-card" data-folder="Fullbright">
+            <span class="mn">Fullbright</span>
+            <span class="by">radmanplays</span>
+            <span class="md">full bright mod for eaglerforge. keybind(enabled by default): f</span>
+          </div>
+          <div class="mod-card" data-folder="GrappleHook">
+            <span class="mn">GrappleHook</span>
+            <span class="by">ZXMushroom63</span>
+            <span class="md">grappling hook mod. how to use: 1.grab a fishing rod 2.use the fishing rod 3.grappling hook!</span>
+          </div>
+          <div class="mod-card" data-folder="Jetpack">
+            <span class="mn">Jetpack</span>
+            <span class="by">radmanplays</span>
+            <span class="md">allows you to fly as if you had a jetpack. keybind(hold): h</span>
+          </div>
+          <div class="mod-card" data-folder="JumpBoost">
+            <span class="mn">JumpBoost</span>
+            <span class="by">Oeil-de-Lynx</span>
+            <span class="md">lets you keep jumping in mid-air by pressing space, up to 3 boosts per jump</span>
+          </div>
+          <div class="mod-card" data-folder="Music">
+            <span class="mn">Music</span>
+            <span class="by">BarneyTheGod</span>
+            <span class="md">Plays a users music through a direct mp3 link. Saves music through Local Browser storage.</span>
+          </div>
+          <div class="mod-card" data-folder="NoFall">
+            <span class="mn">NoFall</span>
+            <span class="by">ZXMushroom63</span>
+            <span class="md">makes you not take fall damage</span>
+          </div>
+          <div class="mod-card" data-folder="NoParticles">
+            <span class="mn">NoParticles</span>
+            <span class="by">Unknown</span>
+            <span class="md">turns off all particles, which can help performance</span>
+          </div>
+          <div class="mod-card" data-folder="PlayerVision">
+            <span class="mn">PlayerVision</span>
+            <span class="by">Oeil-de-Lynx</span>
+            <span class="md">pick a player from a dropdown and see the game through their eyes</span>
+          </div>
+          <div class="mod-card" data-folder="Recipe">
+            <span class="mn">Recipe</span>
+            <span class="by">Oeil-de-Lynx</span>
+            <span class="md">This is a recipe mod for eaglerforge, a bit like JEI.</span>
+          </div>
+          <div class="mod-card" data-folder="SemiAutoLogin">
+            <span class="mn">SemiAutoLogin</span>
+            <span class="by">Murturtle</span>
+            <span class="md">asks for your password in a popup, then press the up arrow key to send /login with it</span>
+          </div>
+          <div class="mod-card" data-folder="Speed">
+            <span class="mn">Speed</span>
+            <span class="by">radmanplays</span>
+            <span class="md">makes you faster</span>
+          </div>
+          <div class="mod-card" data-folder="StatsHud">
+            <span class="mn">StatsHud</span>
+            <span class="by">Oeil-de-Lynx</span>
+            <span class="md">stats hud overlay (the code is obfuscated, so this is going by the name)</span>
+          </div>
+          <div class="mod-card" data-folder="VeinMiner">
+            <span class="mn">VeinMiner</span>
+            <span class="by">ZXMushroom63</span>
+            <span class="md">vein-mines trees &amp; ores while crouching. press the 'config' button for settings</span>
+          </div>
+          <div class="mod-card" data-folder="WayPoint">
+            <span class="mn">WayPoint</span>
+            <span class="by">blizz828, Block_2222 &amp; ZXMushroom63</span>
+            <span class="md">use /setwp &lt;name&gt; to make a waypoint, and /wp &lt;name&gt; to go to it. /remwp &lt;name&gt; to delete a waypoint. /listwp to list all waypoints</span>
+          </div>
+          <div class="mod-card" data-folder="WorldEdit">
+            <span class="mn">WorldEdit</span>
+            <span class="by">radmanplays</span>
+            <span class="md">use //wand, //set and //walls in singleplayer worlds</span>
+          </div>
+          <div class="mod-card" data-folder="Xray">
+            <span class="mn">Xray</span>
+            <span class="by">radmanplays</span>
+            <span class="md">simple xray mod. its recommended to use this with Fullbright. keybind: x</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="bottom-bar">
+        <div class="status-line" id="status-line">MODS</div>
+        <div class="credit">Relaunch the client after changing mods</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const toast=(m,e)=>typeof showToast==='function'?showToast(m,e):console.log(m);
+const P=r=>new Promise((res,rej)=>{r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});
+// Same logic EFI's own loader uses
+async function db(){
+  const d=await P(indexedDB.open("EF_MODS"));
+  if(!d.objectStoreNames.contains("filesystem")){
+    d.close();
+    const r=indexedDB.open("EF_MODS",d.version+1);
+    r.onupgradeneeded=e=>e.target.result.createObjectStore("filesystem");
+    return P(r);
+  }
+  return d;
+}
+async function get(key){const d=await db();try{const o=await P(d.transaction(["filesystem"],"readonly").objectStore("filesystem").get(key));return o?await o.text():null;}finally{d.close();}}
+async function put(key,text){const d=await db();try{await P(d.transaction(["filesystem"],"readwrite").objectStore("filesystem").put(new Blob([new TextEncoder().encode(text)],{type:"text/plain"}),key));}finally{d.close();}}
+async function del(key){const d=await db();try{await P(d.transaction(["filesystem"],"readwrite").objectStore("filesystem").delete(key));}finally{d.close();}}
+async function clearAll(){const d=await db();try{await P(d.transaction(["filesystem"],"readwrite").objectStore("filesystem").clear());}finally{d.close();}}
+const split=t=>t?t.split("|").filter(Boolean):[];
+const getActive=async()=>split(await get("mods.txt"));
+const getOff=async()=>split(await get("mods-disabled.txt"));
+const setActive=l=>put("mods.txt",[...new Set(l)].sort().join("|"));
+const setOff=l=>put("mods-disabled.txt",[...new Set(l)].sort().join("|"));
+const clean=n=>n.replace(/[|\\\/]/g,"_").replace(/^web@/,"").trim();
+
+function meta(src){
+  const m=k=>{const r=new RegExp("ModAPI\\.meta\\."+k+"\\(\\s*([\"'`])([\\s\\S]*?)\\1");const x=src.match(r);return x?x[2]:"";};
+  return {title:m("title"),ver:m("version"),dev:m("credits")||m("developer"),desc:m("description")};
+}
+function syntaxOk(src){try{new Function(src);return null;}catch(e){return e.message;}}
+
+async function installFile(name,src){
+  name=clean(name);if(!name)throw new Error("Bad name");
+  if(!/\.js$/i.test(name))name+=".js";
+  const err=syntaxOk(src);
+  if(err&&!confirm(name+" has a syntax error:\n"+err+"\n\nInstall anyway?"))return false;
+  const off=await getOff();
+  await put("mods/"+name,src);
+  const act=await getActive();
+  await setActive(act.concat(name));
+  if(off.includes(name))await setOff(off.filter(x=>x!==name));
+  return true;
+}
+
+function dlText(name,text){const u=URL.createObjectURL(new Blob([text],{type:"text/javascript"}));const l=document.createElement("a");l.href=u;l.download=name;l.click();setTimeout(()=>URL.revokeObjectURL(u),2000);}
+const MODS=[...document.querySelectorAll("#mod-grid .mod-card")].map(el=>{
+  const f=el.dataset.folder.trim();
+  return{el,folder:f,key:clean(f)+".js",file:el.dataset.file||f+"/mod.js",
+    name:el.querySelector(".mn").textContent,by:(el.querySelector(".by")||{}).textContent||"",desc:(el.querySelector(".md")||{}).textContent||""};
+});
+const MODS_BASE="https://raw.githubusercontent.com/XENOTECH-X/GX-Launcher/main/mods/";
+const modPath=p=>MODS_BASE+p.split("/").map(encodeURIComponent).join("/");
+async function fetchMod(m){
+  const r=await fetch(modPath(m.file),{cache:"no-store"});
+  if(!r.ok)throw new Error(m.name+": HTTP "+r.status);
+  return r.text();
+}
+async function installMod(m){return installFile(m.key,await fetchMod(m));}
+for(const m of MODS){
+  m.el.innerHTML='<div class="mod-header"><div class="mod-id"><span class="mn"></span><span class="by"></span></div><label class="sw" title="Enable / disable"><input type="checkbox"><i></i></label></div><span class="md"></span><div class="mod-foot"><button class="copy-btn" data-a="dl">Download</button><button class="copy-btn rm" data-a="rm" style="display:none">Remove</button></div>';
+  m.el.querySelector(".mn").textContent=m.name;m.el.querySelector(".mn").title=m.name;
+  const by=m.el.querySelector(".by");if(m.by)by.textContent=m.by;else by.remove();
+  m.el.querySelector(".md").textContent=m.desc;
+  m.sw=m.el.querySelector(".sw input");
+  m.sw.onchange=async()=>{
+    const want=m.sw.checked;
+    try{
+      const act=await getActive(),off=await getOff();
+      const inst=act.includes(m.key)||off.includes(m.key);
+      if(!inst){
+        if(want&&await installMod(m))toast("Installed "+m.name+". Relaunch the client.");
+      }else{
+        await setActive(want?act.concat(m.key):act.filter(x=>x!==m.key));
+        await setOff(want?off.filter(x=>x!==m.key):off.concat(m.key));
+        toast((want?"Enabled ":"Disabled ")+m.name);
+      }
+    }catch(err){toast(err.message,true);}
+    refresh();
+  };
+  m.el.onclick=async ev=>{
+    const a=ev.target.dataset&&ev.target.dataset.a;if(!a)return;
+    try{
+      const act=await getActive(),off=await getOff();
+      const inst=act.includes(m.key)||off.includes(m.key);
+      if(a==="rm"){
+        if(!confirm("Remove "+m.name+"?"))return;
+        await setActive(act.filter(x=>x!==m.key));await setOff(off.filter(x=>x!==m.key));await del("mods/"+m.key);
+        toast("Removed "+m.name);
+      }else if(a==="dl"){
+        dlText(m.folder+".js",inst?await get("mods/"+m.key):await fetchMod(m));
+      }
+      refresh();
+    }catch(err){toast(err.message,true);}
+  };
+}
+async function autofill(){
+  for(const m of MODS){
+    if(m.by&&m.desc)continue;
+    try{
+      const x=meta(await fetchMod(m));
+      if(!m.desc&&x.desc)m.el.querySelector(".md").textContent=m.desc=x.desc;
+      if(!m.by&&x.dev){
+        const sp=document.createElement("span");sp.className="by";sp.textContent=m.by=x.dev;
+        m.el.querySelector(".mn").after(sp);
+      }
+    }catch(e){}
+  }
+}
+autofill();
+async function refresh(){
+  let act=[],off=[];
+  try{act=await getActive();off=await getOff();}catch(e){toast("IndexedDB unavailable: "+e.message,true);}
+  for(const m of MODS){
+    const inst=act.includes(m.key)||off.includes(m.key),on=act.includes(m.key);
+    m.sw.checked=on;
+    m.el.classList.toggle("on",on);
+    m.el.classList.toggle("off",inst&&!on);
+    m.el.querySelector(".rm").style.display=inst?"":"none";
+  }
+  if(typeof setStatus==="function")setStatus("MODS: <span class=\"hl\">"+MODS.filter(m=>act.includes(m.key)).length+" ENABLED</span> / "+MODS.length);
+}
+$("mod-search").oninput=e=>{const q=e.target.value.trim().toLowerCase();for(const m of MODS)m.el.style.display=!q||(m.name+" "+m.by+" "+m.desc).toLowerCase().includes(q)?"":"none";};
+$("installAll").onclick=async()=>{
+  let ok=0;
+  for(const m of MODS){try{if(await installMod(m))ok++;}catch(e){toast(e.message,true);}}
+  toast("Installed "+ok+" mod"+(ok==1?"":"s")+". Relaunch the client.");refresh();
+};
+$("exp").onclick=async()=>{
+  const act=await getActive(),off=await getOff(),mods={};
+  for(const n of [...act,...off])if(!n.startsWith("web@"))mods[n]=await get("mods/"+n)||"";
+  const u=URL.createObjectURL(new Blob([JSON.stringify({format:"gx-efi-mods",active:act,disabled:off,mods},null,1)],{type:"application/json"}));
+  const l=document.createElement("a");l.href=u;l.download="efi-mods-backup.json";l.click();setTimeout(()=>URL.revokeObjectURL(u),2000);
+};
+$("imp").onclick=()=>$("impf").click();
+$("impf").onchange=async e=>{
+  const f=e.target.files[0];e.target.value="";if(!f)return;
+  try{
+    const j=JSON.parse(await f.text());
+    if(j.format!=="gx-efi-mods")throw new Error("Not a mods backup");
+    for(const [n,t] of Object.entries(j.mods||{}))await put("mods/"+clean(n),t);
+    await setActive([...(await getActive()),...(j.active||[])]);
+    await setOff([...(await getOff()),...(j.disabled||[])]);
+    toast("Backup imported");refresh();
+  }catch(err){toast(err.message,true);}
+};
+$("reset").onclick=async()=>{
+  if(!confirm("Remove ALL mods from the EFI mod store?"))return;
+  await clearAll();toast("All mods removed");refresh();
+};
+document.addEventListener("DOMContentLoaded",refresh);
+if(document.readyState!=="loading")refresh();
+})();
+</script>
+</body>
+</html>

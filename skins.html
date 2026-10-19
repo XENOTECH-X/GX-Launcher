@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GX-Launcher - Skins</title>
+  <link rel="icon" type="image/png" href="resources/main.png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+  <style>
+.sk-top{background:var(--panel);border-bottom:1px solid var(--border);padding:0 18px;height:38px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-shrink:0}
+.sk-title{font-family:var(--mono);font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.18em;white-space:nowrap}
+.sk-title span{color:var(--accent)}
+.sk-controls{display:flex;align-items:center;gap:8px}
+.sk-controls input[type=text]{background:var(--bg);color:var(--text);border:1px solid var(--border2);padding:4px 8px;font-family:var(--mono);font-size:10px;outline:none;width:170px}
+.sk-controls input[type=text]:focus{border-color:var(--accent)}
+.refresh-btn{background:var(--accent-dim);border:none;color:#fff;font-family:var(--mono);font-size:10px;padding:4px 10px;cursor:pointer;letter-spacing:.08em}
+.refresh-btn:hover{background:var(--accent)}
+.sk-content::-webkit-scrollbar{width:5px}.sk-content::-webkit-scrollbar-track{background:var(--bg3)}.sk-content::-webkit-scrollbar-thumb{background:var(--scroll);border-radius:3px}
+.sk-grid:empty::before{content:"No skins listed yet. Add a block in skins.html.";grid-column:1/-1;font-family:var(--mono);font-size:11px;color:var(--text-dim);padding:14px;border:1px dashed var(--border)}
+.skin-card{background:var(--panel);border:1px solid var(--border);border-left:3px solid var(--accent-dim);padding:10px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;transition:border-color .13s,box-shadow .13s;min-width:0}
+.skin-card:hover{border-color:var(--accent);border-left-color:var(--accent);box-shadow:0 0 14px var(--accent-glow)}
+.sk-name{font-family:var(--mono);font-size:11px;font-weight:bold;color:var(--text-bright,#fff);letter-spacing:.05em;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sk-by{font-family:var(--mono);font-size:9px;color:var(--text-dim);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sk-by::before{content:"by "}
+.copy-btn{background:none;border:1px solid var(--border2);color:var(--text-dim);font-family:var(--mono);font-size:9px;padding:3px 9px;cursor:pointer;letter-spacing:.08em;text-transform:uppercase}
+.copy-btn:hover{border-color:var(--accent);color:var(--accent)}
+.dl-btn{background:var(--accent-dim);border:none;color:#fff;font-family:var(--mono);font-size:10px;padding:5px 0;width:100%;cursor:pointer;letter-spacing:.1em;text-transform:uppercase}
+.dl-btn:hover{background:var(--accent)}
+
+.sk-body{flex:1;display:flex;min-height:0}
+.sk-content{flex:1;min-width:0;padding:16px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--scroll) var(--bg3)}
+.sk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;align-content:start}
+.skin-card.sel{border-color:var(--accent);border-left-color:var(--accent);box-shadow:0 0 14px var(--accent-glow)}
+.thumb{position:relative;width:100%;height:150px;perspective:500px;overflow:hidden;background:var(--bg3);border:1px solid var(--border);box-sizing:border-box}
+.err-note{font-family:var(--mono);font-size:9px;color:#ff5555}
+/* viewer sidebar (right) */
+.sk-side{width:320px;flex-shrink:0;background:var(--panel);border-left:1px solid var(--border);padding:14px;display:flex;flex-direction:column;align-items:center;gap:10px;overflow-y:auto;box-sizing:border-box}
+.btn-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%}
+.btn-grid .copy-btn{padding:8px 6px;font-size:10px;text-align:center}
+.btn-grid .full{grid-column:1/-1}
+.btn-grid .copy-btn{transition:background .12s,border-color .12s,color .12s,box-shadow .12s}
+.btn-grid .copy-btn:hover{background:var(--accent-glow);border-color:var(--accent);color:var(--accent);box-shadow:0 0 10px var(--accent-glow)}
+.btn-grid .copy-btn:active{transform:translateY(1px)}
+.btn-grid #v-slim:hover,.btn-grid #v-reset:hover{background:none;box-shadow:none;border-color:var(--accent);color:var(--accent)}
+.btn-grid .copy-btn.on{background:var(--accent-glow)}
+.btn-grid .primary{background:var(--accent-dim);border-color:var(--accent-dim);color:#fff}
+.btn-grid .primary:hover{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 0 12px var(--accent-glow)}
+.sk-side .sk-name{font-size:12px}
+.sk-side .row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.sk-side .copy-btn.on{border-color:var(--accent);color:var(--accent)}
+.v-hint{font-family:var(--mono);font-size:9px;color:var(--text-dim)}
+.scene{position:relative;width:100%;height:380px;flex-shrink:0;box-sizing:border-box;perspective:800px;overflow:hidden;background:var(--bg3);border:1px solid var(--border);touch-action:none;cursor:grab;user-select:none}
+.scene:active{cursor:grabbing}
+.v-root,.piv,.box{position:absolute;transform-style:preserve-3d}
+.v-root{left:50%;top:50%;width:0;height:0}
+.piv{left:0;top:0;width:0;height:0}
+.face{position:absolute;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.tex{position:absolute;inset:0;background-repeat:no-repeat;image-rendering:pixelated}
+.v-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;color:var(--text-dim);text-align:center;padding:20px;pointer-events:none}
+@media(max-width:760px){.sk-body{flex-direction:column}.sk-side{width:auto;border-left:none;border-top:1px solid var(--border)}}
+</style>
+</head>
+<body>
+
+<div class="launcher">
+
+  <!-- TITLE BAR -->
+  <div class="title-bar">
+    <div class="title-logo">
+      <div class="title-dot"></div>
+      GX-LAUNCHER <span class="ver">2.4</span>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="profile">
+        <div class="profile-label">Player</div>
+        <span class="profile-name" id="profile-name">Player</span>
+        <div class="profile-status"><div class="status-dot"></div>ONLINE</div>
+      </div>
+      <nav>
+        <div class="nav-section-label">Navigation</div>
+        <div class="nav-item" onclick="redirectToNews()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><path d="M4 4h16v14a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"/><line x1="4" y1="9" x2="20" y2="9"/><line x1="9" y1="4" x2="9" y2="9"/></svg>
+          Update Log
+        </div>
+        <div class="nav-item" onclick="redirectToMain()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="13" rx="1"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+          Game
+        </div>
+        <div class="nav-item" onclick="redirectToClients()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
+          Clients
+        </div>
+        <div class="nav-item" onclick="redirectToOtherClients()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Beta Clients
+        </div>
+        <div class="nav-item" onclick="redirectToServers()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="5" rx="1"/><rect x="2" y="10" width="20" height="5" rx="1"/><rect x="2" y="17" width="20" height="5" rx="1"/></svg>
+          Servers
+        </div>
+        <div class="nav-item" onclick="redirectToDownloads()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><line x1="12" y1="3" x2="12" y2="15"/><polyline points="7 10 12 15 17 10"/><line x1="4" y1="19" x2="20" y2="19"/></svg>
+          Downloads
+        </div>
+        <div class="nav-item" onclick="redirectToMods()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><path d="M12 2l9 5v10l-9 5-9-5V7z"/><polyline points="3 7 12 12 21 7"/><line x1="12" y1="12" x2="12" y2="22"/></svg>
+          Mods
+        </div>
+        <div class="nav-item selected">
+          <svg class="nav-svg" viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M4 21v-2a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v2"/></svg>
+          Skins
+        </div>
+        <div class="nav-item" onclick="window.open('https://discord.gg/qQBamNZSwz', '_blank')">
+          <svg class="nav-svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.128 12.299 12.299 0 0 1-1.873.892.076.076 0 0 0-.04.106c.36.698.772 1.362 1.225 1.994a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.057c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.955 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+          </svg>
+          Discord
+        </div>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="nav-item" onclick="redirectToSettings()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          Launcher Settings
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN PANEL -->
+    <div class="main-panel">
+      <div class="sk-top">
+        <div class="sk-title">GX-LAUNCHER <span>// SKINS</span></div>
+      </div>
+
+      <div class="sk-body">
+        <div class="sk-content">
+          <div class="sk-grid" id="sk-grid">
+            <div class="skin-card" data-file="skins/Jon.png" data-name="Corrupted Steve" data-by="Jon"></div>
+            <div class="skin-card" data-file="skins/DarkSeaj.png" data-name="Red&Blue Skull" data-by="Unknown"></div>
+            <div class="skin-card" data-file="skins/Rainbow Steve.png" data-name="Rainbow Steve" data-by="Unknown"></div>
+            <div class="skin-card" data-file="skins/GyunnnaX.png" data-name="Fire&Water Gamer" data-by="Unknown"></div>
+            <div class="skin-card" data-file="skins/void.png" data-name="Void" data-by="Unknown"></div>
+            <div class="skin-card" data-file="skins/GeorgeNotFound.png" data-name="GeorgeNotFound" data-by="GeorgeNotFound"></div>
+            <div class="skin-card" data-file="skins/zJoaoSkills.png" data-name="Youtube Gamer" data-by="Unknown"></div>
+            <div class="skin-card" data-file="skins/DaquavisMC.png" data-name="DaquavisMC" data-by="DaquavisMC"></div>
+            <div class="skin-card" data-file="skins/Nurkkajussi.png" data-name="RGB Gamer" data-by="Unknown"></div>
+            <div class="skin-card" data-file="skins/hantnor.png" data-name="Prism" data-by="Unknown"></div>
+            <div class="skin-card" data-file="skins/Zyn3r.png" data-name="Animation Dream" data-by="SAD-ist"></div>
+            <div class="skin-card" data-file="skins/Troll.png" data-name="Troll" data-by="Whynne"></div>
+            <div class="skin-card" data-file="skins/e__s.png" data-name="e__s" data-by="e__s PLUS"></div>
+            <div class="skin-card" data-file="skins/DrDonutt.png" data-name="DrDonutt" data-by="DrDonutt"></div>
+            <div class="skin-card" data-file="skins/Asesino_5191.png" data-name="RGB Guard" data-by="Unknown"></div>
+            <div class="skin-card" data-file="skins/Derp.png" data-name="Derp" data-by="masoncubes"></div>
+            <div class="skin-card" data-file="skins/Peter.png" data-name="Peter Griffin" data-by="Unknown"></div>
+            <div class="skin-card" data-file="skins/rgb.png" data-name="RGB" data-by="Unknown"></div>
+            <div class="skin-card" data-file="skins/Wemmbu.png" data-name="Wemmbu" data-by="Wemmbu"></div>
+            <div class="skin-card" data-file="skins/B0RAA.png" data-name="Dream" data-by="Dream"></div>
+            <div class="skin-card" data-file="skins/Technoblade.png" data-name="Technoblade" data-by="Technoblade"></div>
+            <div class="skin-card" data-file="skins/DrLapss.png" data-name="Hacker" data-by="Unknown"></div>
+            <div class="skin-card" data-file="skins/SpookyGod_MC.png" data-name="Crowned Void" data-by="Unknown"></div>
+            <div class="skin-card" data-file="skins/koipx.png" data-name="Verity" data-by="Unknown"></div>
+            <div class="skin-card" data-file="skins/ikceldeis.png" data-name="Galaxy Skulk" data-by="Unknown"></div>
+            <div class="skin-card" data-file="skins/huskdet.png" data-name="Guard" data-by="Unknown"></div>
+            <div class="skin-card" data-file="skins/LeeKeyBum173474.png" data-name="Dirt Doctor" data-by="Unknown"></div>
+            <div class="skin-card" data-file="skins/ItzDidoo.png" data-name="DarkBrian" data-by="Unknown"></div>
+            <div class="skin-card" data-file="skins/FloppyFish999.png" data-name="Buff Villager" data-by="Unknown"></div>
+            <div class="skin-card" data-file="skins/Its_M1me.png" data-name="Fancy Duck" data-by="Unknown"></div>
+          </div>
+        </div>
+
+        <!-- VIEWER SIDEBAR (right) -->
+        <aside class="sk-side" id="sk-side">
+          <div class="sk-name" id="v-name">&nbsp;</div>
+          <div class="sk-by" id="v-by"></div>
+          <div class="scene" id="v-scene">
+            <div class="v-root" id="v-root"></div>
+            <div class="v-empty" id="v-empty">Click a skin to preview it here</div>
+          </div>
+          <div class="v-hint">Drag to spin &middot; scroll to zoom</div>
+          <div class="btn-grid">
+            <button class="copy-btn on" id="v-spin">Spin</button>
+            <button class="copy-btn" id="v-walk">Walk</button>
+            <button class="copy-btn" id="v-slim">Slim arms: auto</button>
+            <button class="copy-btn" id="v-reset">Reset</button>
+            <button class="copy-btn primary full" id="v-dl">Download</button>
+          </div>
+        </aside>
+      </div>
+
+      <div class="bottom-bar">
+        <div class="status-line" id="status-line">SKINS</div>
+        <div class="credit">Click a skin to preview it in the sidebar</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="sk-cut" color-interpolation-filters="sRGB"><feComponentTransfer><feFuncA type="discrete" tableValues="0 1 1 1 1 1 1 1 1 1"/></feComponentTransfer></filter></svg>
+
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const toast=(m,e)=>typeof showToast==="function"?showToast(m,e):console.log(m);
+// data-file is used exactly as written (relative or absolute path / URL)
+const skinUrl=f=>f;
+const S=9; // screen px per skin pixel in the 3D viewer
+
+// 64x32 (or 128x64...) skins are "legacy": no overlays, left limbs mirror the right ones
+const isLegacy=img=>img.height<img.width;
+
+function detectSlim(img){
+  if(isLegacy(img))return false;
+  const k=img.width/64;
+  const c=document.createElement("canvas");c.width=img.width;c.height=img.height;
+  const x=c.getContext("2d",{willReadFrequently:true});x.drawImage(img,0,0);
+  try{return x.getImageData(Math.floor(55*k),Math.floor(25*k),1,1).data[3]===0;}catch(e){return false;} // unreadable (file://) -> classic
+}
+// Game-style cutout: pixels under ~10% alpha become clear, everything else fully solid
+// (the game ignores partial alpha, so semi-transparent "solid" pixels must not look tinted).
+function cleanSrc(img){
+  try{
+    const c=document.createElement("canvas");c.width=img.width;c.height=img.height;
+    const x=c.getContext("2d",{willReadFrequently:true});x.drawImage(img,0,0);
+    const d=x.getImageData(0,0,c.width,c.height),p=d.data;
+    for(let i=3;i<p.length;i+=4)p[i]=p[i]<26?0:255;
+    x.putImageData(d,0,0);
+    return c.toDataURL("image/png");
+  }catch(e){return null;} // pixels unreadable (file://) -> SVG filter fallback below
+}
+function loadImg(src){
+  return new Promise((res,rej)=>{
+    const im=new Image();
+    im.onload=()=>res(im);im.onerror=()=>rej(new Error("Could not load "+src));
+    im.src=src;
+  });
+}
+function triggerSave(href,name){
+  const a=document.createElement("a");
+  a.href=href;a.download=name;
+  document.body.appendChild(a);a.click();a.remove();
+}
+// Saves the PNG itself (a plain download link just navigates to the file when it is cross-origin)
+async function saveFrom(url,name,img){
+  try{ // 1) fetch the bytes
+    const r=await fetch(url);if(!r.ok)throw new Error("HTTP "+r.status);
+    const u=URL.createObjectURL(await r.blob());
+    triggerSave(u,name);setTimeout(()=>URL.revokeObjectURL(u),3000);return;
+  }catch(e){}
+  try{ // 2) re-encode the already loaded image (original pixels, alpha kept)
+    if(!img)throw 0;
+    const c=document.createElement("canvas");c.width=img.width;c.height=img.height;
+    c.getContext("2d").drawImage(img,0,0);
+    const blob=await new Promise((res,rej)=>c.toBlob(b=>b?res(b):rej(),"image/png"));
+    const u=URL.createObjectURL(blob);
+    triggerSave(u,name);setTimeout(()=>URL.revokeObjectURL(u),3000);return;
+  }catch(e){}
+  // 3) last resort: the browser won't let a file:// page read or download local files.
+  //    Open the PNG in a new tab so this page isn't replaced.
+  toast("Browser blocked the direct download from a local file. Right-click the image > Save image as, or open the launcher through a local server.",true);
+  window.open(url,"_blank");
+}
+
+const SK=[...document.querySelectorAll("#sk-grid .skin-card")].map(el=>{
+  const f=el.dataset.file.trim();
+  return{el,file:f,url:skinUrl(f),name:el.dataset.name||f.replace(/\.png$/i,""),by:el.dataset.by||"",
+    slim:el.dataset.slim==null?null:el.dataset.slim==="true",img:null};
+});
+
+/* ---------- CSS 3D viewer (no WebGL, no canvas reads: works on file:// too) ---------- */
+let cur=null,curSlim=null,anim={};
+let spin=true,walk=false,walkWas=false,drag=null,rotY=0.6,rotX=0.12,dist=70,raf=0;
+const sceneEl=$("v-scene"),rootEl=$("v-root");
+
+// pixel rectangles [x,y,w,h] of each face of a skin box
+function regions(u,v,w,h,d){
+  return{top:[u+d,v,w,d],bottom:[u+d+w,v,w,d],
+         right:[u,v+d,d,h],front:[u+d,v+d,w,h],left:[u+d+w,v+d,d,h],back:[u+2*d+w,v+d,w,h]};
+}
+// "right"/"left" are the character's sides. The character faces +z, so its left is +x.
+function makeBox(ctx,w,h,d,u,v,sc,off,mirror){
+  const S=ctx.S,T=S*sc,W=w*T,H=h*T,D=d*T,m=!!mirror;
+  const box=document.createElement("div");box.className="box";
+  box.style.width=W+"px";box.style.height=H+"px";
+  box.style.left=(-W/2)+"px";box.style.top=(-H/2-off*S)+"px";
+  const r=regions(u,v,w,h,d);
+  const add=(reg,fw,fh,tf,fx,fy)=>{
+    const f=document.createElement("div");f.className="face";
+    f.style.width=fw+"px";f.style.height=fh+"px";
+    f.style.left=((W-fw)/2)+"px";f.style.top=((H-fh)/2)+"px";f.style.transform=tf;
+    const t=document.createElement("div");t.className="tex";
+    t.style.backgroundImage=ctx.bg;if(ctx.cut)t.style.filter="url(#sk-cut)";
+    t.style.backgroundSize=(64*T)+"px "+(64*T*ctx.ratio)+"px";
+    t.style.backgroundPosition=(-reg[0]*T)+"px "+(-reg[1]*T)+"px";
+    if(fx||fy)t.style.transform="scale("+(fx?-1:1)+","+(fy?-1:1)+")";
+    f.appendChild(t);box.appendChild(f);
+  };
+  add(r.front,W,H,"translateZ("+D/2+"px)",m,0);
+  add(r.back,W,H,"rotateY(180deg) translateZ("+D/2+"px)",m,0);
+  add(m?r.right:r.left,D,H,"rotateY(90deg) translateZ("+W/2+"px)",m,0);   // +x side
+  add(m?r.left:r.right,D,H,"rotateY(-90deg) translateZ("+W/2+"px)",m,0);  // -x side
+  add(r.top,W,D,"rotateX(90deg) translateZ("+H/2+"px)",m,0);
+  add(r.bottom,W,D,"rotateX(-90deg) translateZ("+H/2+"px)",m,1);
+  return box;
+}
+function resolveSlim(){return curSlim==null?detectSlim(cur.img):curSlim;}
+function updSlimLabel(){
+  $("v-slim").textContent="Slim arms: "+(curSlim==null?"auto ("+(resolveSlim()?"on":"off")+")":(curSlim?"on":"off"));
+}
+function buildModel(root,img,slim,S){
+  root.innerHTML="";const anim={};
+  const legacy=isLegacy(img),aw=slim?3:4;
+  if(img._clean===undefined)img._clean=cleanSrc(img);
+  const ctx={S,bg:"url("+JSON.stringify(img._clean||img.currentSrc||img.src)+")",cut:!img._clean,ratio:img.height/img.width};
+  const B=(w,h,d,u,v,sc,off,mir)=>makeBox(ctx,w,h,d,u,v,sc,off,mir);
+  const piv=(name,x,y,boxes)=>{
+    const p=document.createElement("div");p.className="piv";
+    const base="translate3d("+x*S+"px,"+(-(y-16)*S)+"px,0)";
+    p.style.transform=base;boxes.forEach(b=>p.appendChild(b));root.appendChild(p);
+    anim[name]={el:p,base};
+  };
+  piv("head",0,24,[B(8,8,8,0,0,1,4),B(8,8,8,32,0,1.12,4)]);
+  piv("body",0,18,legacy?[B(8,12,4,16,16,1,0)]:[B(8,12,4,16,16,1,0),B(8,12,4,16,32,1.06,0)]);
+  piv("rArm",-(4+aw/2),22,legacy?[B(aw,12,4,40,16,1,-4)]:[B(aw,12,4,40,16,1,-4),B(aw,12,4,40,32,1.06,-4)]);
+  piv("lArm",4+aw/2,22,legacy?[B(aw,12,4,40,16,1,-4,true)]:[B(aw,12,4,32,48,1,-4),B(aw,12,4,48,48,1.06,-4)]);
+  piv("rLeg",-2,12,legacy?[B(4,12,4,0,16,1,-6)]:[B(4,12,4,0,16,1,-6),B(4,12,4,0,32,1.06,-6)]);
+  piv("lLeg",2,12,legacy?[B(4,12,4,0,16,1,-6,true)]:[B(4,12,4,16,48,1,-6),B(4,12,4,0,48,1.06,-6)]);
+  return anim;
+}
+function build(){
+  anim=buildModel(rootEl,cur.img,resolveSlim(),S);
+  updSlimLabel();
+}
+const pose=(n,a,ax)=>{const p=anim[n];if(p)p.el.style.transform=p.base+" rotate"+ax+"("+a+"rad)";};
+function frame(t){
+  raf=requestAnimationFrame(frame);
+  if(!cur)return;
+  if(spin&&!drag)rotY+=0.012;
+  rootEl.style.transform="scale("+(70/dist)+") rotateX("+(-rotX)+"rad) rotateY("+rotY+"rad)";
+  if(walk||walkWas){
+    const s=walk?Math.sin(t/230):0;
+    pose("rArm",s*.7,"X");pose("lArm",-s*.7,"X");pose("rLeg",-s*.7,"X");pose("lLeg",s*.7,"X");
+    pose("head",walk?Math.sin(t/700)*.25:0,"Y");
+    walkWas=walk;
+  }
+}
+function resetView(){rotY=0.6;rotX=0.12;dist=70;}
+function select(sk){
+  cur=sk;curSlim=sk.slim;
+  SK.forEach(s=>s.el.classList.toggle("sel",s===sk));
+  $("v-name").textContent=sk.name;$("v-name").title=sk.name;
+  $("v-by").textContent=sk.by?sk.by:"";$("v-by").style.display=sk.by?"":"none";
+  $("v-empty").style.display="none";
+  resetView();spin=true;walk=false;walkWas=false;
+  $("v-spin").classList.add("on");$("v-walk").classList.remove("on");
+  build();
+}
+sceneEl.addEventListener("pointerdown",e=>{drag={x:e.clientX,y:e.clientY};sceneEl.setPointerCapture(e.pointerId);});
+sceneEl.addEventListener("pointermove",e=>{
+  if(!drag)return;
+  rotY+=(e.clientX-drag.x)*0.012;rotX=Math.max(-1.2,Math.min(1.2,rotX+(e.clientY-drag.y)*0.01));
+  drag={x:e.clientX,y:e.clientY};
+});
+const endDrag=()=>{drag=null;};
+sceneEl.addEventListener("pointerup",endDrag);sceneEl.addEventListener("pointercancel",endDrag);
+sceneEl.addEventListener("wheel",e=>{e.preventDefault();dist=Math.max(35,Math.min(130,dist+e.deltaY*0.05));},{passive:false});
+$("v-spin").onclick=()=>{spin=!spin;$("v-spin").classList.toggle("on",spin);};
+$("v-walk").onclick=()=>{walk=!walk;if(walk)walkWas=true;$("v-walk").classList.toggle("on",walk);};
+$("v-slim").onclick=()=>{if(!cur)return;curSlim=curSlim==null?true:(curSlim?false:null);build();};
+$("v-reset").onclick=resetView;
+$("v-dl").onclick=()=>{if(cur)saveFrom(cur.url,cur.name.replace(/[^\w.\- ]+/g,"_")+".png",cur.img);};
+raf=requestAnimationFrame(frame);
+
+/* ---------- skin cards ---------- */
+for(const sk of SK){
+  sk.el.innerHTML='<div class="thumb"><div class="v-root"></div></div><div class="sk-name"></div>'+(sk.by?'<div class="sk-by"></div>':"")+'<button class="dl-btn" data-a="dl">Download</button>';
+  sk.el.querySelector(".sk-name").textContent=sk.name;sk.el.querySelector(".sk-name").title=sk.name;
+  if(sk.by)sk.el.querySelector(".sk-by").textContent=sk.by;
+  loadImg(sk.url).then(im=>{
+    sk.img=im;
+    const tr=sk.el.querySelector(".thumb .v-root");
+    buildModel(tr,im,sk.slim==null?detectSlim(im):sk.slim,4);
+    tr.style.transform="rotateX("+(-0.12)+"rad) rotateY(0.6rad)"; // static pose
+    if(!cur)select(sk); // show the first loaded skin in the sidebar
+  }).catch(()=>{
+    const n=document.createElement("div");n.className="err-note";n.textContent="not found";
+    sk.el.querySelector(".thumb").replaceWith(n);
+  });
+  sk.el.onclick=ev=>{
+    if(ev.target.dataset&&ev.target.dataset.a==="dl"){saveFrom(sk.url,sk.name.replace(/[^\w.\- ]+/g,"_")+".png",sk.img);return;}
+    if(sk.img)select(sk);else toast(sk.name+": skin file not found",true);
+  };
+}
+if(typeof setStatus==="function")document.addEventListener("DOMContentLoaded",()=>setStatus("SKINS: <span class=\"hl\">"+SK.length+"</span>"));
+
+})();
+</script>
+</body>
+</html>
