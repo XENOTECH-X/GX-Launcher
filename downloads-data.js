@@ -6,7 +6,7 @@ const DOWNLOAD_GROUPS = [
     "items": [
       {
         "folder": "26.3-wasm",
-        "label": "26.3 WASM (u0)",
+        "label": "26.3 WASM (u1)",
         "multi": false,
         "files": [
           "index.html"
@@ -14,7 +14,7 @@ const DOWNLOAD_GROUPS = [
       },
       {
         "folder": "26.2-wasm",
-        "label": "26.2 WASM (u0)",
+        "label": "26.2 WASM (u2)",
         "multi": false,
         "files": [
           "index.html"
@@ -694,6 +694,14 @@ const DOWNLOAD_GROUPS = [
   {
     "group": "Custom Clients",
     "items": [
+      {
+        "folder": "Chromium Client",
+        "label": "Chromium Client (26.2-u1)",
+        "multi": false,
+        "files": [
+          "index.html"
+        ]
+      },
       {
         "folder": "GX-Client",
         "label": "GX-Client (1.8.8-u53)",

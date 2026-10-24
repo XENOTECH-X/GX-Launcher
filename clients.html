@@ -12,7 +12,7 @@
 <div class="launcher">
 
   <div class="title-bar">
-    <div class="title-logo"><div class="title-dot"></div>GX-LAUNCHER <span class="ver">v2.4</span></div>
+    <div class="title-logo"><div class="title-dot"></div>GX-LAUNCHER <span class="ver">v2.4.1</span></div>
     
   </div>
 
@@ -98,6 +98,10 @@
             </div>
             <input type="file" id="custom-html-input" accept=".html,.htm,text/html" style="display:none" onchange="onCustomHtml(this)" onclick="event.stopPropagation()">
             <div class="version-group-label">Clients</div>
+            <div class="version-option" onclick="selectVersion('Chromium Client','Chromium Client (26.2-u1)',true)">
+              <img src="./game/Chromium Client/favicon.png" onerror="this.style.display='none'">
+              <span>Chromium Client (26.2-u1)</span><span class="version-badge wasm">WASM</span>
+            </div>
             <div class="version-option" onclick="selectVersion('GX-Client','GX-Client (1.8.8-u53)',true)">
               <img src="./game/GX-Client/favicon.png" onerror="this.style.display='none'">
               <span>GX-Client (1.8.8-u53)</span><span class="version-badge wasm">WASM</span>
