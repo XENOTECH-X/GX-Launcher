@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GX-Launcher</title>
+  <link rel="icon" type="image/png" href="resources/main.png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+  <style>
+    .chat-wrap{flex:1;min-height:0;display:flex}
+    .chat-col{flex:1;min-width:0;display:flex;flex-direction:column}
+    .chat-head{display:flex;justify-content:space-between;align-items:center;padding:8px 16px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--text-dim)}
+    .sig{display:flex;align-items:center;gap:8px}
+    .dot{width:7px;height:7px;border-radius:50%;background:#444;display:inline-block}
+    .dot.ok{background:var(--accent);box-shadow:0 0 6px var(--accent)}
+    .dot.wait{background:#fa0;animation:bl 1s infinite}
+    .dot.err{background:#f55}
+    @keyframes bl{50%{opacity:.3}}
+    .chat-msgs{flex:1;min-height:0;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:10px;scrollbar-width:thin;scrollbar-color:var(--scroll) transparent}
+    .msg{max-width:72%;display:flex;flex-direction:column;gap:3px}
+    .msg.me{align-self:flex-end;align-items:flex-end}
+    .msg .meta{font-family:var(--mono);font-size:10px;color:var(--text-dim);letter-spacing:.08em}
+    .msg .bub{padding:8px 12px;border:1px solid var(--border);background:var(--panel);color:var(--text-bright);font-family:var(--sans);font-size:16px;line-height:1.35;word-break:break-word;white-space:pre-wrap}
+    .msg.me .bub{border-color:var(--border2);background:var(--accent-glow)}
+    .newdiv{align-self:stretch;display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--accent)}
+    .newdiv:before,.newdiv:after{content:'';flex:1;height:1px;background:var(--border2)}
+    .sys{align-self:center;font-family:var(--mono);font-size:10px;color:var(--text-dim);letter-spacing:.1em}
+    .typing-panel{display:none;border-top:1px solid var(--border);background:var(--bg2);padding:6px 16px;max-height:30%;overflow-y:auto}
+    .tp{font-family:var(--sans);font-size:15px;color:var(--text);padding:2px 0;word-break:break-word}
+    .nm{color:var(--accent)}
+    .nm.mine{color:var(--accent-hi)}
+    .tp b{color:var(--accent);margin-right:8px;font-family:var(--mono);font-size:11px;letter-spacing:.08em}
+    .tp span{opacity:.85}
+    .caret{display:inline-block;width:7px;height:14px;background:var(--accent);margin-left:2px;vertical-align:-2px;animation:bl 1s infinite}
+    .chat-input-row{display:flex;align-items:center;gap:10px;padding:10px 16px;border-top:1px solid var(--border);background:var(--panel)}
+    .chat-input-row input{flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text-bright);padding:9px 12px;font-family:var(--sans);font-size:16px;outline:none}
+    .chat-input-row input:disabled{opacity:.35}
+    .chat-input-row input:focus{border-color:var(--border2)}
+    .chat-side{width:190px;flex-shrink:0;border-left:1px solid var(--border);background:var(--bg2);padding:12px;overflow-y:auto}
+    .side-label{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--text-dim);margin-bottom:10px}
+    .member{display:flex;align-items:center;gap:8px;padding:5px 0;font-family:var(--sans);font-size:15px;color:var(--text-bright)}
+    .member em{margin-left:auto;font-style:normal;font-family:var(--mono);font-size:9px;color:var(--accent)}
+    .mdot{width:8px;height:8px;border-radius:50%;flex:none;background:var(--accent);box-shadow:0 0 6px var(--accent-glow)}
+    @media(max-width:700px){.chat-side{display:none}}
+    .name-screen{display:none;flex:1;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+    .naming .name-screen{display:flex}
+    .naming .chat-side{display:none}
+    .naming .chat-msgs,.naming .typing-panel,.naming .chat-input-row{display:none!important}
+    .name-title{font-family:var(--mono);font-size:13px;letter-spacing:.2em;color:var(--text-bright)}
+    .name-row{display:flex;gap:8px;width:min(360px,86%)}
+    .name-row input{flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text-bright);padding:9px 12px;font-family:var(--sans);font-size:16px;outline:none}
+    .name-row input:focus{border-color:var(--border2)}
+    .name-row button{background:transparent;color:var(--accent);border:1px solid var(--accent);padding:0 18px;font-family:var(--mono);letter-spacing:.14em;cursor:pointer}
+    .name-row button:hover{background:var(--accent);color:#000}
+  </style>
+</head>
+<body>
+<div class="launcher">
+
+  <div class="title-bar">
+    <div class="title-logo"><div class="title-dot"></div>GX-LAUNCHER <span class="ver">v2.5</span></div>
+    
+  </div>
+
+  <div class="content">
+    <div class="sidebar">
+      <div class="profile">
+        <div class="profile-label">Player</div>
+        <span class="profile-name" id="profile-name">Player</span>
+        <div class="profile-status"><div class="status-dot"></div>ONLINE</div>
+      </div>
+      <nav>
+        <div class="nav-section-label">Navigation</div>
+        <div class="nav-item" onclick="redirectToNews()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><path d="M4 4h16v14a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"/><line x1="4" y1="9" x2="20" y2="9"/><line x1="9" y1="4" x2="9" y2="9"/></svg>
+          Update Log
+        </div>
+        <div class="nav-item" onclick="redirectToMain()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="13" rx="1"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+          Game
+        </div>
+        <div class="nav-item" onclick="redirectToClients()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
+          Clients
+        </div>
+        <div class="nav-item" onclick="redirectToServers()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="5" rx="1"/><rect x="2" y="10" width="20" height="5" rx="1"/><rect x="2" y="17" width="20" height="5" rx="1"/></svg>
+          Servers
+        </div>
+        <div class="nav-item" onclick="redirectToDownloads()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><line x1="12" y1="3" x2="12" y2="15"/><polyline points="7 10 12 15 17 10"/><line x1="4" y1="19" x2="20" y2="19"/></svg>
+          Downloads
+        </div>
+        <div class="nav-item" onclick="redirectToMods()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><path d="M12 2l9 5v10l-9 5-9-5V7z"/><polyline points="3 7 12 12 21 7"/><line x1="12" y1="12" x2="12" y2="22"/></svg>
+          Mods
+        </div>
+        <div class="nav-item" onclick="redirectToSkins()">
+          <svg class="nav-svg" viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M4 21v-2a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v2"/></svg>
+          Skins
+        </div>
+        <div class="nav-item selected">
+          <svg class="nav-svg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          Chat
+        </div>
+        <div class="nav-item" onclick="window.open('https://discord.gg/qQBamNZSwz', '_blank')">
+          <svg class="nav-svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.128 12.299 12.299 0 0 1-1.873.892.076.076 0 0 0-.04.106c.36.698.772 1.362 1.225 1.994a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.057c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.955 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+          </svg>
+          Discord
+        </div>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="nav-item" onclick="redirectToSettings()">
+                  <svg class="nav-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          Launcher Settings
+        </div>
+      </div>
+    </div>
+
+    <div class="main-panel">
+      <div class="top-bar">
+        <div class="game-title">GX-LAUNCHER <span>// CHAT</span></div>
+        <div class="breadcrumb">HOME / CHAT</div>
+      </div>
+
+      <div class="chat-wrap">
+        <div class="chat-col naming" id="chatCol">
+          <div class="chat-head">
+            <span class="sig"><i class="dot" id="sigDot"></i><span id="sigText">CONNECTING...</span></span>
+            <span id="onlineCount">0 ONLINE</span>
+          </div>
+          <div class="name-screen" id="nameScreen">
+            <div class="name-title">CHOOSE A CHAT NAME</div>
+            <div class="name-row">
+              <input type="text" id="nameInput" placeholder="e.g. Jon" maxlength="16" autocomplete="off" spellcheck="false">
+              <button id="nameBtn">ENTER</button>
+            </div>
+          </div>
+          <div class="chat-msgs" id="msgs"></div>
+          <div class="typing-panel" id="typingPanel"></div>
+          <div class="chat-input-row">
+            <input type="text" id="chatInput" placeholder="Type a message..." maxlength="500" autocomplete="off" spellcheck="false" disabled>
+            <button class="play-button" id="sendBtn" onclick="sendMsg()" disabled>SEND</button>
+          </div>
+        </div>
+        <div class="chat-side">
+          <div class="side-label">ONLINE</div>
+          <div id="members"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script>
+(function () {
+  const TOPIC = 'gx-launcher-chat-q8m4w2zr';   // presence channel (ntfy.sh)
+  const $ = id => document.getElementById(id);
+
+  let peer = null, me = '', myName = '';
+  const conns = {};      // id -> DataConnection (open)
+  const pending = {};    // id -> timeout while connecting
+  const names = {};      // id -> display name
+  const drafts = {};     // id -> {text, at}
+  let announceTimer = null, heartbeat = null;
+
+  const post = body => fetch('https://ntfy.sh/' + TOPIC, { method: 'POST', body }).catch(() => {});
+  const ID_OK = /^gx-[A-Za-z0-9]{1,16}-[0-9a-f]{8}$/;
+  const cleanName = s => String(s || '').replace(/[^a-zA-Z0-9]/g, '').slice(0, 16);
+  const nameOf = id => names[id] || (id.split('-')[1] || 'peer');
+  const hex8 = () => [...crypto.getRandomValues(new Uint8Array(4))].map(x => x.toString(16).padStart(2, '0')).join('');
+
+  function setSig(state, text) {
+    $('sigDot').className = 'dot ' + state;
+    $('sigText').textContent = text;
+  }
+
+  // ---------- startup ----------
+  document.addEventListener('DOMContentLoaded', () => {
+    let saved = '';
+    try { saved = (typeof getCookie === 'function' ? getCookie('username') : '') || localStorage.getItem('gxChatName') || ''; } catch (e) {}
+    saved = cleanName(saved);
+    if (saved && saved.toLowerCase() !== 'player') return start(saved);
+    const input = $('nameInput');
+    input.value = saved; input.focus();
+    const done = () => {
+      const n = cleanName(input.value);
+      if (!n) { input.focus(); return; }
+      try { localStorage.setItem('gxChatName', n); } catch (e) {}
+      // save as the launcher username too, so Settings and the sidebar show it
+      try { if (typeof setCookie === 'function') setCookie('username', n, 365); } catch (e) {}
+      document.querySelectorAll('.profile-name, #profile-name').forEach(el => el.textContent = n);
+      start(n);
+    };
+    $('nameBtn').onclick = done;
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') done(); });
+  });
+
+  function start(name) {
+    myName = name;
+    $('chatCol').classList.remove('naming');
+    $('chatInput').addEventListener('input', onTyping);
+    $('chatInput').addEventListener('keydown', e => { if (e.key === 'Enter') sendMsg(); });
+    initPeer();
+    startPresenceStream();
+    setInterval(sweepDrafts, 1000);
+    setInterval(pingAll, 5000);
+  }
+
+  // ---------- peer ----------
+  function initPeer() {
+    me = 'gx-' + myName + '-' + hex8();
+    peer = new Peer(me, { debug: 0 });
+
+    peer.on('open', () => {
+      setSig('ok', 'ONLINE AS ' + myName.toUpperCase());
+      $('chatInput').disabled = false; $('sendBtn').disabled = false;
+      sys('You joined as ' + myName + '. Waiting for others...');
+      announce();
+      announceTimer = setInterval(announce, 15000);
+      renderMembers();
+    });
+    peer.on('connection', c => wire(c));
+    peer.on('disconnected', () => { setSig('wait', 'RECONNECTING...'); try { peer.reconnect(); } catch (e) {} });
+    peer.on('error', err => {
+      if (err.type === 'peer-unavailable') return;
+      if (err.type === 'unavailable-id') { clearInterval(announceTimer); initPeer(); return; }
+      if (['server-error', 'socket-error', 'socket-closed', 'network'].includes(err.type)) {
+        setSig('err', 'NO SIGNAL — RETRYING'); clearInterval(announceTimer);
+        setTimeout(() => { try { peer.destroy(); } catch (e) {} initPeer(); }, 4000);
+      }
+    });
+  }
+
+  const announce = () => post(me);
+
+  addEventListener('pagehide', () => {
+    if (me) navigator.sendBeacon('https://ntfy.sh/' + TOPIC, 'leave:' + me);
+    broadcast({ t: 'bye' });
+    Object.values(conns).forEach(c => { try { c.close(); } catch (e) {} });
+  });
+  // a page restored from the back/forward cache has dead connections
+  addEventListener('pageshow', e => { if (e.persisted) location.reload(); });
+
+  // find others via ntfy presence; the lower id dials, so each pair links once
+  function startPresenceStream() {
+    const es = new EventSource('https://ntfy.sh/' + TOPIC + '/sse?since=2m');
+    es.onmessage = e => {
+      try {
+        const m = JSON.parse(e.data);
+        if (m.event !== 'message' || typeof m.message !== 'string') return;
+        if (m.message.startsWith('leave:')) return;
+        const id = m.message;
+        if (!ID_OK.test(id) || id === me || !peer || !peer.open) return;
+        if (m.time * 1000 < Date.now() - 90000) return;      // stale announce
+        if (me < id) dial(id);
+      } catch (e) {}
+    };
+  }
+
+  function dial(id) {
+    if (conns[id] || pending[id]) return;
+    const c = peer.connect(id, { reliable: true });
+    pending[id] = setTimeout(() => { delete pending[id]; try { c.close(); } catch (e) {} }, 12000);
+    wire(c);
+  }
+
+  function wire(c) {
+    const id = c.peer;
+    const onOpen = () => {
+      clearTimeout(pending[id]); delete pending[id];
+      if (conns[id] && conns[id] !== c) { try { c.close(); } catch (e) {} return; }
+      conns[id] = c;
+      c.send({ t: 'hello', name: myName });
+      if ($('chatInput').value.trim()) c.send({ t: 'typing', on: true });
+      renderMembers();
+    };
+    if (c.open) onOpen(); else c.on('open', onOpen);
+
+    c.on('data', d => {
+      if (!d || typeof d !== 'object') return;
+      if (d.t === 'bye') { removePeer(id); return; }
+      if (d.t === 'hello') {
+        const n = cleanName(d.name) || nameOf(id);
+        const first = !names[id];
+        names[id] = n;
+        if (first) sys(n + ' joined');
+        renderMembers();
+      } else if (d.t === 'chat' && typeof d.text === 'string') {
+        delete drafts[id]; renderTyping(); renderMembers();
+        addMsg(id, d.text.slice(0, 500), false);
+      } else if (d.t === 'typing') {
+        if (d.on === true) drafts[id] = { at: Date.now() }; else delete drafts[id];
+        renderTyping(); renderMembers();
+      }
+    });
+    c.on('close', () => {
+      clearTimeout(pending[id]); delete pending[id];
+      if (conns[id] !== c) return;
+      removePeer(id);
+    });
+    c.on('error', () => {});
+  }
+
+  // ping everyone; anyone the ping can't reach is removed immediately
+  function pingAll() {
+    Object.keys(conns).forEach(id => {
+      const c = conns[id];
+      const pc = c.peerConnection, dc = c.dataChannel;
+      const dead = !c.open
+        || (dc && dc.readyState !== 'open')
+        || (pc && ['failed', 'closed', 'disconnected'].includes(pc.iceConnectionState));
+      if (dead) return removePeer(id);
+      try { c.send({ t: 'ping' }); } catch (e) { removePeer(id); }
+    });
+  }
+
+  // drop someone from the list right away
+  function removePeer(id) {
+    const c = conns[id];
+    delete conns[id]; delete drafts[id];
+    if (c) { try { c.close(); } catch (e) {} }
+    if (names[id]) sys(names[id] + ' left');
+    delete names[id];
+    renderMembers(); renderTyping();
+  }
+
+  const broadcast = obj => Object.values(conns).forEach(c => { try { if (c.open) c.send(obj); } catch (e) {} });
+
+  // ---------- sending ----------
+  window.sendMsg = function () {
+    const input = $('chatInput'), text = input.value.trim();
+    if (!text || !peer || !peer.open) return;
+    broadcast({ t: 'chat', text });
+    broadcast({ t: 'typing', on: false });
+    addMsg(me, text, true);
+    input.value = '';
+    clearInterval(heartbeat); heartbeat = null; typingOn = false;
+  };
+
+  // typing indicator only: sends on/off, never the text itself
+  let typingOn = false;
+  function onTyping() {
+    const has = $('chatInput').value.trim().length > 0;
+    if (has && !typingOn) { typingOn = true; broadcast({ t: 'typing', on: true }); }
+    else if (!has && typingOn) { typingOn = false; broadcast({ t: 'typing', on: false }); }
+    clearInterval(heartbeat);
+    heartbeat = has ? setInterval(() => broadcast({ t: 'typing', on: true }), 4000) : null;
+  }
+
+  function sweepDrafts() {
+    let ch = false;
+    for (const id in drafts) if (Date.now() - drafts[id].at > 10000) { delete drafts[id]; ch = true; }
+    if (ch) { renderTyping(); renderMembers(); }
+  }
+
+  // ---------- rendering ----------
+  function addMsg(id, text, mine) {
+    const box = $('msgs'), div = document.createElement('div');
+    div.className = 'msg ' + (mine ? 'me' : 'them');
+    const meta = document.createElement('div'); meta.className = 'meta';
+    const nm = document.createElement('b'); nm.textContent = mine ? 'YOU' : nameOf(id); nm.className = 'nm' + (mine ? ' mine' : '');
+    meta.appendChild(nm);
+    meta.appendChild(document.createTextNode(' · ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })));
+    const bub = document.createElement('div'); bub.className = 'bub'; bub.textContent = text;
+    div.appendChild(meta); div.appendChild(bub);
+    if (!mine && away()) {
+      if (!unread) {
+        if (newDiv) newDiv.remove();
+        newDiv = document.createElement('div'); newDiv.className = 'newdiv'; newDiv.textContent = 'NEW MESSAGES';
+        box.appendChild(newDiv);
+      }
+      unread++; updateTitle();
+    }
+    stick(() => box.appendChild(div));
+  }
+
+  // messages keep arriving while the tab is in the background; flag them
+  const baseTitle = document.title;
+  let unread = 0, newDiv = null;
+  const away = () => document.hidden || !document.hasFocus();
+  function updateTitle() { document.title = unread ? '(' + unread + ') ' + baseTitle : baseTitle; }
+  function seen() {
+    if (away()) return;
+    const had = unread > 0;
+    unread = 0; updateTitle();
+    if (had && newDiv) newDiv.scrollIntoView({ block: 'start' });
+  }
+  document.addEventListener('visibilitychange', seen);
+  addEventListener('focus', seen);
+
+  function sys(text) {
+    const div = document.createElement('div'); div.className = 'sys'; div.textContent = '— ' + text + ' —';
+    stick(() => $('msgs').appendChild(div));
+  }
+
+  function stick(add) {
+    const b = $('msgs'), atEnd = b.scrollHeight - b.scrollTop - b.clientHeight < 80;
+    add(); if (atEnd) b.scrollTop = b.scrollHeight;
+  }
+
+  function renderTyping() {
+    const p = $('typingPanel'); p.innerHTML = '';
+    const ids = Object.keys(drafts);
+    p.style.display = ids.length ? 'block' : 'none';
+    ids.forEach(id => {
+      const row = document.createElement('div'); row.className = 'tp';
+      const n = document.createElement('b'); n.textContent = nameOf(id);
+      const t = document.createElement('span'); t.textContent = 'is typing...';
+      row.appendChild(n); row.appendChild(t);
+      p.appendChild(row);
+    });
+  }
+
+  function renderMembers() {
+    const box = $('members'); box.innerHTML = '';
+    const add = (id, label) => {
+      const d = document.createElement('div'); d.className = 'member';
+      const dot = document.createElement('i'); dot.className = 'mdot';
+      const n = document.createElement('span'); n.textContent = label;
+      d.appendChild(dot); d.appendChild(n);
+      if (drafts[id]) { const t = document.createElement('em'); t.textContent = 'typing...'; d.appendChild(t); }
+      box.appendChild(d);
+    };
+    if (me) add(me, myName + ' (you)');
+    Object.keys(conns).forEach(id => add(id, nameOf(id)));
+    $('onlineCount').textContent = (Object.keys(conns).length + (me ? 1 : 0)) + ' ONLINE';
+  }
+})();
+</script>
+</body>
+</html>
