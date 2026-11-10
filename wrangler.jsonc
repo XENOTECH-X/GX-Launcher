@@ -1,0 +1,25 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // Must match the Worker's name in the Cloudflare dashboard.
+  "name": "gx-launcher",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-10-15",
+
+  // Builds ./dist from the repo: copies the site as-is and splits any file
+  // over Cloudflare's 25 MiB asset limit into parts (see scripts/build.mjs).
+  "build": {
+    "command": "node scripts/build.mjs",
+    "watch_dir": ["worker", "scripts"]
+  },
+
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "none"
+  },
+
+  "observability": {
+    "enabled": true
+  }
+}
